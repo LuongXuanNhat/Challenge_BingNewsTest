@@ -1,5 +1,8 @@
-﻿namespace BingNewsTest
+﻿using System.Text.Json.Serialization;
+
+namespace BingNew.DataAccessLayer.Models
 {
+
     public class Article : BasePost
     {
         private int _likeNumber;
@@ -8,13 +11,14 @@
         private string _image;
 
 
-        public Article(string providerIcon, string providerName, DateTime postedTime, string title, string image, int likeNumber, int disLikeNumber, int commentNumber) : base(providerIcon, providerName, postedTime, title)
+
+        public Article(string id, string title, DateTimeOffset pubDate, string link, string description, string urlImage) : base(id, title,pubDate, link, description) 
         {
-            _image = image;
-            _likeNumber = likeNumber;
-            _disLikeNumber = disLikeNumber;
-            _commentNumber = commentNumber;
-            
+            _commentNumber = 0;
+            _likeNumber = 0;
+            _disLikeNumber = 0;
+            _likeNumber = 0;
+            _image = urlImage;
         }
 
         internal int GetCommentNumber()

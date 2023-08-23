@@ -1,4 +1,4 @@
-﻿namespace BingNewsTest
+﻿namespace BingNew.DataAccessLayer.Models
 {
     public class MicrosortNotification
     {
@@ -9,10 +9,10 @@
 
         public MicrosortNotification(string topic, string image, TypeOfNotification type, string noticeFrom)
         {
-            this._topic = topic;
-            this._image = image;
-            this._type = type;
-            this._noticeFrom = noticeFrom;
+            _topic = topic;
+            _image = image;
+            _type = type;
+            _noticeFrom = noticeFrom;
         }
 
         internal string GetImage()
@@ -27,7 +27,7 @@
 
         internal string GetTopic()
         {
-            return this._topic;
+            return _topic;
         }
 
         internal TypeOfNotification GetTypes()

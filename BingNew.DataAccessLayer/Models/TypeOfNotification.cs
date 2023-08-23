@@ -1,4 +1,4 @@
-﻿namespace BingNewsTest
+﻿namespace BingNew.DataAccessLayer.Models
 {
     public enum TypeOfNotification
     {

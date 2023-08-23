@@ -1,4 +1,4 @@
-﻿namespace BingNewsTest
+﻿namespace BingNew.DataAccessLayer.Models
 {
     public class Provider
     {
@@ -8,9 +8,9 @@
 
         public Provider(string providerIcon, string providerName)
         {
-            this._providerId = Guid.NewGuid();
-            this._providerIcon = providerIcon;
-            this._providerName = providerName;
+            _providerId = Guid.NewGuid();
+            _providerIcon = providerIcon;
+            _providerName = providerName;
         }
 
         internal string GetProviderIcon()

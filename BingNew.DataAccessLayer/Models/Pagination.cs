@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace BingNewsTest
+﻿namespace BingNew.DataAccessLayer.Models
 {
     public class Pagination
     {
@@ -15,18 +13,18 @@ namespace BingNewsTest
         }
         public Pagination(Pagination pagination)
         {
-            this._total = pagination._total; 
-            this._index = pagination._index;
-            this._size = pagination._size;
-            this._pageNumber = (int)Math.Ceiling(_total * 1.0 / _size);
+            _total = pagination._total;
+            _index = pagination._index;
+            _size = pagination._size;
+            _pageNumber = (int)Math.Ceiling(_total * 1.0 / _size);
         }
 
         public Pagination(int total, int index, int size)
         {
-            this._total = total;
-            this._index = index;
-            this._size = size;
-            this._pageNumber = (int)Math.Ceiling(_total * 1.0 / _size);
+            _total = total;
+            _index = index;
+            _size = size;
+            _pageNumber = (int)Math.Ceiling(_total * 1.0 / _size);
         }
 
         internal int GetIndex()

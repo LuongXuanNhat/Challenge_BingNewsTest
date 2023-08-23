@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNewsTest", "BingNewsTest\BingNewsTest.csproj", "{96909FE1-9C2E-4D48-B240-847127319C35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNewsTest", "BingNewsTest\BingNewsTest.csproj", "{96909FE1-9C2E-4D48-B240-847127319C35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.DataAccessLayer", "BingNew.DataAccessLayer\BingNew.DataAccessLayer.csproj", "{4D76FA8B-F3C0-4B7F-B983-5E43CDBEF1DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.PresentationLayer", "BingNew.PresentationLayer\BingNew.PresentationLayer.csproj", "{00AA77BC-946E-47D8-A1FA-7ED29F38162A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.BusinessLogicLayer", "BingNew.BusinessLogicLayer\BingNew.BusinessLogicLayer.csproj", "{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{96909FE1-9C2E-4D48-B240-847127319C35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96909FE1-9C2E-4D48-B240-847127319C35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96909FE1-9C2E-4D48-B240-847127319C35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D76FA8B-F3C0-4B7F-B983-5E43CDBEF1DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D76FA8B-F3C0-4B7F-B983-5E43CDBEF1DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D76FA8B-F3C0-4B7F-B983-5E43CDBEF1DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D76FA8B-F3C0-4B7F-B983-5E43CDBEF1DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00AA77BC-946E-47D8-A1FA-7ED29F38162A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00AA77BC-946E-47D8-A1FA-7ED29F38162A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00AA77BC-946E-47D8-A1FA-7ED29F38162A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00AA77BC-946E-47D8-A1FA-7ED29F38162A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
