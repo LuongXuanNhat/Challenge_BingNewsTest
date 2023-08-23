@@ -1,6 +1,7 @@
 ﻿namespace BingNew.DataAccessLayer.Models
 {
-    internal class SportsCategory
+    public class SportsCategory
     {
+
     }
 }

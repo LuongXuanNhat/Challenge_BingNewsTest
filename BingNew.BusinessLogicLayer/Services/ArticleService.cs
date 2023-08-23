@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace BingNew.DataAccessLayer.Models
 {
-    public class ArticleService : IArticle
+    public class ArticleService 
     {
         public ArticleService() { }
 

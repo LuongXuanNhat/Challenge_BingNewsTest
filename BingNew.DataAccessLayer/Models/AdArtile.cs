@@ -2,11 +2,9 @@
 {
     public class AdArtile : BasePost
     {
+        public string mediaLink { get; set; }
 
-        public AdArtile(string id, string title, DateTimeOffset date, string link, string description) : base(id, title, date, link, description)
-        {
 
-        }
 
     }
 }

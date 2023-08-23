@@ -2,37 +2,14 @@
 {
     public class MicrosortNotification
     {
-        private string _topic;
-        private string _image;
-        private TypeOfNotification _type;
-        private string _noticeFrom;
+        public string Topic { get; set; }
+        public string Message { get; set; }
+        public TypeOfNotification Type { get; set; }
 
-        public MicrosortNotification(string topic, string image, TypeOfNotification type, string noticeFrom)
-        {
-            _topic = topic;
-            _image = image;
-            _type = type;
-            _noticeFrom = noticeFrom;
-        }
+        public string NoticeFrom { get; set; }
 
-        internal string GetImage()
-        {
-            return _image;
-        }
+        public string ImageLink { get; set;}
 
-        internal string GetNoticeFrom()
-        {
-            return _noticeFrom;
-        }
-
-        internal string GetTopic()
-        {
-            return _topic;
-        }
-
-        internal TypeOfNotification GetTypes()
-        {
-            return _type;
-        }
+       
     }
 }
