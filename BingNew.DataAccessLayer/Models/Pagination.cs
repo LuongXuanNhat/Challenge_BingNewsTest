@@ -2,6 +2,13 @@
 {
     public class Pagination
     {
+        private Pagination pagination;
+
+        public Pagination(Pagination pagination)
+        {
+            this.pagination = pagination;
+        }
+
         public int Total { get; set; }
         public int Index { get; set; }
         public int Size { get; set; }

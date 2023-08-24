@@ -15,4 +15,8 @@
     <ProjectReference Include="..\BingNew.DataAccessLayer\BingNew.DataAccessLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

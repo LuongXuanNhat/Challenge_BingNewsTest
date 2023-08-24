@@ -21,30 +21,30 @@ namespace BingNew.DataAccessLayer
             }
         }
 
-        public List<Article> ParseRssContent(string rssContent)
-        {
-            List<Article> articles = new List<Article>();
+        //public List<Article> ParseRssContent(string rssContent)
+        //{
+        //    List<Article> articles = new List<Article>();
 
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(rssContent);
+        //    XmlDocument xmlDoc = new XmlDocument();
+        //    xmlDoc.LoadXml(rssContent);
 
-            XmlNodeList itemNodes = xmlDoc.SelectNodes("//item");
-            foreach (XmlNode itemNode in itemNodes)
-            {
-                string? id = itemNode.SelectSingleNode("guid")?.InnerText.Trim();
-                string? title = itemNode.SelectSingleNode("title")?.InnerText.Trim();
-                string? link = itemNode.SelectSingleNode("link")?.InnerText.Trim();
-                string? description = itemNode.SelectSingleNode("description")?.InnerText.Trim();
-                string? pubDate = itemNode.SelectSingleNode("pubDate")?.InnerText.Trim();
-                string? urlImage = GetUrlImage(description);
+        //    XmlNodeList itemNodes = xmlDoc.SelectNodes("//item");
+        //    foreach (XmlNode itemNode in itemNodes)
+        //    {
+        //        string? id = itemNode.SelectSingleNode("guid")?.InnerText.Trim();
+        //        string? title = itemNode.SelectSingleNode("title")?.InnerText.Trim();
+        //        string? link = itemNode.SelectSingleNode("link")?.InnerText.Trim();
+        //        string? description = itemNode.SelectSingleNode("description")?.InnerText.Trim();
+        //        string? pubDate = itemNode.SelectSingleNode("pubDate")?.InnerText.Trim();
+        //        string? urlImage = GetUrlImage(description);
 
-                DateTimeOffset date = ParseDateString(pubDate);
+        //        DateTimeOffset date = ParseDateString(pubDate);
 
-                articles.Add(new Article(id, title, date, link, description, urlImage));
-            }
+        //        articles.Add(new Article(id, title, date, link, description, urlImage));
+        //    }
 
-            return articles;
-        }
+        //    return articles;
+        //}
 
         private string GetUrlImage(string description)
         {
