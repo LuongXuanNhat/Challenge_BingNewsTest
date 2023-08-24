@@ -20,7 +20,7 @@ public class NewsAggregationTest
     }
 
     [Fact]
-    public void TestGetNews()
+    public void TestGetNewsApi()
     {
         var service = new NewsService();
         var structure = new Structure();
@@ -49,4 +49,22 @@ public class NewsAggregationTest
 
         Assert.NotNull(result);
     }
+
+    [Fact]
+    public void TestGetNewsTrendFromBingNewsSearch()
+    {
+        var service = new NewsService();
+        var structure = new Structure();
+        structure.Type = "api";
+        structure.Language = "vi";
+        structure.Url = "https://bing-news-search1.p.rapidapi.com/news?safeSearch=Off&textFormat=Raw";
+        structure.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
+        structure.Headers.RapidApiHost = "bing-news-search1.p.rapidapi.com";
+
+        var result = service.GetArticles(structure);
+
+        Assert.NotNull(result);
+    }
+
+
 }

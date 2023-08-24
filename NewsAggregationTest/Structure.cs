@@ -2,6 +2,7 @@
 {
     public Structure()
     {
+        Headers = new RequestHeaders();
     }
 
     public string Type { get; internal set; }

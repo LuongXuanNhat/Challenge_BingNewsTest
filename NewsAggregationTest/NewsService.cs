@@ -7,6 +7,7 @@ using NewsAPI.Constants;
 using NewsAPI.Models;
 using System.Reflection.PortableExecutable;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
 
 public class NewsService
 {
@@ -69,31 +70,44 @@ public class NewsService
     {
         var articles = new List<BingNew.DataAccessLayer.Models.Article>();
 
-        var newsApiClient = new NewsApiClient(structure.Key);
-        var articlesResponse = newsApiClient.GetEverything(new EverythingRequest
+
+        var client = new HttpClient();
+        var request = new HttpRequestMessage
         {
-            Q = "news",
-            SortBy = SortBys.PublishedAt,
-            Language = Languages.EN,
-            From = new DateTime(2023, 8, 24)
-        }) ;
-        if (articlesResponse.Status == Statuses.Ok)
-        {
-            // total results found
-            Console.WriteLine(articlesResponse.TotalResults);
-            // here's the first 20
-            foreach (var article in articlesResponse.Articles)
+            Method = HttpMethod.Get,
+            RequestUri = new Uri(structure.Url),
+            Headers =
             {
+                { "X-BingApis-SDK", "true" },
+                { "X-RapidAPI-Key", structure.Headers.RapidApiKey },
+                { "X-RapidAPI-Host", structure.Headers.RapidApiHost },
+            },
+        };
+        using (var response = client.Send(request))
+        {
+            response.EnsureSuccessStatusCode();
+            var body = response.Content.ReadAsStringAsync().Result;
+            JObject jsonObject = JObject.Parse(body);
+            JArray newsArray = (JArray)jsonObject["value"];
+
+            foreach (JObject newsItem in newsArray)
+            {
+                string title = newsItem["name"].ToString();
+                string link = newsItem["url"].ToString();
+                string description = newsItem["description"].ToString();
+                string imageUrl = newsItem["image"]?["thumbnail"]?["contentUrl"].ToString();
+                DateTime pubDate = DateTime.Parse(newsItem["datePublished"].ToString());
+
                 articles.Add(new BingNew.DataAccessLayer.Models.Article()
                 {
-                    Title = article.Title,
-                    Description = article.Description,
-                    Link = article.Url,
-                    PubDate = new DateTimeOffset(article.PublishedAt.GetValueOrDefault()) 
+                    Title = title,
+                    Link = link,
+                    Description = description,
+                    PubDate = pubDate,
+                    ImageUrl = imageUrl
                 });
             }
         }
-
         return articles;
     }
 
