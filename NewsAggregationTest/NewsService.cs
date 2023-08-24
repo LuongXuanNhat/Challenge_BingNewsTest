@@ -35,11 +35,11 @@ public class NewsService
         var newsApiClient = new NewsApiClient("6cbcb9e942954f92a54c65e3714ec500");
         var articlesResponse = newsApiClient.GetEverything(new EverythingRequest
         {
-            Q = "Apple",
-            SortBy = SortBys.Popularity,
+            Q = "news",
+            SortBy = SortBys.PublishedAt,
             Language = Languages.EN,
-            From = new DateTime(2018, 1, 25)
-        });
+            From = new DateTime(2023, 8, 24)
+        }) ;
         if (articlesResponse.Status == Statuses.Ok)
         {
             // total results found
@@ -52,7 +52,7 @@ public class NewsService
                     Title = article.Title,
                     Description = article.Description,
                     Link = article.Url,
-                    pubDate = new DateTimeOffset(article.PublishedAt.Value) 
+                    PubDate = new DateTimeOffset(article.PublishedAt.GetValueOrDefault()) 
                 });
             }
         }
