@@ -8,6 +8,7 @@ using NewsAPI.Models;
 using System.Reflection.PortableExecutable;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
+using RestSharp;
 
 public class NewsService
 {
@@ -152,4 +153,5 @@ public class NewsService
     {
         return _typeApi;
     }
+
 }

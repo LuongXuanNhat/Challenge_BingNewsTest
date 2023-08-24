@@ -11,4 +11,5 @@
     public string Key { get; internal set; }
     public string KeyWork { get; internal set; }
     public string Language { get; internal set; }
+    public string Category { get; internal set; }
 }
