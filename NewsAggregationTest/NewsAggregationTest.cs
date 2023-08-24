@@ -30,4 +30,23 @@ public class NewsAggregationTest
         var result = service.GetArticles(structure);
         Assert.NotNull(result);
     }
+
+    [Fact]
+    public void TestGetNewsTrendFromNewsDataIo()
+    {
+        var service = new NewsService();
+        var structure = new Structure();
+        structure.Type = "NewsDataIo";
+        structure.KeyWork = "trend";
+        structure.Language = "vi";
+        structure.Key = "pub_2815763c25cffe45251bb8682ef275560ee69";
+        structure.Url = "https://newsdata.io/api/1/news?"
+            + "apikey=" + structure.Key
+            + "&q=" + structure.KeyWork
+            + "&language=" + structure.Language;
+
+        var result = service.GetArticles(structure);
+
+        Assert.NotNull(result);
+    }
 }
