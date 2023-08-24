@@ -10,7 +10,7 @@ public class NewsAggregationTest
 
     [Fact] 
     public void TestGetNewsTrendFromGoogleTrend() {
-        IDataSource datasources = new ApiDataSource();
+        IDataSource datasources = new RssDataSource();
         var service = new NewsService();
         var config = new Config();
 
@@ -148,7 +148,7 @@ public class NewsAggregationTest
     {
         var service = new NewsService();
         var structure = new Config();
-        IDataSource datasources = new ApiDataSource();
+        IDataSource datasources = new RssDataSource();
 
         structure.Type = service.GetTypeRssGoogleTrend();
         structure.Url = service.GetUrlNewsTrend();
