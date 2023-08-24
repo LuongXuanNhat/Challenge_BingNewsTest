@@ -7,4 +7,5 @@
     public string Type { get; internal set; }
     public string Url { get; internal set; }
     public RequestHeaders Headers { get; internal set; }
+    public string Key { get; internal set; }
 }

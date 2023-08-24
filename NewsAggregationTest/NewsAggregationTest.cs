@@ -25,12 +25,7 @@ public class NewsAggregationTest
         var service = new NewsService();
         var structure = new Structure();
         structure.Type = service.GetTypeApi();
-        structure.Url = "https://bloomberg-market-and-financial-news.p.rapidapi.com/market/auto-complete?query=%3CREQUIRED%3E";
-        structure.Headers = new RequestHeaders
-        {
-            RapidApiKey = "a85a42c628msh3c18900ec8b7b37p1e83c3jsn7e19527b9aa4",
-            RapidApiHost = "bloomberg-market-and-financial-news.p.rapidapi.com"
-        };
+        structure.Key = "6cbcb9e942954f92a54c65e3714ec500";
 
         var result = service.GetArticles(structure);
         Assert.NotNull(result);

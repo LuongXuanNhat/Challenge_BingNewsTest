@@ -32,7 +32,7 @@ public class NewsService
     {
         var articles = new List<BingNew.DataAccessLayer.Models.Article>();
 
-        var newsApiClient = new NewsApiClient("6cbcb9e942954f92a54c65e3714ec500");
+        var newsApiClient = new NewsApiClient(structure.Key);
         var articlesResponse = newsApiClient.GetEverything(new EverythingRequest
         {
             Q = "news",
