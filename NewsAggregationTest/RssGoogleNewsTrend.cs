@@ -1,49 +1,34 @@
 ﻿using BingNew.DataAccessLayer.Models;
 using Newtonsoft.Json.Linq;
+using System.ServiceModel.Syndication;
+using System.Xml.Linq;
+using System.Xml;
 
 public class RssGoogleNewsTrend : ITypeRssSource
 {
     public List<Article> GetArticles(Config config)
     {
-        config.Type.Equals("rssType");
-
         var articles = new List<Article>();
 
-
-        var client = new HttpClient();
-        var request = new HttpRequestMessage
+        using (XmlReader reader = XmlReader.Create(config.Url))
         {
-            Method = HttpMethod.Get,
-            RequestUri = new Uri(config.Url),
-            Headers =
-            {
-                { "X-BingApis-SDK", "true" },
-                { "X-RapidAPI-Key", config.Headers.RapidApiKey },
-                { "X-RapidAPI-Host", config.Headers.RapidApiHost },
-            },
-        };
-        using (var response = client.Send(request))
-        {
-            response.EnsureSuccessStatusCode();
-            var body = response.Content.ReadAsStringAsync().Result;
-            JObject jsonObject = JObject.Parse(body);
-            JArray newsArray = (JArray)jsonObject["value"];
+            SyndicationFeed feed = SyndicationFeed.Load(reader);
+            XNamespace htNamespace = "https://trends.google.com/trends/trendingsearches/daily";
 
-            foreach (JObject newsItem in newsArray)
+            foreach (SyndicationItem item in feed.Items)
             {
-                string title = newsItem["name"].ToString();
-                string link = newsItem["url"].ToString();
-                string description = newsItem["description"].ToString();
-                string imageUrl = newsItem["image"]?["thumbnail"]?["contentUrl"].ToString();
-                DateTime pubDate = DateTime.Parse(newsItem["datePublished"].ToString());
+                var htElements = item.ElementExtensions.Where(e => e.OuterNamespace == htNamespace).ToList();
+                string imageUrl = htElements.FirstOrDefault(e => e.OuterName == "picture")?.GetObject<string>();
+                string channelTitle = htElements.FirstOrDefault(e => e.OuterName == "picture_source")?.GetObject<string>();
 
                 articles.Add(new Article()
                 {
-                    Title = title,
-                    Link = link,
-                    Description = description,
-                    PubDate = pubDate,
-                    ImageUrl = imageUrl
+                    Title = item.Title.Text,
+                    Link = item.Links[0].Uri.ToString(),
+                    Description = item.Summary.Text,
+                    PubDate = item.PublishDate.Date,
+                    ImageUrl = imageUrl,
+                    Channel = channelTitle
                 });
             }
         }

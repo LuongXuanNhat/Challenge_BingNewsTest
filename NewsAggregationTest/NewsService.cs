@@ -19,23 +19,8 @@ public class NewsService
 
     public NewsService()
     {
-    }
 
-    public List<Article> GetArticles(Config structure)
-    {
-        if (structure.Type.Equals("rss"))
-        {
-            return GetDataFromRss(structure);
-        }  
-        else if (structure.Type.Equals("api"))
-        {
-            return GetDataFromApi(structure);
-        } else
-        {
-            return GetDataFromApiNewsDataIo(structure);
-        }
     }
-
     private List<Article> GetDataFromApiNewsDataIo(Config structure)
     {
         var articles = new List<Article>();
