@@ -16,7 +16,7 @@ public class NewsService
     {
     }
 
-    public List<BingNew.DataAccessLayer.Models.Article> GetData(Structure structure)
+    public List<BingNew.DataAccessLayer.Models.Article> GetArticles(Structure structure)
     {
         if (structure.Type.Equals("rss"))
         {

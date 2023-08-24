@@ -14,13 +14,13 @@ public class NewsAggregationTest
 
         structure.Type = service.GetTypeRss();
         structure.Url = service.GetUrlNewsTrend();
-        var result = service.GetData(structure);
+        var result = service.GetArticles(structure);
 
         Assert.NotNull(result);
     }
 
     [Fact]
-    public void TestGetBreakingNews()
+    public void TestGetNews()
     {
         var service = new NewsService();
         var structure = new Structure();
@@ -32,7 +32,7 @@ public class NewsAggregationTest
             RapidApiHost = "bloomberg-market-and-financial-news.p.rapidapi.com"
         };
 
-        var result = service.GetData(structure);
+        var result = service.GetArticles(structure);
         Assert.NotNull(result);
     }
 }
