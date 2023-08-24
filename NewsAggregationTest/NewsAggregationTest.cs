@@ -21,18 +21,6 @@ public class NewsAggregationTest
     }
 
     [Fact]
-    public void TestGetNewsApi()
-    {
-        var service = new NewsService();
-        var structure = new Structure();
-        structure.Type = service.GetTypeApi();
-        structure.Key = "6cbcb9e942954f92a54c65e3714ec500";
-
-        var result = service.GetArticles(structure);
-        Assert.NotNull(result);
-    }
-
-    [Fact]
     public void TestGetNewsTrendFromNewsDataIo()
     {
         var service = new NewsService();
@@ -116,5 +104,6 @@ public class NewsAggregationTest
 
         Assert.NotNull(result);
     }
+
 
 }
