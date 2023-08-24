@@ -5,11 +5,13 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNewsTest", "BingNewsTest\BingNewsTest.csproj", "{96909FE1-9C2E-4D48-B240-847127319C35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.DataAccessLayer", "BingNew.DataAccessLayer\BingNew.DataAccessLayer.csproj", "{4D76FA8B-F3C0-4B7F-B983-5E43CDBEF1DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNew.DataAccessLayer", "BingNew.DataAccessLayer\BingNew.DataAccessLayer.csproj", "{4D76FA8B-F3C0-4B7F-B983-5E43CDBEF1DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.PresentationLayer", "BingNew.PresentationLayer\BingNew.PresentationLayer.csproj", "{00AA77BC-946E-47D8-A1FA-7ED29F38162A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNew.PresentationLayer", "BingNew.PresentationLayer\BingNew.PresentationLayer.csproj", "{00AA77BC-946E-47D8-A1FA-7ED29F38162A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.BusinessLogicLayer", "BingNew.BusinessLogicLayer\BingNew.BusinessLogicLayer.csproj", "{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNew.BusinessLogicLayer", "BingNew.BusinessLogicLayer\BingNew.BusinessLogicLayer.csproj", "{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsAggregationTest", "NewsAggregationTest\NewsAggregationTest.csproj", "{237C6EA7-C88D-43E2-908A-9D1BB7BF4E9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{237C6EA7-C88D-43E2-908A-9D1BB7BF4E9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{237C6EA7-C88D-43E2-908A-9D1BB7BF4E9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{237C6EA7-C88D-43E2-908A-9D1BB7BF4E9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{237C6EA7-C88D-43E2-908A-9D1BB7BF4E9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
