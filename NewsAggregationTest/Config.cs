@@ -1,6 +1,6 @@
-﻿public class Structure
+﻿public class Config
 {
-    public Structure()
+    public Config()
     {
         Headers = new RequestHeaders();
     }
@@ -12,4 +12,5 @@
     public string KeyWork { get; internal set; }
     public string Language { get; internal set; }
     public string Category { get; internal set; }
+    public string Channel { get; internal set; }
 }

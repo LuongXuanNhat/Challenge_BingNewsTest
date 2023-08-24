@@ -2,25 +2,26 @@
 using System.ServiceModel.Syndication;
 using System.Xml;
 using System.Xml.Linq;
-using NewsAPI;
-using NewsAPI.Constants;
-using NewsAPI.Models;
 using System.Reflection.PortableExecutable;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using RestSharp;
+using System.Threading.Channels;
 
 public class NewsService
 {
     private string _typeRss = "rss";
     private string _urlNewsTrend = "https://trends.google.com/trends/trendingsearches/daily/rss?geo=VN";
     private string _typeApi = "api";
+    private string _rssTypeOfGoogleNewsTrend = "RSS_GOOGLE_NEWS_TREND";
+    private string _rssTypeOfTuoiTreNews = "RSS_TUOI_TRE_NEWS";
+    private string _apiTypeOfNewsDataIo = "RSS_NEWS_DATA_IO";
 
     public NewsService()
     {
     }
 
-    public List<BingNew.DataAccessLayer.Models.Article> GetArticles(Structure structure)
+    public List<Article> GetArticles(Config structure)
     {
         if (structure.Type.Equals("rss"))
         {
@@ -35,9 +36,9 @@ public class NewsService
         }
     }
 
-    private List<BingNew.DataAccessLayer.Models.Article> GetDataFromApiNewsDataIo(Structure structure)
+    private List<Article> GetDataFromApiNewsDataIo(Config structure)
     {
-        var articles = new List<BingNew.DataAccessLayer.Models.Article>();
+        var articles = new List<Article>();
 
         using (HttpClient client = new HttpClient())
         {
@@ -54,7 +55,7 @@ public class NewsService
                 string imageUrl = newsItem["image_url"].ToString() ?? string.Empty;
                 DateTime pubDate = DateTime.Parse(newsItem["pubDate"].ToString());
 
-                articles.Add(new BingNew.DataAccessLayer.Models.Article()
+                articles.Add(new Article()
                 {
                     Title = title,
                     Link = link,
@@ -67,11 +68,9 @@ public class NewsService
         return articles;
     }
 
-    private List<BingNew.DataAccessLayer.Models.Article> GetDataFromApi(Structure structure)
+    private List<Article> GetDataFromApi(Config structure)
     {
-        var articles = new List<BingNew.DataAccessLayer.Models.Article>();
-
-
+        var articles = new List<Article>();
         var client = new HttpClient();
         var request = new HttpRequestMessage
         {
@@ -99,7 +98,7 @@ public class NewsService
                 string imageUrl = newsItem["image"]?["thumbnail"]?["contentUrl"].ToString();
                 DateTime pubDate = DateTime.Parse(newsItem["datePublished"].ToString());
 
-                articles.Add(new BingNew.DataAccessLayer.Models.Article()
+                articles.Add(new Article()
                 {
                     Title = title,
                     Link = link,
@@ -112,9 +111,9 @@ public class NewsService
         return articles;
     }
 
-    private List<BingNew.DataAccessLayer.Models.Article> GetDataFromRss(Structure structure)
+    private List<Article> GetDataFromRss(Config structure)
     {
-        var articles = new List<BingNew.DataAccessLayer.Models.Article>();
+        var articles = new List<Article>();
 
         using (XmlReader reader = XmlReader.Create(structure.Url))
         {
@@ -125,15 +124,17 @@ public class NewsService
             {
                 var htElements = item.ElementExtensions.Where(e => e.OuterNamespace == htNamespace).ToList();
                 string imageUrl = htElements.FirstOrDefault(e => e.OuterName == "picture")?.GetObject<string>();
+                string channelTitle = htElements.FirstOrDefault(e => e.OuterName == "picture_source")?.GetObject<string>();
 
-                articles.Add(new BingNew.DataAccessLayer.Models.Article()
+                articles.Add(new Article()
                 {
                     Title = item.Title.Text,
                     Link = item.Links[0].Uri.ToString(),
                     Description = item.Summary.Text,
                     PubDate = item.PublishDate.Date,
-                    ImageUrl = imageUrl
-                });
+                    ImageUrl = imageUrl,
+                    Channel = channelTitle
+                }) ;
             }
         }
         return articles;
@@ -154,4 +155,23 @@ public class NewsService
         return _typeApi;
     }
 
+    public List<Article> GetArticleByChannel(List<Article> articles, string channel)
+    {
+        return articles.Where(x=>x.Channel.Equals(channel)).ToList();
+    }
+
+    public string GetTypeRssGoogleTrend()
+    {
+        return _rssTypeOfGoogleNewsTrend;
+    }
+
+    public string GetTypeRssTuoiTreNews()
+    {
+        return _rssTypeOfTuoiTreNews;
+    }
+
+    public string GetTypeApiNewDataIo()
+    {
+        return _apiTypeOfNewsDataIo;
+    }
 }

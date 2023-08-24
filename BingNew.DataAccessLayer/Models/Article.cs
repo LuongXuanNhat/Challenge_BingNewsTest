@@ -7,13 +7,7 @@
         public int DisLikeNumber { get; set; }
         public int CommentNumber { get; set; }
         public string ImageUrl { get; set; }
-
-
-
-
-
-       
-
+        public string Channel { get; set; }
 
     }
 }

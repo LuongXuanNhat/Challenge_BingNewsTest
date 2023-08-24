@@ -1,4 +1,4 @@
-
+﻿
 public class NewsAggregationTest
 {
     [Fact]
@@ -9,9 +9,9 @@ public class NewsAggregationTest
     }
 
     [Fact] 
-    public void TestGetNewsTrend() {
+    public void TestGetNewsTrendFromGoogleTrend() {
         var service = new NewsService();
-        var structure = new Structure();
+        var structure = new Config();
 
         structure.Type = service.GetTypeRss();
         structure.Url = service.GetUrlNewsTrend();
@@ -24,7 +24,7 @@ public class NewsAggregationTest
     public void TestGetNewsTrendFromNewsDataIo()
     {
         var service = new NewsService();
-        var structure = new Structure();
+        var structure = new Config();
         structure.Type = "NewsDataIo";
         structure.KeyWork = "&q=" + "trend";
         structure.Language = "&language=" + "vi";
@@ -43,7 +43,7 @@ public class NewsAggregationTest
     public void TestGetNewsFromBingNewsSearch()
     {
         var service = new NewsService();
-        var structure = new Structure();
+        var structure = new Config();
         structure.Type = "api";
         structure.Language = "vi";
         structure.Url = "https://bing-news-search1.p.rapidapi.com/news?safeSearch=Off&textFormat=Raw";
@@ -59,7 +59,7 @@ public class NewsAggregationTest
     public void TestGetNewsTrendFromBingNewsSearch()
     {
         var service = new NewsService();
-        var structure = new Structure();
+        var structure = new Config();
         structure.Type = "api";
         structure.Language = "vi";
         structure.Url = "https://bing-news-search1.p.rapidapi.com/news/trendingtopics?textFormat=Raw&safeSearch=Off";
@@ -75,7 +75,7 @@ public class NewsAggregationTest
     //public void TestGetNewsFromQuickStart()
     //{
     //    var service = new NewsService();
-    //    var structure = new Structure();
+    //    var structure = new Config();
     //    structure.Type = "api";
     //    structure.Language = "vi";
     //    structure.Key = "3862de56187e9dab37ae52b71cdd881c";
@@ -89,9 +89,10 @@ public class NewsAggregationTest
     [Fact]
     public void TestGetNewsByCategriesFromNewsDataIo()
     {
+        IDataSource datasources = new ApiDataSource();
         var service = new NewsService();
-        var structure = new Structure();
-        structure.Type = "NewsDataIo"; 
+        var structure = new Config();
+        structure.Type = service.GetTypeApiNewDataIo(); 
         structure.Key =      "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
         structure.Language = "&language=" + "vi";
         structure.Category = "&category=" + "business,entertainment";
@@ -100,10 +101,58 @@ public class NewsAggregationTest
                              + structure.Language
                              + structure.Category;
 
-        var result = service.GetArticles(structure);
+        var result = datasources.GetNews(structure);
 
         Assert.NotNull(result);
     }
 
+    [Fact]
+    public void TestGetNewsByChannel()
+    {
+
+        var service = new NewsService();
+        var structure = new Config();
+        structure.Type = service.GetTypeRss();
+        structure.Url = service.GetUrlNewsTrend();
+        var articles = service.GetArticles(structure);
+
+        var result = service.GetArticleByChannel(articles,"Tuổi Trẻ Online");
+
+        Assert.NotNull(result);
+
+    }
+
+    [Fact]
+    public void TestGetNews()
+    {
+        var service = new NewsService();
+        var structure = new Config();
+        IDataSource datasources = new RssDataSource();
+
+        structure.Type = service.GetTypeRssGoogleTrend();
+        structure.Url = service.GetUrlNewsTrend();
+        var articles = service.GetArticles(structure);
+
+        var result = service.GetArticleByChannel(articles,"Tuổi Trẻ Online");
+
+        Assert.NotNull(result);
+
+    }
+    [Fact]
+    public void TestGetNewsRss()
+    {
+        var service = new NewsService();
+        var structure = new Config();
+        IDataSource datasources = new ApiDataSource();
+
+        structure.Type = service.GetTypeRssGoogleTrend();
+        structure.Url = service.GetUrlNewsTrend();
+        var articles = service.GetArticles(structure);
+
+        var result = service.GetArticleByChannel(articles,"Tuổi Trẻ Online");
+
+        Assert.NotNull(result);
+
+    }
 
 }
