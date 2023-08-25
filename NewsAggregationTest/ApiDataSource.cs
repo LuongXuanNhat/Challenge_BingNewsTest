@@ -14,26 +14,52 @@ public class ApiDataSource : IDataSource
     public List<Article> GetNews(Config config)
     {
         var articles = new List<Article>();
+        string json = DownloadJson(config);
+        JObject jsonObject = JObject.Parse(json);
+        JArray newsArray = (JArray)jsonObject[config.ItemName];
 
-        using (HttpClient client = new HttpClient())
+        foreach (JObject newsItem in newsArray)
         {
-            string json = client.GetStringAsync(config.Url).Result;
+            var article = MapToArticle(newsItem, config);
+            articles.Add(article);
+        }
 
-            JObject jsonObject = JObject.Parse(json);
-            JArray newsArray = (JArray)jsonObject["results"] ?? (JArray)jsonObject["articles"];
+        return articles;
+    }
 
-            foreach (JObject newsItem in newsArray)
+    private Article MapToArticle(JObject newsItem, Config config)
+    {
+        var article = new Article();
+        var articleData = new Dictionary<string, string>();
+        var mappingTable = config.MappingTable;
+
+        foreach (var property in mappingTable)
+        {
+            var sourceValue = newsItem[property.SourceProperty]?.ToString();
+            articleData[property.DestinationProperty] = sourceValue;
+        }
+        try
+        {
+            foreach (var property in articleData)
             {
-                string title = newsItem["title"]?.ToString();
-                string link = newsItem["link"]?.ToString() ?? newsItem["url"]?.ToString();
-                string description = newsItem["description"]?.ToString();
-                string imageUrl = newsItem["image_url"]?.ToString() ?? newsItem["urlToImage"]?.ToString();
-                string PubDate = newsItem["pubDate"]?.ToString() ?? newsItem["publishedAt"]?.ToString();
-                DateTime pubDate = DateTime.Parse(PubDate);
-
-                articles.Add(new Article(title,link,description,pubDate,imageUrl));
+                var propertyInfo = typeof(Article).GetProperty(property.Key);
+                var convertedValue = Convert.ChangeType(property.Value, propertyInfo.PropertyType);
+                propertyInfo.SetValue(article, convertedValue);
             }
         }
-        return articles;
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+
+        return article;
+    }
+
+    private string DownloadJson(Config config)
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            return client.GetStringAsync(config.Url).Result;
+        }
     }
 }

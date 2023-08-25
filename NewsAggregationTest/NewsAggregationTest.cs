@@ -76,7 +76,9 @@ public class NewsAggregationTest
             new MappingTable("link", "Url") ,
             new MappingTable("description","Description" ),
             new MappingTable("pubDate", "PubDate"),
-            new MappingTable("image_url", "ImgUrl")
+            new MappingTable("image_url", "ImgUrl"),
+            new MappingTable("source_id", "Channel"),
+           // new MappingTable("category", "Category"),
         };
 
 

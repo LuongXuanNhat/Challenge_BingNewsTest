@@ -6,9 +6,9 @@ namespace BingNew.DataAccessLayer.Models
     {
         public string Id { get; set; }
         public Guid ProviderId { get; set; }
-        public DateTimeOffset PubDate { get; set; }
-        public string Url { get; set; }
-        public string Title { get; set; }
+        public string PubDate { get; set; }
+        public string Url { get; set; } 
+        public string Title { get; set; } 
         public string Description { get; set; }
 
        

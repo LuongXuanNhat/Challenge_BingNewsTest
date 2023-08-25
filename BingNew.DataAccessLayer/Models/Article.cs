@@ -8,15 +8,16 @@
         public int CommentNumber { get; set; }
         public string ImgUrl { get; set; }
         public string Channel { get; set; }
+        public string Category { get; set; }
 
-        public Article(string? title, string? link, string? description, DateTimeOffset pubDate, string? imgUrl)
-        {
-            Title = title;
-            Url = link;
-            Description = description;
-            ImgUrl = imgUrl;
-            PubDate = pubDate;
-        }
+        //public Article(string? title, string? link, string? description, DateTimeOffset pubDate, string? imgUrl)
+        //{
+        //    Title = title;
+        //    Url = link;
+        //    Description = description;
+        //    ImgUrl = imgUrl;
+        //    PubDate = pubDate;
+        //}
 
         public Article()
         {
