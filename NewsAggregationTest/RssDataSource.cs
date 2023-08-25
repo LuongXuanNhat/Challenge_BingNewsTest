@@ -29,7 +29,7 @@ public class RssDataSource : IDataSource
 
         string xml = DownloadXml(config.Url);
         XDocument document = XDocument.Parse(xml);
-        var items = document.Descendants("item");
+        var items = document.Descendants(config.ItemName);
 
         foreach (var item in items)
         {

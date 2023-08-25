@@ -19,6 +19,7 @@ public class NewsAggregationTest
         var config = new Config();
         config.Url = "https://tuoitre.vn/rss/the-gioi.rss";
         config.Type = "World";
+        config.ItemName = "item";
         config.MappingTable = new List<MappingTable>()
         {
             new MappingTable("title","Title"),
@@ -41,6 +42,7 @@ public class NewsAggregationTest
         var config = new Config();
         config.Url = "https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN";
         config.Type = "Trend";
+        config.ItemName = "item";
         config.NameSpace = "https://trends.google.com.vn/trends/trendingsearches/daily";
         config.MappingTable = new List<MappingTable>()
         {
