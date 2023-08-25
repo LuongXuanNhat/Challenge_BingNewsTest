@@ -2,5 +2,5 @@
 
 public interface IDataSource
 {
-    public List<Article> GetNews(Config config);
+    public List<Article> GetArticles(Config config);
 }
