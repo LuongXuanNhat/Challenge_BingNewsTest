@@ -5,6 +5,7 @@ public class Config
     public Config()
     {
         Headers = new RequestHeaders();
+        MappingTable = new List<MappingTable>();
     }
 
     public string Type { get; internal set; } 
@@ -18,4 +19,6 @@ public class Config
     public XNamespace NameSpace { get; internal set; } = "";
     public string DateTimeOffSetFormat { get; internal set; }
     public string Country { get; internal set; }
+    public string ItemName { get; internal set; }
+    internal List<MappingTable> MappingTable { get; set; }
 }

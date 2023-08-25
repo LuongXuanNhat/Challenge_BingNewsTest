@@ -1,4 +1,6 @@
 ﻿
+using BingNew.DataAccessLayer.Models;
+
 public class NewsAggregationTest
 {
     [Fact]
@@ -12,12 +14,21 @@ public class NewsAggregationTest
     public void TestGetNewsByRssTuoiTreNews()
     {
         IDataSource dataSource = new RssDataSource();
+        
         var service = new NewsService();
         var config = new Config();
         config.Url = "https://tuoitre.vn/rss/the-gioi.rss";
         config.Type = "World";
+        config.MappingTable = new List<MappingTable>()
+        {
+            new MappingTable("title","Title"),
+            new MappingTable("link", "Url") ,
+            new MappingTable("description","Description" ),
+            new MappingTable("pubDate", "PubDate"),
+            new MappingTable("image", "ImgUrl")
+        };
 
-        var result = dataSource.GetArticles(config);
+        var result = dataSource.GetNews(config);
 
         Assert.NotNull(result);
     }
@@ -31,8 +42,16 @@ public class NewsAggregationTest
         config.Url = "https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN";
         config.Type = "Trend";
         config.NameSpace = "https://trends.google.com.vn/trends/trendingsearches/daily";
+        config.MappingTable = new List<MappingTable>()
+        {
+            new MappingTable("title","Title"),
+            new MappingTable("link", "Url") ,
+            new MappingTable("description","Description" ),
+            new MappingTable("pubDate", "PubDate"),
+            new MappingTable("picture", "ImgUrl")
+        };
 
-        var result = dataSource.GetArticles(config);
+        var result = dataSource.GetNews(config);
 
         Assert.NotNull(result);
     }
@@ -46,12 +65,22 @@ public class NewsAggregationTest
         config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
         config.Language = "&language=" + "vi";
         config.Category = "&category=" + "business,entertainment";
+        config.ItemName = "results";
         config.Url = "https://newsdata.io/api/1/news?"
                              + config.Key
                              + config.Language
                              + config.Category;
+        config.MappingTable = new List<MappingTable>()
+        {
+            new MappingTable("title","Title"),
+            new MappingTable("link", "Url") ,
+            new MappingTable("description","Description" ),
+            new MappingTable("pubDate", "PubDate"),
+            new MappingTable("image_url", "ImgUrl")
+        };
 
-        var result = datasources.GetArticles(config);
+
+        var result = datasources.GetNews(config);
 
         Assert.NotNull(result);
     }
@@ -69,10 +98,22 @@ public class NewsAggregationTest
         config.Url = "https://newsapi.org/v2/top-headlines?"
                              + config.Country
                              + config.Key;
-
-        var result = datasources.GetArticles(config);
+        config.MappingTable = new List<MappingTable>()
+        {
+            new MappingTable("title","Title"),
+            new MappingTable("url", "Url") ,
+            new MappingTable("description","Description" ),
+            new MappingTable("publishedAt", "PubDate"),
+            new MappingTable("urlToImage", "ImgUrl")
+        };
+        var result = datasources.GetNews(config);
 
         Assert.NotNull(result);
     }
 
+    [Fact]
+    public void GetNewsByChannels()
+    {
+
+    }
 }

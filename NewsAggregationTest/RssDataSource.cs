@@ -15,58 +15,6 @@ public class RssDataSource : IDataSource
 
     }
 
-    public List<Article> GetArticles(Config config)
-    {
-        var articles = new List<Article>();
-        
-        string xml = DownloadXml(config.Url);
-        XDocument document = XDocument.Parse(xml);
-        var items = document.Descendants("item");
-
-        foreach (var item in items)
-        {
-            string title = item.Element("title")?.Value;
-            string link = item.Element("link")?.Value;
-            string description = item.Element("description")?.Value;
-            string pubDate = item.Element("pubDate")?.Value;
-            string imgUrl = item.Element("image")?.Value ?? item.Element(config.NameSpace + "picture")?.Value;
-            DateTimeOffset PubDate = GetDateTimeOffsetFormat(pubDate);
-
-            var newsItems = item.Elements(config.NameSpace + "news_item");
-            if (newsItems != null)
-            {
-                foreach (var newsItem in newsItems)
-                {
-                    string newsTitle = newsItem.Element(config.NameSpace + "news_item_title")?.Value;
-                    string newsSnippet = newsItem.Element(config.NameSpace + "news_item_snippet")?.Value;
-                    string newsUrl = newsItem.Element(config.NameSpace + "news_item_url")?.Value;
-                    string newsSource = newsItem.Element(config.NameSpace + "news_item_source")?.Value;
-                    description = newsSnippet;
-                    
-                }
-            }
-            
-
-            articles.Add(new Article(title, link, description, PubDate, imgUrl));
-        }
-
-        return articles;
-    }
-
-    // :))
-    private DateTimeOffset GetDateTimeOffsetFormat(string? pubDate)
-    {
-        string format = "ddd, dd MMM yyyy HH:mm:ss";
-        int gmtIndex = pubDate.IndexOf("GMT");
-
-        string dateWithoutTimeZone = gmtIndex >= 0 ? pubDate.Substring(0, gmtIndex - 1) : pubDate.Replace(" +0700", ""); ;
-
-        DateTime dateTime = DateTime.ParseExact(dateWithoutTimeZone, format,
-            CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
-
-        return DateTimeOffset.Parse(dateWithoutTimeZone);
-    }
-
     private string DownloadXml(string url)
     {
         using (HttpClient client = new HttpClient())
@@ -74,4 +22,51 @@ public class RssDataSource : IDataSource
             return client.GetStringAsync(url).Result;
         }
     }
+
+    public List<Article> GetNews(Config config)
+    {
+        var articles = new List<Article>();
+
+        string xml = DownloadXml(config.Url);
+        XDocument document = XDocument.Parse(xml);
+        var items = document.Descendants("item");
+
+        foreach (var item in items)
+        {
+            var article = MapToArticle(item, config);
+            articles.Add(article);
+        }
+
+        return articles;
+    }
+
+    private Article MapToArticle(XElement item, Config config)
+    {
+        var article = new Article();
+        var articleData = new Dictionary<string, string>();
+        var mappingTable = config.MappingTable;
+
+        foreach (var property in mappingTable)
+        {
+            var sourceValue = item.Element(property.SourceProperty)?.Value;
+            articleData[property.DestinationProperty] = sourceValue;
+        }
+        try
+        {
+            foreach (var property in articleData)
+            {
+                var propertyInfo = typeof(Article).GetProperty(property.Key);
+                var convertedValue = Convert.ChangeType(property.Value, propertyInfo.PropertyType);
+                propertyInfo.SetValue(article, convertedValue);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+       
+
+        return article;
+    }
+
 }

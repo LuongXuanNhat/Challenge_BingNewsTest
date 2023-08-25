@@ -11,7 +11,7 @@ public class ApiDataSource : IDataSource
 
     }
 
-    public List<Article> GetArticles(Config config)
+    public List<Article> GetNews(Config config)
     {
         var articles = new List<Article>();
 
@@ -36,5 +36,4 @@ public class ApiDataSource : IDataSource
         }
         return articles;
     }
-
 }
