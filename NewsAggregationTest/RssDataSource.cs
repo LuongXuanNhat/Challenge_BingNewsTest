@@ -29,7 +29,7 @@ public class RssDataSource : IDataSource
 
         string xml = DownloadXml(config.Url);
         XDocument document = XDocument.Parse(xml);
-        var items = document.Descendants(config.ItemName);
+        var items = document.Descendants(config.Item);
 
         foreach (var item in items)
         {
@@ -50,7 +50,25 @@ public class RssDataSource : IDataSource
         {
             var sourceValue = item.Element(property.SourceProperty)?.Value;
             articleData[property.DestinationProperty] = sourceValue;
+
+            if (articleData[property.DestinationProperty] == null)
+            {
+                articleData[property.DestinationProperty] = item.Element(config.Namespace + property.SourceProperty)?.Value;
+            }
         }
+
+        //foreach (var dictionnary in articleData)
+        //{
+        //    if (dictionnary.Value == null)
+        //    {
+                
+        //        articleData[dictionnary.Key] = item.Element(config.Namespace + property.SourceProperty)?.Value;
+        //    }
+        //    if (config.Channel != null && articleData[config.Channel] == null) {
+        //    var property = mappingTable.Where(x => x.DestinationProperty.Equals(config.Channel)).FirstOrDefault();
+        //    articleData[property.DestinationProperty] = item.Element(config.Namespace + property.SourceProperty)?.Value;
+        //}
+
         try
         {
             foreach (var property in articleData)

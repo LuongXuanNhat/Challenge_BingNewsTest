@@ -16,7 +16,7 @@ public class ApiDataSource : IDataSource
         var articles = new List<Article>();
         string json = DownloadJson(config);
         JObject jsonObject = JObject.Parse(json);
-        JArray newsArray = (JArray)jsonObject[config.ItemName];
+        JArray newsArray = (JArray)jsonObject[config.Item];
 
         foreach (JObject newsItem in newsArray)
         {
@@ -57,6 +57,7 @@ public class ApiDataSource : IDataSource
 
     private string DownloadJson(Config config)
     {
+
         using (HttpClient client = new HttpClient())
         {
             return client.GetStringAsync(config.Url).Result;

@@ -16,9 +16,10 @@ public class Config
     public string Language { get; internal set; }
     public string Category { get; internal set; }
     public string Channel { get; internal set; }
-    public XNamespace NameSpace { get; internal set; } = "";
+    public XNamespace Namespace { get; internal set; } = "";
     public string DateTimeOffSetFormat { get; internal set; }
     public string Country { get; internal set; }
-    public string ItemName { get; internal set; }
+    public string Item { get; internal set; }
+    public string NewsItems { get; internal set; }
     internal List<MappingTable> MappingTable { get; set; }
 }
