@@ -302,6 +302,25 @@ public class NewsAggregationTest
         Assert.NotNull(followChannel);
         Assert.NotNull(followChannel.Id);
     }
+    [Fact]
+    public void TestAddHateChannelToBlockedList()
+    {
+        var service = new NewsService();
+        var data = GetNewsByNewsDataIo();
+        var channels = service.GetChannels(data);
+        var firstChannel = channels.FirstOrDefault();
+
+        var user = new User()
+        {
+            Id = "1",
+            UserName = "luongxuannhat",
+            Email = "email@gmail.com"
+        };
+        var blockedChannel = service.AddBlockedChannel(user.Id, firstChannel, channels);
+
+        Assert.NotNull(blockedChannel);
+        Assert.NotNull(blockedChannel.Id);
+    }
 
 
 }

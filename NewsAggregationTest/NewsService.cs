@@ -103,4 +103,14 @@ public class NewsService
         channel = new FollowChannel("1", id, firstChannel.Id);
         return channel;
     }
+
+    public BlockedChannel AddBlockedChannel(string id, Channel? firstChannel, List<Channel> channels)
+    {
+        var channel = new BlockedChannel();
+
+        if (channels.FirstOrDefault(firstChannel) == null)
+            return channel;
+        channel = new BlockedChannel("1", id, firstChannel.Id);
+        return channel;
+    }
 }
