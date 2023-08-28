@@ -17,7 +17,6 @@ public class NewsAggregationTest
         var config = new Config();
         config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
         config.Language = "&language=" + "vi";
-        config.Category = "&category=" + "business,entertainment";
         config.Item = "results";
         config.Url = "https://newsdata.io/api/1/news?"
                              + config.Key
@@ -30,7 +29,7 @@ public class NewsAggregationTest
             new MappingTable("pubDate", "PubDate"),
             new MappingTable("image_url", "ImgUrl"),
             new MappingTable("source_id", "Channel"),
-           // new MappingTable("category", "Category"),
+            new MappingTable("category", "Category")
         };
         return datasources.GetNews(config);
     }
@@ -125,8 +124,8 @@ public class NewsAggregationTest
         config.Item = "results";
         config.Url = "https://newsdata.io/api/1/news?"
                              + config.Key
-                             + config.Language
-                             + config.Category;
+                             + config.Language;
+                           //  + config.Category;
         config.MappingTable = new List<MappingTable>()
         {
             new MappingTable("title","Title"),
@@ -135,7 +134,7 @@ public class NewsAggregationTest
             new MappingTable("pubDate", "PubDate"),
             new MappingTable("image_url", "ImgUrl"),
             new MappingTable("source_id", "Channel"),
-           // new MappingTable("category", "Category"),
+            new MappingTable("category", "Category"),
         };
 
 
@@ -190,6 +189,35 @@ public class NewsAggregationTest
         var channel = "Vietnamnet.vn";
 
         var result = service.GetDataByChannel(data,channel);
+
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void GetNewsByCategoryFromNewsDataIo()
+    {
+        IDataSource datasources = new ApiDataSource();
+        var service = new NewsService();
+        var config = new Config();
+        config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
+        config.Language = "&language=" + "vi";
+        config.Category = "&category=" + "business,entertainment";
+        config.Item = "results";
+        config.Url = "https://newsdata.io/api/1/news?"
+                             + config.Key
+                             + config.Language
+                             + config.Category;
+        config.MappingTable = new List<MappingTable>()
+        {
+            new MappingTable("title","Title"),
+            new MappingTable("link", "Url") ,
+            new MappingTable("description","Description" ),
+            new MappingTable("pubDate", "PubDate"),
+            new MappingTable("image_url", "ImgUrl"),
+            new MappingTable("source_id", "Channel"),
+            new MappingTable("category", "Category")
+        };
+        var result = datasources.GetNews(config);
 
         Assert.NotNull(result);
     }
