@@ -58,7 +58,26 @@ public class NewsAggregationTest
         return dataSource.GetNews(config);
     }
 
+    private List<Article> GetNewsByTuoiTreNews()
+    {
+        IDataSource dataSource = new RssDataSource();
 
+        var service = new NewsService();
+        var config = new Config();
+        config.Url = "https://tuoitre.vn/rss/tin-moi-nhat.rss";
+        config.Type = "Home";
+        config.Item = "item";
+        config.MappingTable = new List<MappingTable>()
+        {
+            new MappingTable("title","Title"),
+            new MappingTable("link", "Url") ,
+            new MappingTable("description","Description" ),
+            new MappingTable("pubDate", "PubDate"),
+            new MappingTable("image", "ImgUrl")
+        };
+
+        return dataSource.GetNews(config);
+    }
 
     [Fact] 
     public void TestGetNewsByRssTuoiTreNews()
@@ -220,5 +239,18 @@ public class NewsAggregationTest
         Assert.NotNull(result);
     }
 
-    
+    [Fact]
+    public void TestTrendingStoriesOfTuoiTreNews()
+    {
+        var service = new NewsService();
+        var data = GetNewsByTuoiTreNews();
+        var articleNumber = 70;
+        var trendingNews = service.GetTopArticles(data, articleNumber);
+
+        Assert.NotNull(trendingNews);
+    }
+
+   
+
+
 }
