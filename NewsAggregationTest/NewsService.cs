@@ -1,13 +1,4 @@
 ﻿using BingNew.DataAccessLayer.Models;
-using System.ServiceModel.Syndication;
-using System.Xml;
-using System.Xml.Linq;
-using System.Reflection.PortableExecutable;
-using Newtonsoft.Json.Linq;
-using System.Net.Http.Headers;
-using RestSharp;
-using System.Threading.Channels;
-using System.Numerics;
 
 public class NewsService
 {
@@ -33,8 +24,7 @@ public class NewsService
         {
             if(GetArticleByDate(item))
             {
-                var article = AddData(item);
-                articles.Add(article);
+                articles.Add(AddData(item));
             }    
         }
         if(articles.Count < articleNumber) 
@@ -76,10 +66,8 @@ public class NewsService
         string format = "ddd, dd MMM yyyy HH:mm:ss";
         try
         {
-            // Tách thông tin ngày và thời gian từ chuỗi
             string dateTimePart = pubDate.Substring(0, pubDate.IndexOf("GMT") - 1);
 
-            // Chuyển đổi chuỗi thành DateTime
             if (DateTime.TryParseExact(dateTimePart, format, System.Globalization.CultureInfo.InvariantCulture,
                                        System.Globalization.DateTimeStyles.None, out DateTime result))
             { 
@@ -89,5 +77,30 @@ public class NewsService
             Console.WriteLine(e.Message);
         }
        return DateTime.Now;
+    }
+
+    public List<Channel> GetChannels(List<Article> data)
+    {
+        var channels = new List<Channel>();
+        foreach (var item in data)
+        {
+            channels.Add(
+                new Channel(item.Channel)
+            );
+        }
+
+        channels = channels.GroupBy(x => x.Id).Select(group => group.First()).ToList();
+
+        return channels;
+    }
+
+    public FollowChannel AddFavoriteChannel(string id, Channel? firstChannel, List<Channel> channels)
+    {
+        var channel = new FollowChannel();
+
+        if (channels.FirstOrDefault(firstChannel) == null)
+            return channel;
+        channel = new FollowChannel("1", id, firstChannel.Id);
+        return channel;
     }
 }

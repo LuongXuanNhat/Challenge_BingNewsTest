@@ -1,5 +1,6 @@
 ﻿
 using BingNew.DataAccessLayer.Models;
+using System.Reflection;
 
 public class NewsAggregationTest
 {
@@ -79,11 +80,11 @@ public class NewsAggregationTest
         return dataSource.GetNews(config);
     }
 
-    [Fact] 
+    [Fact]
     public void TestGetNewsByRssTuoiTreNews()
     {
         IDataSource dataSource = new RssDataSource();
-        
+
         var service = new NewsService();
         var config = new Config();
         config.Url = "https://tuoitre.vn/rss/the-gioi.rss";
@@ -103,7 +104,7 @@ public class NewsAggregationTest
         Assert.NotNull(result);
     }
 
-    [Fact] 
+    [Fact]
     public void TestGetNewsByRssGoogleTrend()
     {
         IDataSource dataSource = new RssDataSource();
@@ -193,7 +194,7 @@ public class NewsAggregationTest
         var data = GetNewsByNewsDataIo();
         var channel = "kenh14";
 
-        var result = service.GetDataByChannel(data,channel);
+        var result = service.GetDataByChannel(data, channel);
 
         Assert.NotNull(result);
     }
@@ -205,7 +206,7 @@ public class NewsAggregationTest
         var data = GetNewsByGoogleTrend();
         var channel = "Vietnamnet.vn";
 
-        var result = service.GetDataByChannel(data,channel);
+        var result = service.GetDataByChannel(data, channel);
 
         Assert.NotNull(result);
     }
@@ -240,17 +241,67 @@ public class NewsAggregationTest
     }
 
     [Fact]
+    public void TestGetChannelFromGoogleTrend() 
+    {
+        var service = new NewsService();
+        var data = GetNewsByGoogleTrend();
+        var channels = service.GetChannels(data);
+
+        Assert.NotNull(channels);
+    }
+
+
+    [Fact]
+    public void TestGetChannelFromNewsDataIo() 
+    {
+        var service = new NewsService();
+        var data = GetNewsByNewsDataIo();
+        var channels = service.GetChannels(data);
+
+        Assert.NotNull(channels);
+    }
+
+    [Fact]
     public void TestTrendingStoriesOfTuoiTreNews()
     {
         var service = new NewsService();
         var data = GetNewsByTuoiTreNews();
-        var articleNumber = 70;
+        var articleNumber = 10;
         var trendingNews = service.GetTopArticles(data, articleNumber);
 
         Assert.NotNull(trendingNews);
     }
 
-   
+    [Fact]
+    public void TestTrendingStoriesOfNewsDataIo()
+    {
+        var service = new NewsService();
+        var data = GetNewsByNewsDataIo();
+        var articleNumber = 7;
+        var trendingNews = service.GetTopArticles(data, articleNumber);
+
+        Assert.NotNull(trendingNews);
+    }
+
+    [Fact]
+    public void TestAddFavoriteChannelToFollowList()
+    {
+        var service = new NewsService();
+        var data = GetNewsByGoogleTrend();
+        var channels = service.GetChannels(data);
+        var firstChannel = channels.FirstOrDefault();
+
+        var user = new User()
+        {
+            Id = "1",
+            UserName = "luongxuannhat",
+            Email = "email@gmail.com"
+        };
+        var followChannel = service.AddFavoriteChannel(user.Id, firstChannel, channels);
+
+        Assert.NotNull(followChannel);
+        Assert.NotNull(followChannel.Id);
+    }
 
 
 }

@@ -6,6 +6,14 @@
         public string ChannelName { get; set; }
         public string ChannelIcon { get; set; }
 
+        public Channel(string channel)
+        {
+            ChannelName = channel;
+            Id = channel;
+        }
 
+        public Channel()
+        {
+        }
     }
 }
