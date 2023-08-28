@@ -120,12 +120,10 @@ public class NewsAggregationTest
         var config = new Config();
         config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
         config.Language = "&language=" + "vi";
-        config.Category = "&category=" + "business,entertainment";
         config.Item = "results";
         config.Url = "https://newsdata.io/api/1/news?"
                              + config.Key
                              + config.Language;
-                           //  + config.Category;
         config.MappingTable = new List<MappingTable>()
         {
             new MappingTable("title","Title"),
