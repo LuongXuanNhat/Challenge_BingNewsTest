@@ -331,7 +331,7 @@ public class NewsAggregationTest
     }
 
     [Fact]
-    public void TestLikeArticle() 
+    public void TestAddLikeArticle() 
     {
         var service = new NewsService();
         var likes = new List<Like>();
@@ -347,7 +347,7 @@ public class NewsAggregationTest
     }
     
     [Fact]
-    public void TestDisLikeArticle() 
+    public void TestAddDisLikeArticle() 
     {
         var service = new NewsService();
         var likes = new List<Like>();
@@ -360,5 +360,18 @@ public class NewsAggregationTest
 
         Assert.NotNull(disLikes);
         Assert.Single(disLikeArticle);
+    }
+
+    [Fact]
+    public void TestGetAdArticle()
+    {
+        var service = new NewsService();
+        var config = new Config();
+        config.Url = "https://64ae6209c85640541d4cf43d.mockapi.io/AddItem";
+
+        var adArticles = service.GetAdArticles(config.Url);
+
+        Assert.NotNull(adArticles);
+        Assert.Equal(10, adArticles.Count);
     }
 }

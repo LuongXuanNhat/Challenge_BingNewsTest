@@ -1,4 +1,6 @@
-﻿using BingNew.DataAccessLayer.Models;
+﻿
+using BingNew.DataAccessLayer.Models;
+using Newtonsoft.Json;
 
 public class NewsService
 {
@@ -148,5 +150,34 @@ public class NewsService
 
         disLikes.Add(itemDisLike);
         return disLikes;
+    }
+
+    public List<AdArticle> GetAdArticles(string url)
+    {
+        var adArticles = new List<AdArticle>();
+
+        using (HttpClient client = new HttpClient())
+        {
+            try
+            {
+                HttpResponseMessage response = client.GetAsync(url).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonResponse = response.Content.ReadAsStringAsync().Result;
+                    adArticles = JsonConvert.DeserializeObject<List<AdArticle>>(jsonResponse);
+                }
+                else
+                {
+                    Console.WriteLine($"Lỗi: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+            }
+        }
+
+        return adArticles;
     }
 }
