@@ -26,17 +26,14 @@ public class RssDataSource : IDataSource
     public List<Article> GetNews(Config config)
     {
         var articles = new List<Article>();
-        if (config.Url != null)
-        {
-            string xml = DownloadXml(config.Url);
-            XDocument document = XDocument.Parse(xml);
-            var items = document.Descendants(config.Item);
+        string xml = DownloadXml(config.Url);
+        XDocument document = XDocument.Parse(xml);
+        var items = document.Descendants(config.Item);
 
-            foreach (var item in items)
-            {
-                var article = MapToArticle(item, config);
-                articles.Add(article);
-            }
+        foreach (var item in items)
+        {
+            var article = MapToArticle(item, config);
+            articles.Add(article);
         }
         return articles;
     }
@@ -49,28 +46,32 @@ public class RssDataSource : IDataSource
 
         foreach (var property in mappingTable)
         {
-            if (property.SourceProperty != null)
+
+            var sourceValue = item.Element(property.SourceProperty)?.Value;
+            
+            if (sourceValue != null)
             {
-                var sourceValue = item.Element(property.SourceProperty)?.Value;
-                if (sourceValue != null)
-                    articleData[property.DestinationProperty] = sourceValue;
-                else if (config.Namespace != null && property.SourceProperty != null)
+                articleData[property.DestinationProperty] = sourceValue;
+            }
+            else 
+            {
+                var newItem = config.Namespace + property.SourceProperty;
+                var sourceElement = item.Element(newItem);
+
+                if (newItem != null && sourceElement != null)
                 {
-                    var newItem = config.Namespace + property.SourceProperty;
-                    var sourceElement = item.Element(newItem);
-                    if (sourceElement != null)
-                    {
-                        articleData[property.DestinationProperty] = sourceElement.Value;
-                    }
+                    articleData[property.DestinationProperty] = sourceElement.Value;
                 }
             }
+            
         }
+
 
         //foreach (var dictionnary in articleData)
         //{
         //    if (dictionnary.Value == null)
         //    {
-                
+
         //        articleData[dictionnary.Key] = item.Element(config.Namespace + property.SourceProperty)?.Value;
         //    }
         //    if (config.Channel != null && articleData[config.Channel] == null) {

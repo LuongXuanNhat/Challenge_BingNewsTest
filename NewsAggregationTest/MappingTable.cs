@@ -1,7 +1,7 @@
 ﻿public class MappingTable
 {
-    public string DestinationProperty { get; internal set; }
-    public string SourceProperty { get; internal set; }
+    public string DestinationProperty { get; set; } = string.Empty;
+    public string SourceProperty { get; set; } = string.Empty;
 
     public MappingTable(string SourceProperty, string DestinationProperty)
     {

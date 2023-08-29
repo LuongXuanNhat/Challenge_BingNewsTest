@@ -17,7 +17,7 @@ public class ApiDataSource : IDataSource
         string json = DownloadJson(config);
         JObject jsonObject = JObject.Parse(json);
 
-        if ( config.Item != null && jsonObject[config.Item] is JArray newsArray)
+        if ( jsonObject[config.Item] is JArray newsArray)
         {
             foreach (JObject newsItem in newsArray)
             {
@@ -47,8 +47,12 @@ public class ApiDataSource : IDataSource
             foreach (var property in articleData)
             {
                 var propertyInfo = typeof(Article).GetProperty(property.Key);
-                var convertedValue = Convert.ChangeType(property.Value, propertyInfo.PropertyType);
-                propertyInfo.SetValue(article, convertedValue);
+                if (propertyInfo != null)
+                {
+                    var convertedValue = Convert.ChangeType(property.Value, propertyInfo.PropertyType);
+                    propertyInfo.SetValue(article, convertedValue);
+                }
+                
             }
         }
         catch (Exception e)

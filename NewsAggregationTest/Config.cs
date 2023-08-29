@@ -8,18 +8,18 @@ public class Config
         MappingTable = new List<MappingTable>();
     }
 
-    public string? Type { get; internal set; } 
-    public string? Url { get; internal set; }
-    public RequestHeaders Headers { get; internal set; }
-    public string? Key { get; internal set; }
-    public string? KeyWork { get; internal set; }
-    public string? Language { get; internal set; }
-    public string? Category { get; internal set; }
-    public string? Channel { get; internal set; }
-    public XNamespace Namespace { get; internal set; } = "";
-    public string? DateTimeOffSetFormat { get; internal set; }
-    public string? Country { get; internal set; }
-    public string? Item { get; internal set; }
-    public string? NewsItems { get; internal set; }
+    public string Type { get; set; }  = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public RequestHeaders Headers { get; set; }
+    public string Key { get; set; } = string.Empty;
+    public string KeyWork { get; set; } = string.Empty; 
+    public string Language { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
+    public string Channel { get; set; } = string.Empty;
+    public XNamespace Namespace { get; set; } = "";
+    public string DateTimeOffSetFormat { get; set; } = string.Empty;
+    public string Country { get; set; } = string.Empty;
+    public string Item { get; set; } = string.Empty;
+    public string NewsItems { get; set; } = string.Empty;
     internal List<MappingTable> MappingTable { get; set; }
 }

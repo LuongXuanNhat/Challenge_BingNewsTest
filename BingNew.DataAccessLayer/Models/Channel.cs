@@ -2,9 +2,9 @@
 {
     public class Channel
     {
-        public string? Id { get; set; }
-        public string? ChannelName { get; set; }
-        public string? ChannelIcon { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string ChannelName { get; set; } = string.Empty;
+        public string ChannelIcon { get; set; } = string.Empty;
 
         public Channel(string channel)
         {

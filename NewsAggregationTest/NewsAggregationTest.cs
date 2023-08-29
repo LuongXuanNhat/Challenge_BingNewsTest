@@ -292,7 +292,7 @@ public class NewsAggregationTest
         var service = new NewsService();
         var data = GetNewsByGoogleTrend();
         var channels = service.GetChannels(data);
-        var firstChannel = channels.FirstOrDefault();
+        var firstChannel = channels.First();
 
         var user = new User("1", "luongxuannhat", "email@gmail.com");
         var followChannel = service.AddFavoriteChannel(user.Id, firstChannel, channels);
@@ -306,7 +306,7 @@ public class NewsAggregationTest
         var service = new NewsService();
         var data = GetNewsByNewsDataIo();
         var channels = service.GetChannels(data);
-        var firstChannel = channels.FirstOrDefault();
+        var firstChannel = channels.First();
 
         var user = new User("1", "luongxuannhat", "email@gmail.com");
         var blockedChannel = service.AddBlockedChannel(user.Id, firstChannel, channels);
@@ -322,7 +322,7 @@ public class NewsAggregationTest
         var likes = new List<Like>();
         var disLikes = new List<DisLike>();
         var data = GetNewsByGoogleTrend();
-        var firstArticle = data.FirstOrDefault();
+        var firstArticle = data.First();
         var user = Login();
 
         var likeArticle = service.AddLikeArticle(likes,  disLikes, user.Id, firstArticle.Id);
@@ -338,7 +338,7 @@ public class NewsAggregationTest
         var likes = new List<Like>();
         var disLikes = new List<DisLike>();
         var data = GetNewsByGoogleTrend();
-        var firstArticle = data.FirstOrDefault();
+        var firstArticle = data.First();
         var user = Login();
 
         var disLikeArticle = service.AddDisLikeArticle(disLikes, likes, user.Id, firstArticle.Id);

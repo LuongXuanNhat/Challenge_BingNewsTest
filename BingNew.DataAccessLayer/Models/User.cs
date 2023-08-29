@@ -1,8 +1,8 @@
 ﻿public class User
 {
-    public string? Id { get; set; }
-    public string? UserName { get; set; }
-    public string? Email { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
     public User(string id, string userName, string email)
     {
         Id = id;

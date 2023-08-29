@@ -4,7 +4,7 @@
     {
     }
 
-    public string? Id { get; set; }
-    public string? UserId { get;  set; }
-    public string? ArticleId { get;  set; }
+    public string Id { get; set; } = string.Empty;
+    public string UserId { get; set; } = string.Empty;
+    public string ArticleId { get; set; } = string.Empty;
 }

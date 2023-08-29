@@ -58,12 +58,9 @@ public class NewsService
 
     private bool GetArticleByDate(Article item)
     {
-        if (item.PubDate != null)
-        {
-            var getDate = ConvertDateTime(item.PubDate);
-            if (getDate.Date == DateTime.Now.Date)
-                return true;
-        }
+        var getDate = ConvertDateTime(item.PubDate);
+        if (getDate.Date == DateTime.Now.Date)
+            return true;
         return false;
     }
 
@@ -100,20 +97,18 @@ public class NewsService
         return channels;
     }
 
-    public FollowChannel AddFavoriteChannel(string id, Channel? firstChannel, List<Channel> channels)
+    public FollowChannel AddFavoriteChannel(string id, Channel firstChannel, List<Channel> channels)
     {
         var channel = new FollowChannel();
-
         if (channels.FirstOrDefault(firstChannel) == null)
             return channel;
         channel = new FollowChannel("1", id, firstChannel.Id);
         return channel;
     }
 
-    public BlockedChannel AddBlockedChannel(string id, Channel? firstChannel, List<Channel> channels)
+    public BlockedChannel AddBlockedChannel(string id, Channel firstChannel, List<Channel> channels)
     {
         var channel = new BlockedChannel();
-
         if (channels.FirstOrDefault(firstChannel) == null)
             return channel;
         channel = new BlockedChannel("1", id, firstChannel.Id);
@@ -123,10 +118,7 @@ public class NewsService
     public List<Like> AddLikeArticle(List<Like> likes, List<DisLike> disLikes, string userId, string articleId)
     {
         var item = disLikes.Where(x => x.UserId.Equals(userId) && x.ArticleId.Equals(articleId)).FirstOrDefault();
-        if (item != null)
-        {
-            disLikes = disLikes.Where(x => !x.UserId.Equals(userId) && !x.ArticleId.Equals(articleId)).ToList();
-        }
+        disLikes = disLikes.Where(x => !x.UserId.Equals(userId) && !x.ArticleId.Equals(articleId)).ToList();
         var itemLike = new Like()
         {
             Id = "1",
@@ -141,10 +133,8 @@ public class NewsService
     public List<DisLike> AddDisLikeArticle(List<DisLike> disLikes, List<Like> likes, string userId, string articleId)
     {
         var item = likes.FirstOrDefault(x => x.UserId.Equals(userId) && x.ArticleId.Equals(articleId));
-        if (item != null)
-        {
-            likes = likes.Where(x => !x.UserId.Equals(userId) && !x.ArticleId.Equals(articleId)).ToList();
-        }
+        likes = likes.Where(x => !x.UserId.Equals(userId) && !x.ArticleId.Equals(articleId)).ToList();
+
         var itemDisLike = new DisLike()
         {
             Id = "1",
