@@ -10,7 +10,15 @@ public class NewsAggregationTest
         var service = new NewsService();
         Assert.NotNull(service);
     }
-
+    private User Login()
+    {
+        return new User()
+        {
+            Id = "1",
+            UserName = "luongxuannhat",
+            Email = "email@gmail.com"
+        };
+    }
     private List<Article> GetNewsByNewsDataIo()
     {
         IDataSource datasources = new ApiDataSource();
@@ -58,7 +66,6 @@ public class NewsAggregationTest
 
         return dataSource.GetNews(config);
     }
-
     private List<Article> GetNewsByTuoiTreNews()
     {
         IDataSource dataSource = new RssDataSource();
@@ -79,6 +86,7 @@ public class NewsAggregationTest
 
         return dataSource.GetNews(config);
     }
+
 
     [Fact]
     public void TestGetNewsByRssTuoiTreNews()
@@ -241,7 +249,7 @@ public class NewsAggregationTest
     }
 
     [Fact]
-    public void TestGetChannelFromGoogleTrend() 
+    public void TestGetChannelFromGoogleTrend()
     {
         var service = new NewsService();
         var data = GetNewsByGoogleTrend();
@@ -252,7 +260,7 @@ public class NewsAggregationTest
 
 
     [Fact]
-    public void TestGetChannelFromNewsDataIo() 
+    public void TestGetChannelFromNewsDataIo()
     {
         var service = new NewsService();
         var data = GetNewsByNewsDataIo();
@@ -322,5 +330,35 @@ public class NewsAggregationTest
         Assert.NotNull(blockedChannel.Id);
     }
 
+    [Fact]
+    public void TestLikeArticle() 
+    {
+        var service = new NewsService();
+        var likes = new List<Like>();
+        var disLikes = new List<DisLike>();
+        var data = GetNewsByGoogleTrend();
+        var firstArticle = data.FirstOrDefault();
+        var user = Login();
 
+        var likeArticle = service.AddLikeArticle(likes,  disLikes, user.Id, firstArticle.Id);
+
+        Assert.NotNull(likes);
+        Assert.Single(likeArticle);
+    }
+    
+    [Fact]
+    public void TestDisLikeArticle() 
+    {
+        var service = new NewsService();
+        var likes = new List<Like>();
+        var disLikes = new List<DisLike>();
+        var data = GetNewsByGoogleTrend();
+        var firstArticle = data.FirstOrDefault();
+        var user = Login();
+
+        var disLikeArticle = service.AddDisLikeArticle(disLikes, likes, user.Id, firstArticle.Id);
+
+        Assert.NotNull(disLikes);
+        Assert.Single(disLikeArticle);
+    }
 }

@@ -113,4 +113,40 @@ public class NewsService
         channel = new BlockedChannel("1", id, firstChannel.Id);
         return channel;
     }
+
+    public List<Like> AddLikeArticle(List<Like> likes, List<DisLike> disLikes, string userId, string articleId)
+    {
+        var item = disLikes.Where(x => x.UserId.Equals(userId) && x.ArticleId.Equals(articleId)).FirstOrDefault();
+        if (item != null)
+        {
+            disLikes = disLikes.Where(x => !x.UserId.Equals(userId) && !x.ArticleId.Equals(articleId)).ToList();
+        }
+        var itemLike = new Like()
+        {
+            Id = "1",
+            UserId = userId,
+            ArticleId = articleId
+        };
+
+        likes.Add(itemLike);
+        return likes;
+    }
+
+    public List<DisLike> AddDisLikeArticle(List<DisLike> disLikes, List<Like> likes, string userId, string articleId)
+    {
+        var item = likes.Where(x => x.UserId.Equals(userId) && x.ArticleId.Equals(articleId)).FirstOrDefault();
+        if (item != null)
+        {
+            likes = likes.Where(x => !x.UserId.Equals(userId) && !x.ArticleId.Equals(articleId)).ToList();
+        }
+        var itemDisLike = new DisLike()
+        {
+            Id = "1",
+            UserId = userId,
+            ArticleId = articleId
+        };
+
+        disLikes.Add(itemDisLike);
+        return disLikes;
+    }
 }
