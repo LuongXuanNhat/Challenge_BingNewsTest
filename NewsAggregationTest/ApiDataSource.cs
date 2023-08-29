@@ -16,14 +16,15 @@ public class ApiDataSource : IDataSource
         var articles = new List<Article>();
         string json = DownloadJson(config);
         JObject jsonObject = JObject.Parse(json);
-        JArray newsArray = (JArray)jsonObject[config.Item];
 
-        foreach (JObject newsItem in newsArray)
+        if ( config.Item != null && jsonObject[config.Item] is JArray newsArray)
         {
-            var article = MapToArticle(newsItem, config);
-            articles.Add(article);
+            foreach (JObject newsItem in newsArray)
+            {
+                var article = MapToArticle(newsItem, config);
+                articles.Add(article);
+            }
         }
-
         return articles;
     }
 
@@ -36,7 +37,10 @@ public class ApiDataSource : IDataSource
         foreach (var property in mappingTable)
         {
             var sourceValue = newsItem[property.SourceProperty]?.ToString();
-            articleData[property.DestinationProperty] = sourceValue;
+            if (sourceValue != null)
+            {
+                articleData[property.DestinationProperty] = sourceValue;
+            }
         }
         try
         {

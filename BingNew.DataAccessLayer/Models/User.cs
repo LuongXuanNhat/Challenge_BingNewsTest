@@ -1,10 +1,12 @@
 ﻿public class User
 {
-    public User()
+    public string? Id { get; set; }
+    public string? UserName { get; set; }
+    public string? Email { get; set; }
+    public User(string id, string userName, string email)
     {
+        Id = id;
+        UserName = userName;
+        Email = email;
     }
-
-    public string Id { get; set; }
-    public string UserName { get; set; }
-    public string Email { get; set; }
 }

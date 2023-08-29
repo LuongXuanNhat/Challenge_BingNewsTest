@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNew.PresentationLayer",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNew.BusinessLogicLayer", "BingNew.BusinessLogicLayer\BingNew.BusinessLogicLayer.csproj", "{EAB9506F-B52C-4F5D-91FA-6D0DA7FB8013}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsAggregationTest", "NewsAggregationTest\NewsAggregationTest.csproj", "{237C6EA7-C88D-43E2-908A-9D1BB7BF4E9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregationTest", "NewsAggregationTest\NewsAggregationTest.csproj", "{237C6EA7-C88D-43E2-908A-9D1BB7BF4E9C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{88E5D3C3-CAE4-416A-B959-711BB0CB824C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

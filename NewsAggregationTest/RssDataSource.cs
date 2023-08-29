@@ -26,17 +26,18 @@ public class RssDataSource : IDataSource
     public List<Article> GetNews(Config config)
     {
         var articles = new List<Article>();
-
-        string xml = DownloadXml(config.Url);
-        XDocument document = XDocument.Parse(xml);
-        var items = document.Descendants(config.Item);
-
-        foreach (var item in items)
+        if (config.Url != null)
         {
-            var article = MapToArticle(item, config);
-            articles.Add(article);
-        }
+            string xml = DownloadXml(config.Url);
+            XDocument document = XDocument.Parse(xml);
+            var items = document.Descendants(config.Item);
 
+            foreach (var item in items)
+            {
+                var article = MapToArticle(item, config);
+                articles.Add(article);
+            }
+        }
         return articles;
     }
 
@@ -48,12 +49,20 @@ public class RssDataSource : IDataSource
 
         foreach (var property in mappingTable)
         {
-            var sourceValue = item.Element(property.SourceProperty)?.Value;
-            articleData[property.DestinationProperty] = sourceValue;
-
-            if (articleData[property.DestinationProperty] == null)
+            if (property.SourceProperty != null)
             {
-                articleData[property.DestinationProperty] = item.Element(config.Namespace + property.SourceProperty)?.Value;
+                var sourceValue = item.Element(property.SourceProperty)?.Value;
+                if (sourceValue != null)
+                    articleData[property.DestinationProperty] = sourceValue;
+                else if (config.Namespace != null && property.SourceProperty != null)
+                {
+                    var newItem = config.Namespace + property.SourceProperty;
+                    var sourceElement = item.Element(newItem);
+                    if (sourceElement != null)
+                    {
+                        articleData[property.DestinationProperty] = sourceElement.Value;
+                    }
+                }
             }
         }
 
@@ -74,8 +83,11 @@ public class RssDataSource : IDataSource
             foreach (var property in articleData)
             {
                 var propertyInfo = typeof(Article).GetProperty(property.Key);
-                var convertedValue = Convert.ChangeType(property.Value, propertyInfo.PropertyType);
-                propertyInfo.SetValue(article, convertedValue);
+                if (propertyInfo != null && propertyInfo.PropertyType != null)
+                {
+                    var convertedValue = Convert.ChangeType(property.Value, propertyInfo.PropertyType);
+                    propertyInfo.SetValue(article, convertedValue);
+                }
             }
         }
         catch (Exception e)

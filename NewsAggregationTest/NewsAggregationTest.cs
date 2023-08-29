@@ -12,12 +12,7 @@ public class NewsAggregationTest
     }
     private User Login()
     {
-        return new User()
-        {
-            Id = "1",
-            UserName = "luongxuannhat",
-            Email = "email@gmail.com"
-        };
+        return new User("1", "luongxuannhat", "email@gmail.com");
     }
     private List<Article> GetNewsByNewsDataIo()
     {
@@ -299,12 +294,7 @@ public class NewsAggregationTest
         var channels = service.GetChannels(data);
         var firstChannel = channels.FirstOrDefault();
 
-        var user = new User()
-        {
-            Id = "1",
-            UserName = "luongxuannhat",
-            Email = "email@gmail.com"
-        };
+        var user = new User("1", "luongxuannhat", "email@gmail.com");
         var followChannel = service.AddFavoriteChannel(user.Id, firstChannel, channels);
 
         Assert.NotNull(followChannel);
@@ -318,12 +308,7 @@ public class NewsAggregationTest
         var channels = service.GetChannels(data);
         var firstChannel = channels.FirstOrDefault();
 
-        var user = new User()
-        {
-            Id = "1",
-            UserName = "luongxuannhat",
-            Email = "email@gmail.com"
-        };
+        var user = new User("1", "luongxuannhat", "email@gmail.com");
         var blockedChannel = service.AddBlockedChannel(user.Id, firstChannel, channels);
 
         Assert.NotNull(blockedChannel);
@@ -363,6 +348,12 @@ public class NewsAggregationTest
     }
 
     [Fact]
+    public void TestAddCommentArticle() 
+    { 
+        
+    }
+
+    [Fact]
     public void TestGetAdArticle()
     {
         var service = new NewsService();
@@ -374,4 +365,6 @@ public class NewsAggregationTest
         Assert.NotNull(adArticles);
         Assert.Equal(10, adArticles.Count);
     }
+
+
 }

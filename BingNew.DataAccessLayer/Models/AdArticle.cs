@@ -2,7 +2,7 @@
 {
     public class AdArticle : BasePost
     {
-        public string mediaLink { get; set; }
+        public string? mediaLink { get; set; }
 
 
 

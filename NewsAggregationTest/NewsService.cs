@@ -1,6 +1,7 @@
 ﻿
 using BingNew.DataAccessLayer.Models;
 using Newtonsoft.Json;
+using System.Linq;
 
 public class NewsService
 {
@@ -57,9 +58,12 @@ public class NewsService
 
     private bool GetArticleByDate(Article item)
     {
-        var getDate = ConvertDateTime(item.PubDate);
-        if (getDate.Date == DateTime.Now.Date)
-            return true;
+        if (item.PubDate != null)
+        {
+            var getDate = ConvertDateTime(item.PubDate);
+            if (getDate.Date == DateTime.Now.Date)
+                return true;
+        }
         return false;
     }
 
@@ -136,7 +140,7 @@ public class NewsService
 
     public List<DisLike> AddDisLikeArticle(List<DisLike> disLikes, List<Like> likes, string userId, string articleId)
     {
-        var item = likes.Where(x => x.UserId.Equals(userId) && x.ArticleId.Equals(articleId)).FirstOrDefault();
+        var item = likes.FirstOrDefault(x => x.UserId.Equals(userId) && x.ArticleId.Equals(articleId));
         if (item != null)
         {
             likes = likes.Where(x => !x.UserId.Equals(userId) && !x.ArticleId.Equals(articleId)).ToList();
@@ -152,7 +156,7 @@ public class NewsService
         return disLikes;
     }
 
-    public List<AdArticle> GetAdArticles(string url)
+    public List<AdArticle>? GetAdArticles(string url)
     {
         var adArticles = new List<AdArticle>();
 
@@ -169,12 +173,12 @@ public class NewsService
                 }
                 else
                 {
-                    Console.WriteLine($"Lỗi: {response.StatusCode}");
+                    Console.WriteLine($" errror: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi: {ex.Message}");
+                Console.WriteLine($" error: {ex.Message}");
             }
         }
 
