@@ -12,9 +12,9 @@
         public string Channel { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
 
-        public Article()
+        public Article() : base()
         {
-
+            
         }
     }
 }

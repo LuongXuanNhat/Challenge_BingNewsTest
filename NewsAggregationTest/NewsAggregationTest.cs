@@ -295,11 +295,27 @@ public class NewsAggregationTest
         var firstChannel = channels.First();
 
         var user = new User("1", "luongxuannhat", "email@gmail.com");
-        var followChannel = service.AddFavoriteChannel(user.Id, firstChannel, channels);
+        var result = service.AddFavoriteChannel(user.Id, firstChannel);
 
-        Assert.NotNull(followChannel);
-        Assert.NotNull(followChannel.Id);
+        Assert.NotNull(result);
     }
+
+    [Fact]
+    public void TestRemoveFavoriteChannelFromFollowList()
+    {
+        var service = new NewsService();
+        var data = GetNewsByGoogleTrend();
+        var channels = service.GetChannels(data);
+        var firstChannel = channels.First();
+        var user = Login();
+        var result = service.AddFavoriteChannel(user.Id, firstChannel);
+        result = service.RemoveFavoriteChannel(user.Id, firstChannel, result);
+
+        Assert.Empty(result);
+    }
+
+
+
     [Fact]
     public void TestAddHateChannelToBlockedList()
     {
@@ -308,11 +324,10 @@ public class NewsAggregationTest
         var channels = service.GetChannels(data);
         var firstChannel = channels.First();
 
-        var user = new User("1", "luongxuannhat", "email@gmail.com");
-        var blockedChannel = service.AddBlockedChannel(user.Id, firstChannel, channels);
+        var user = Login();
+        var result = service.AddBlockedChannel(user.Id, firstChannel);
 
-        Assert.NotNull(blockedChannel);
-        Assert.NotNull(blockedChannel.Id);
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -325,10 +340,10 @@ public class NewsAggregationTest
         var firstArticle = data.First();
         var user = Login();
 
-        var likeArticle = service.AddLikeArticle(likes,  disLikes, user.Id, firstArticle.Id);
+        var result = service.AddLikeArticle(likes,  disLikes, user.Id, firstArticle.Id);
 
         Assert.NotNull(likes);
-        Assert.Single(likeArticle);
+        Assert.Single(result);
     }
     
     [Fact]
@@ -341,16 +356,45 @@ public class NewsAggregationTest
         var firstArticle = data.First();
         var user = Login();
 
-        var disLikeArticle = service.AddDisLikeArticle(disLikes, likes, user.Id, firstArticle.Id);
+        var result = service.AddDisLikeArticle(disLikes, likes, user.Id, firstArticle.Id);
 
         Assert.NotNull(disLikes);
-        Assert.Single(disLikeArticle);
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public void TestAddDisLikeAndDeleteLikeArticle() 
+    {
+        var service = new NewsService();
+        var likes = new List<Like>();
+        var disLikes = new List<DisLike>();
+        var data = GetNewsByGoogleTrend();
+        var firstArticle = data.First();
+        var user = Login();
+
+        likes = service.AddLikeArticle(likes, disLikes, user.Id, firstArticle.Id);
+        var result = service.AddDisLikeArticle(disLikes, likes, user.Id, firstArticle.Id);
+
+        Assert.Single(likes);
+        likes = service.RemoveLikeArticle(likes, firstArticle.Id);
+
+        Assert.NotNull(disLikes);
+        Assert.Single(result);
+        Assert.Empty(likes);
     }
 
     [Fact]
     public void TestAddCommentArticle() 
-    { 
-        
+    {
+        var service = new NewsService();
+        var data = GetNewsByGoogleTrend();
+        var firstArticle = data.First();
+        var user = Login();
+        var content = "Happy a new day";
+
+        var reuslt = service.AddComment(user.Id, firstArticle.Id, content);
+
+        Assert.NotNull(reuslt);
     }
 
     [Fact]
@@ -360,11 +404,11 @@ public class NewsAggregationTest
         var config = new Config();
         config.Url = "https://64ae6209c85640541d4cf43d.mockapi.io/AddItem";
 
-        var adArticles = service.GetAdArticles(config.Url);
+        var result = service.GetAdArticles(config.Url);
 
-        Assert.NotNull(adArticles);
-        Assert.Equal(10, adArticles.Count);
+        Assert.NotNull(result);
+        Assert.Equal(10, result.Count);
     }
 
-
+    
 }

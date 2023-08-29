@@ -4,7 +4,10 @@
     {
         public string mediaLink { get; set; } = string.Empty;
 
+        public AdArticle() : base()
+        {
 
+        }
 
     }
 }

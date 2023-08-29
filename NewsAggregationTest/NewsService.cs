@@ -97,25 +97,21 @@ public class NewsService
         return channels;
     }
 
-    public FollowChannel AddFavoriteChannel(string id, Channel firstChannel, List<Channel> channels)
+    public List<FollowChannel> AddFavoriteChannel(string id, Channel firstChannel)
     {
-        var channel = new FollowChannel();
-        if (channels.FirstOrDefault(firstChannel) == null)
-            return channel;
-        channel = new FollowChannel("1", id, firstChannel.Id);
+        var channel = new List<FollowChannel>();
+        channel.Add(new FollowChannel("1", id, firstChannel.Id));
         return channel;
     }
 
-    public BlockedChannel AddBlockedChannel(string id, Channel firstChannel, List<Channel> channels)
+    public List<BlockedChannel> AddBlockedChannel(string id, Channel firstChannel)
     {
-        var channel = new BlockedChannel();
-        if (channels.FirstOrDefault(firstChannel) == null)
-            return channel;
-        channel = new BlockedChannel("1", id, firstChannel.Id);
-        return channel;
+        var result = new List<BlockedChannel>();
+        result.Add(new BlockedChannel("1", id, firstChannel.Id));
+        return result;
     }
 
-    public List<Like> AddLikeArticle(List<Like> likes, List<DisLike> disLikes, string userId, string articleId)
+    public List<Like> AddLikeArticle(List<Like> likes, List<DisLike> disLikes, string userId, Guid articleId)
     {
         var item = disLikes.Where(x => x.UserId.Equals(userId) && x.ArticleId.Equals(articleId)).FirstOrDefault();
         disLikes = disLikes.Where(x => !x.UserId.Equals(userId) && !x.ArticleId.Equals(articleId)).ToList();
@@ -130,7 +126,7 @@ public class NewsService
         return likes;
     }
 
-    public List<DisLike> AddDisLikeArticle(List<DisLike> disLikes, List<Like> likes, string userId, string articleId)
+    public List<DisLike> AddDisLikeArticle(List<DisLike> disLikes, List<Like> likes, string userId, Guid articleId)
     {
         var item = likes.FirstOrDefault(x => x.UserId.Equals(userId) && x.ArticleId.Equals(articleId));
         likes = likes.Where(x => !x.UserId.Equals(userId) && !x.ArticleId.Equals(articleId)).ToList();
@@ -173,5 +169,31 @@ public class NewsService
         }
 
         return adArticles;
+    }
+
+    public Comment AddComment(string userId, Guid articleId, string content)
+    {
+        var comment = new Comment(userId, articleId, content);
+        
+
+        return comment;
+    }
+
+    public List<Like> RemoveLikeArticle(List<Like> likes, Guid ArticleId)
+    {
+        var result = likes.First(l => l.ArticleId.Equals(ArticleId));
+        if (result != null)
+        {
+            likes = likes.Where(x=> x != result).ToList();
+        }
+        return likes;
+    }
+
+    public List<FollowChannel> RemoveFavoriteChannel(string userId, Channel firstChannel, List<FollowChannel> channels)
+    {
+        var channel = channels.First(c => c.ChannelId.Equals(firstChannel.Id) && c.UserId.Equals(userId));
+        if (channel != null)
+            channels = channels.Where(x=> x != channel).ToList();
+        return channels;     
     }
 }
