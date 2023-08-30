@@ -1,7 +1,9 @@
 ﻿
 using BingNew.DataAccessLayer.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Linq;
+using System.Text.Json.Nodes;
 
 public class NewsService
 {
@@ -195,5 +197,95 @@ public class NewsService
         if (channel != null)
             channels = channels.Where(x=> x != channel).ToList();
         return channels;     
+    }
+
+    public List<Topic> GetTopicOfNewsChannel(List<Article> data)
+    {
+        var topics = new List<Topic>();
+        foreach (var item in data)
+        {
+            var topic = CheckDuplicates(topics, item);
+            if (topic != null)
+            {
+                topics.Add(topic);
+            } else
+            {
+                var topic1 = topics.Where(x => x.Name.Equals(item.Category)).FirstOrDefault();
+                if (topic1 != null && topic1.Channels.Where(x => x.ChannelName.Equals(item.Channel)).FirstOrDefault() == null)
+                {
+                    topics = topics.Where(x => x != topic1).ToList();
+                    topic1.Channels.Add(new Channel(item.Channel));
+                    topics.Add(topic1);
+                }
+            }
+            
+        }
+
+        return topics;
+    }
+
+    private Topic? CheckDuplicates(List<Topic> topics, Article item)
+    {
+        item.Category = item.Category.Trim('[', ' ', '\r', '\n', '"', ']');
+        var topic = topics.Where(x=>x.Name.Equals(item.Category)).FirstOrDefault();
+        if (topic != null)
+        {
+            return null;
+        }
+        var newChannel = new Channel(item.Channel);
+        topic = new Topic(item.Category, newChannel);
+
+        return topic;
+    }
+
+    public Weather GetWeatherInfor(Config config)
+    {
+       
+        
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri(config.Url),
+            Headers =
+            {
+                { "X-RapidAPI-Key", config.Headers.RapidApiKey },
+                { "X-RapidAPI-Host", config.Headers.RapidApiHost },
+            }
+        };
+        var json = JObject.Parse(GetDataWeather(request));
+        return ConvertWeatherData(json, config);
+
+    }
+
+    private Weather ConvertWeatherData(JObject json, Config config)
+    {
+        var weather = new Weather();
+        var mapped = config.MappingTable;
+        var dictionary = new Dictionary<string, string>();
+
+        if (json.TryGetValue(config.Location, out var locationToken) && locationToken.Type == JTokenType.Object)
+        {
+            foreach (var item in mapped)
+            {
+                var sourceValue = locationToken[item.SourceProperty]?.ToString();
+                var property = typeof(Weather).GetProperty(item.DestinationProperty);
+                if (property != null)
+                {
+                    property.SetValue(weather, sourceValue);
+                }
+            }
+        }
+
+        return weather;
+    }
+
+    private string GetDataWeather(HttpRequestMessage request)
+    {
+        var client = new HttpClient();
+        using (var response = client.SendAsync(request).Result)
+        {
+            response.EnsureSuccessStatusCode();
+            return response.Content.ReadAsStringAsync().Result;
+        }
     }
 }

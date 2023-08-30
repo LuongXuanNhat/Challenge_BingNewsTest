@@ -21,5 +21,9 @@ public class Config
     public string Country { get; set; } = string.Empty;
     public string Item { get; set; } = string.Empty;
     public string NewsItems { get; set; } = string.Empty;
+    public string DayNumber { get;  set; } = string.Empty;
+    public string City { get;  set; } = string.Empty;
+    public string Date { get; set; } = string.Empty;
+    public string Location { get; internal set; }
     internal List<MappingTable> MappingTable { get; set; }
 }

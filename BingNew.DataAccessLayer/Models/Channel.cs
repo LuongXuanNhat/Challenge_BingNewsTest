@@ -5,6 +5,7 @@
         public string Id { get; set; } = string.Empty;
         public string ChannelName { get; set; } = string.Empty;
         public string ChannelIcon { get; set; } = string.Empty;
+        public Channel? ChannelName1 { get; }
 
         public Channel(string channel)
         {
@@ -15,5 +16,6 @@
         public Channel()
         {
         }
+
     }
 }

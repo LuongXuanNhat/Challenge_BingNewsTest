@@ -1,6 +1,8 @@
 ﻿
 using BingNew.DataAccessLayer.Models;
 using System.Reflection;
+using System;
+using System.Diagnostics;
 
 public class NewsAggregationTest
 {
@@ -410,5 +412,84 @@ public class NewsAggregationTest
         Assert.Equal(10, result.Count);
     }
 
-    
+    [Fact]
+    public void TestTopicOfNewsChannels()
+    {
+        IDataSource datasources = new ApiDataSource();
+        var service = new NewsService();
+        var config = new Config();
+        config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
+        config.Language = "&language=" + "vi";
+        config.Category = "&category=" + "science,sports,world";
+        config.Item = "results";
+        config.Url = "https://newsdata.io/api/1/news?"
+                             + config.Key
+                             + config.Language
+                             + config.Category;
+        config.MappingTable = new List<MappingTable>()
+        {
+            new MappingTable("title","Title"),
+            new MappingTable("link", "Url") ,
+            new MappingTable("description","Description" ),
+            new MappingTable("pubDate", "PubDate"),
+            new MappingTable("image_url", "ImgUrl"),
+            new MappingTable("source_id", "Channel"),
+            new MappingTable("category", "Category")
+        };
+        var data = datasources.GetNews(config);
+
+        var result = service.GetTopicOfNewsChannel(data);
+
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void TestDefineWeather()
+    {
+        var weather = new Weather()
+        {
+            Id = Guid.NewGuid(),
+            PubDate = "",
+            Description = "",
+            HourlyWeather = new List<WeatherInfo>()
+        };
+        var weatherInfo = new WeatherInfo()
+        {
+            Id = Guid.NewGuid(),
+            Temperature = 23.2,
+            WindSpeed = 20,
+            AmountOfRain = 30.3,
+            Hour = DateTime.Now.Hour,
+            WeatherIcon = ""
+        };
+        weather.HourlyWeather.Add(weatherInfo);
+
+        Assert.NotNull(weather);
+        Assert.Single(weather.HourlyWeather);
+    }
+
+    [Fact]
+    public void TestGetWeatherApi()
+    {
+        var service = new NewsService();
+        var config = new Config();
+        config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
+        config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
+        config.KeyWork = "q=" + "Ho Chi Minh";
+        config.DayNumber = "&day=" + "3";
+        config.Language = "&lang=" + "vi";
+        config.Location = "location";
+        config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" 
+            + config.KeyWork
+            + config.DayNumber
+            + config.Language;
+        config.MappingTable = new List<MappingTable>()
+        {
+            new MappingTable("localtime","PubDate"),
+            new MappingTable("name", "Place"),
+        };
+
+        var result = service.GetWeatherInfor(config);
+        Assert.NotNull(result);
+    }
 }
