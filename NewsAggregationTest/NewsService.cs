@@ -183,11 +183,9 @@ public class NewsService
 
     public List<Like> RemoveLikeArticle(List<Like> likes, Guid ArticleId)
     {
-        var result = likes.First(l => l.ArticleId.Equals(ArticleId));
-        if (result != null)
-        {
+        var result = likes.FirstOrDefault(l => l.ArticleId.Equals(ArticleId)) ?? throw new InvalidOperationException();
             likes = likes.Where(x=> x != result).ToList();
-        }
+
         return likes;
     }
 
@@ -228,10 +226,7 @@ public class NewsService
     {
         item.Category = item.Category.Trim('[', ' ', '\r', '\n', '"', ']');
         var topic = topics.Where(x=>x.Name.Equals(item.Category)).FirstOrDefault();
-        if (topic != null)
-        {
-            return null;
-        }
+
         var newChannel = new Channel(item.Channel);
         topic = new Topic(item.Category, newChannel);
 
@@ -241,7 +236,6 @@ public class NewsService
     public Weather GetWeatherInfor(Config config)
     {
        
-        
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
@@ -261,20 +255,18 @@ public class NewsService
     {
         var weather = new Weather();
         var mapped = config.MappingTable;
-        var dictionary = new Dictionary<string, string>();
+        var dictionary = new Dictionary<JObject, List<WeatherInfo>>();
 
         if (json.TryGetValue(config.Location, out var locationToken) && locationToken.Type == JTokenType.Object)
         {
             foreach (var item in mapped)
             {
                 var sourceValue = locationToken[item.SourceProperty]?.ToString();
-                var property = typeof(Weather).GetProperty(item.DestinationProperty);
-                if (property != null)
-                {
+                var property = typeof(Weather).GetProperty(item.DestinationProperty) ?? throw new NullReferenceException();
                     property.SetValue(weather, sourceValue);
-                }
             }
         }
+
 
         return weather;
     }

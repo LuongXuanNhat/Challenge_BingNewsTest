@@ -24,6 +24,6 @@ public class Config
     public string DayNumber { get;  set; } = string.Empty;
     public string City { get;  set; } = string.Empty;
     public string Date { get; set; } = string.Empty;
-    public string Location { get; internal set; }
-    internal List<MappingTable> MappingTable { get; set; }
+    public string Location { get; set; }
+    public List<MappingTable> MappingTable { get; set; }
 }

@@ -1,10 +1,10 @@
-﻿using BingNew.DataAccessLayer.Models;
+﻿using BingNew.BusinessLogicLayer.Services;
+using BingNew.DataAccessLayer.Models;
 using System;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Xunit.Abstractions;
 
 public class RssDataSource : IDataSource
 {

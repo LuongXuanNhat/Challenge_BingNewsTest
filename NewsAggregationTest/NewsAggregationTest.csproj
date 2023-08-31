@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BingNew.BusinessLogicLayer\BingNew.BusinessLogicLayer.csproj" />
     <ProjectReference Include="..\BingNew.DataAccessLayer\BingNew.DataAccessLayer.csproj" />
   </ItemGroup>
 

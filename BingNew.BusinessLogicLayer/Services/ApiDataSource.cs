@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using System.Xml;
 using BingNew.DataAccessLayer.Models;
 using Newtonsoft.Json.Linq;
+using BingNew.BusinessLogicLayer.Services;
 
 public class ApiDataSource : IDataSource
 {
@@ -32,7 +33,7 @@ public class ApiDataSource : IDataSource
     {
         var article = new Article();
         var articleData = new Dictionary<string, string>();
-        var mappingTable = config.MappingTable;
+        var mappingTable = config.MappingTable ;
 
         foreach (var property in mappingTable)
         {

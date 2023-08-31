@@ -1,8 +1,7 @@
 ﻿
+using BingNew.BusinessLogicLayer.Services;
 using BingNew.DataAccessLayer.Models;
-using System.Reflection;
-using System;
-using System.Diagnostics;
+
 
 public class NewsAggregationTest
 {
@@ -486,7 +485,7 @@ public class NewsAggregationTest
         config.MappingTable = new List<MappingTable>()
         {
             new MappingTable("localtime","PubDate"),
-            new MappingTable("name", "Place"),
+        new MappingTable("name", "Place"),
         };
 
         var result = service.GetWeatherInfor(config);

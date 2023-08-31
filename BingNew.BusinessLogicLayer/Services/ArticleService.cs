@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace BingNew.DataAccessLayer.Models
+namespace BingNew.BusinessLogicLayer.Services
 {
-    public class ArticleService 
+    public class ArticleService
     {
         public ArticleService() { }
 
-        
+
     }
 }
