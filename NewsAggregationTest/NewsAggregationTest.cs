@@ -1,10 +1,21 @@
 ﻿
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.DataAccessLayer.Models;
+using System.Security.Cryptography;
 
 
 public class NewsAggregationTest
 {
+    private IDataSource _dataSource;
+    private NewsService _newsService;
+    private Config _config;
+
+    public NewsAggregationTest()
+    {
+        _newsService = new NewsService();
+        _config = new Config();
+    }
+
     [Fact]
     public void TestNewsService()
     {
@@ -85,25 +96,9 @@ public class NewsAggregationTest
 
 
     [Fact]
-    public void TestGetNewsByRssTuoiTreNews()
+    public void GetNewsFromRssTuoiTre_NotNull()
     {
-        IDataSource dataSource = new RssDataSource();
-
-        var service = new NewsService();
-        var config = new Config();
-        config.Url = "https://tuoitre.vn/rss/the-gioi.rss";
-        config.Type = "World";
-        config.Item = "item";
-        config.MappingTable = new List<MappingTable>()
-        {
-            new MappingTable("title","Title"),
-            new MappingTable("link", "Url") ,
-            new MappingTable("description","Description" ),
-            new MappingTable("pubDate", "PubDate"),
-            new MappingTable("image", "ImgUrl")
-        };
-
-        var result = dataSource.GetNews(config);
+        var result = GetNewsByTuoiTreNews();
 
         Assert.NotNull(result);
     }
