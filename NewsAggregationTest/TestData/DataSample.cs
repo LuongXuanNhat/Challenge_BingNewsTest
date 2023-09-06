@@ -10,19 +10,24 @@ namespace NewsAggregationTest.TestData
     {
         public DataSample() { }
 
-        public string MappingData_RssTuoiTreNews()
+        public string MappingData_News_RssTuoiTreNews()
         {
             string filePath = "D:\\INTERN\\BingNewsTest\\NewsAggregationTest\\TestData\\MappingDataSample_1.json";
             return File.ReadAllText(filePath);
         }
-        public string MappingData_GgTrends()
+        public string MappingData_News_GgTrends()
         {
             string filePath = "D:\\INTERN\\BingNewsTest\\NewsAggregationTest\\TestData\\MappingDataSample_2.json";
             return File.ReadAllText(filePath);
         }
-        public string MappingData_NewsDataIo()
+        public string MappingData_News_NewsDataIo()
         {
             string filePath = "D:\\INTERN\\BingNewsTest\\NewsAggregationTest\\TestData\\MappingDataSample_3.json";
+            return File.ReadAllText(filePath);
+        }
+        public string MappingData_WeatherInfo()
+        {
+            string filePath = "D:\\INTERN\\BingNewsTest\\NewsAggregationTest\\TestData\\MappingDataSample_4.json";
             return File.ReadAllText(filePath);
         }
 

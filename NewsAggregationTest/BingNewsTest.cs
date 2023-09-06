@@ -55,34 +55,34 @@ public class BingNewsTest
     }
 
     [Fact]
-    public void ConvertData1ToArticlesNotNull()
+    public void ConvertDataFromTuoiTreNewsToArticlesNotNull()
     {
         _dataSource = new RssDataSource();
         _config.Data = _dataSource.GetNews("https://tuoitre.vn/rss/tin-moi-nhat.rss");
         _config.Item = "item";
         _config.Channel = "Tuoi Tre News";
 
-        var mappingConfig = _newsService.CreateMapping(_dataSample.MappingData_RssTuoiTreNews());
+        var mappingConfig = _newsService.CreateMapping(_dataSample.MappingData_News_RssTuoiTreNews());
         var result = _dataSource.ConvertDataToArticles(_config, mappingConfig);
 
         Assert.NotNull(result);
     }
 
     [Fact]
-    public void ConvertData2ToArticlesNotNull()
+    public void ConvertDataFromGgTrendsToArticlesNotNull()
     {
         _dataSource = new RssDataSource();
         _config.Data = _dataSource.GetNews("https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN");
         _config.Item = "item";
 
-        var mappingConfig = _newsService.CreateMapping(_dataSample.MappingData_GgTrends());
+        var mappingConfig = _newsService.CreateMapping(_dataSample.MappingData_News_GgTrends());
         var result = _dataSource.ConvertDataToArticles(_config, mappingConfig);
 
         Assert.NotNull(result);
     }
 
     [Fact]
-    public void ConvertData3ToArticlesNotNull()
+    public void ConvertDataFromNewsDataToArticlesNotNull()
     {
         _dataSource = new ApiDataSource();
         _config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
@@ -92,12 +92,45 @@ public class BingNewsTest
         _config.Data = _dataSource.GetNews(_config.Url);
         _config.Item = "results";
 
-        var mappingConfig = _newsService.CreateMapping(_dataSample.MappingData_NewsDataIo());
+        var mappingConfig = _newsService.CreateMapping(_dataSample.MappingData_News_NewsDataIo());
         var result = _dataSource.ConvertDataToArticles(_config, mappingConfig);
 
         Assert.NotNull(result);
     }
 
-    
+    [Fact]
+    public void GetWeatherInfor()
+    {
+        var service = new NewsService();
+        var config = new Config();
+        config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
+        config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
+        config.KeyWork = "q=" + "Ho Chi Minh";
+        config.DayNumber = "&day=" + "3";
+        config.Language = "&lang=" + "vi";
+        config.Location = "location";
+        config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
+
+        var result = service.GetWeatherInfor(config);
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void ConvertDataToWeatherNotNull()
+    {
+        var service = new NewsService();
+        var config = new Config();
+        config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
+        config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
+        config.KeyWork = "q=" + "Ho Chi Minh";
+        config.DayNumber = "&day=" + "3";
+        config.Language = "&lang=" + "vi";
+        config.Location = "location";
+        config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
+
+        var mappingConfig = _newsService.CreateMapping(_dataSample.MappingData_News_NewsDataIo());
+        var result = service.GetWeatherInfor(config);
+        Assert.NotNull(result);
+    }
 
 }
