@@ -1,0 +1,31 @@
+[
+  {
+    "SouPropertyPath": "title",
+    "SouDatatype": "string",
+    "DesProperty": "Title",
+    "DesDatatype": "string",
+    "id": "1"
+  },
+  {
+    "SouPropertyPath": "link",
+    "SouDatatype": "string",
+    "DesProperty": "Url",
+    "DesDatatype": "string",
+    "id": "2"
+  },
+  {
+    "SouPropertyPath": "description",
+    "SouDatatype": "string",
+    "DesProperty": "Description",
+    "DesDatatype": "string",
+    "id": "3"
+  },
+  {
+    "SouPropertyPath": "pubDate",
+    "SouDatatype": "string",
+    "DesProperty": "PubDate",
+    "DesDatatype": "DateTime",
+    "id": "3"
+  }
+]
+

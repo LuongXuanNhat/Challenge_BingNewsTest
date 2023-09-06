@@ -5,7 +5,7 @@ public class Config
     public Config()
     {
         Headers = new RequestHeaders();
-        MappingTable = new List<MappingTable>();
+      //  MappingTable = new List<MappingTable>();
     }
 
     public string Type { get; set; }  = string.Empty;
@@ -25,5 +25,6 @@ public class Config
     public string City { get;  set; } = string.Empty;
     public string Date { get; set; } = string.Empty;
     public string Location { get; set; }
-    public List<MappingTable> MappingTable { get; set; }
+    public string Data { get; set; } = string.Empty;
+    //    public List<MappingTable> MappingTable { get; set; }
 }

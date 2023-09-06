@@ -60,7 +60,7 @@ public class NewsService
 
     private bool GetArticleByDate(Article item)
     {
-        var getDate = ConvertDateTime(item.PubDate);
+        var getDate = ConvertDateTime(item.PubDate.ToString());
         if (getDate.Date == DateTime.Now.Date)
             return true;
         return false;
@@ -254,18 +254,18 @@ public class NewsService
     private Weather ConvertWeatherData(JObject json, Config config)
     {
         var weather = new Weather();
-        var mapped = config.MappingTable;
-        var dictionary = new Dictionary<JObject, List<WeatherInfo>>();
+       // var mapped = config.MappingTable;
+        //var dictionary = new Dictionary<JObject, List<WeatherInfo>>();
 
-        if (json.TryGetValue(config.Location, out var locationToken) && locationToken.Type == JTokenType.Object)
-        {
-            foreach (var item in mapped)
-            {
-                var sourceValue = locationToken[item.SourceProperty]?.ToString();
-                var property = typeof(Weather).GetProperty(item.DestinationProperty) ?? throw new NullReferenceException();
-                    property.SetValue(weather, sourceValue);
-            }
-        }
+        //if (json.TryGetValue(config.Location, out var locationToken) && locationToken.Type == JTokenType.Object)
+        //{
+        //    foreach (var item in mapped)
+        //    {
+        //        var sourceValue = locationToken[item.SourceProperty]?.ToString();
+        //        var property = typeof(Weather).GetProperty(item.DestinationProperty) ?? throw new NullReferenceException();
+        //            property.SetValue(weather, sourceValue);
+        //    }
+        //}
 
 
         return weather;
@@ -279,5 +279,10 @@ public class NewsService
             response.EnsureSuccessStatusCode();
             return response.Content.ReadAsStringAsync().Result;
         }
+    }
+
+    public List<MappingTable> CreateMapping(string jsonConfigMapping)
+    {
+        return JsonConvert.DeserializeObject<List<MappingTable>>(jsonConfigMapping);
     }
 }

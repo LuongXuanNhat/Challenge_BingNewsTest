@@ -1,13 +1,10 @@
 ﻿public class MappingTable
 {
-    public string DestinationProperty { get; set; } = string.Empty;
-    public string SourceProperty { get; set; } = string.Empty;
-
-    public MappingTable(string SourceProperty, string DestinationProperty)
-    {
-        this.SourceProperty = SourceProperty;
-        this.DestinationProperty = DestinationProperty;
-    }
-
+    public string SouPropertyPath { get; set; } = string.Empty;
+    public string SouDatatype { get; set; } = string.Empty;
+    public string SouValue { get; set; } = string.Empty;
+    public string DesProperty { get; set; } = string.Empty;
+    public string DesDatatype { get; set; } = string.Empty;
+    public string DesValue { get; set; } = string.Empty;
 
 }
