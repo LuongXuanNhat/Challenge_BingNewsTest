@@ -3,93 +3,82 @@ using System.Xml.Linq;
 using System.Xml;
 using BingNew.DataAccessLayer.Models;
 using Newtonsoft.Json.Linq;
-using BingNew.BusinessLogicLayer.Services;
+using BingNew.BusinessLogicLayer.ModelConfig;
+using System.Globalization;
 
-public class ApiDataSource : IDataSource
+namespace BingNew.BusinessLogicLayer.Services
 {
-    public ApiDataSource()
+    public class ApiDataSource : IDataSource
     {
-
-    }
-
-    public List<Article> GetNews(Config config)
-    {
-        var articles = new List<Article>();
-        string json = DownloadJson(config.Url);
-        JObject jsonObject = JObject.Parse(json);
-
-        //if ( jsonObject[config.Item] is JArray newsArray)
-        //{
-        //    foreach (JObject newsItem in newsArray)
-        //    {
-        //        var article = MapToArticle(newsItem, config);
-        //        articles.Add(article);
-        //    }
-       // }
-        return articles;
-    }
-
-    private Article MapToArticle(JObject item, List<MappingTable> mapping)
-    {
-        var article = new Article();
-        foreach (var obj in mapping)
+        public ApiDataSource()
         {
-            try
-            {
-                var sourceValue = item[obj.SouPropertyPath]?.ToString();
-                obj.SouValue = sourceValue ?? string.Empty;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
 
-            var propertyInfo = typeof(Article).GetProperty(obj.DesProperty);
-            if (propertyInfo != null && propertyInfo.PropertyType != null)
+        }
+        public string GetNews(string Url)
+        {
+            return DownloadJson(Url);
+        }
+        private string DownloadJson(string Url)
+        {
+            using (HttpClient client = new HttpClient())
             {
-                if (obj.SouDatatype == "string" && obj.DesDatatype == "DateTime")
+                return client.GetStringAsync(Url).Result;
+            }
+        }
+        private Article MapToArticle(JObject item, List<MappingTable> mapping)
+        {
+            var article = new Article();
+            foreach (var obj in mapping)
+            {
+                try
                 {
-                    string dateString = obj.SouValue;
-                    dateString = dateString.Replace(" GMT+7", "");
-                    var convertedValue = DateTime.Parse(dateString);
-                    propertyInfo.SetValue(article, convertedValue);
+                    var sourceValue = item[obj.SouPropertyPath]?.ToString();
+                    obj.SouValue = sourceValue ?? string.Empty;
                 }
-                else
+                catch (Exception e)
                 {
-                    var convertedValue = Convert.ChangeType(obj.SouValue, propertyInfo.PropertyType);
-                    propertyInfo.SetValue(article, convertedValue);
+                    Console.WriteLine(e.Message);
+                }
+
+                var propertyInfo = typeof(Article).GetProperty(obj.DesProperty);
+                if (propertyInfo != null && propertyInfo.PropertyType != null)
+                {
+                    if (obj.SouDatatype == "string" && obj.DesDatatype == "DateTime")
+                    {
+                        string dateString = obj.SouValue;
+                        dateString = dateString.Replace(" GMT+7", "");
+                        CultureInfo culture = CultureInfo.InvariantCulture;
+                        DateTime convertedValue = DateTime.Parse(dateString, culture);
+                        propertyInfo.SetValue(article, convertedValue);
+                    }
+                    else
+                    {
+                        var convertedValue = Convert.ChangeType(obj.SouValue, propertyInfo.PropertyType);
+                        propertyInfo.SetValue(article, convertedValue);
+                    }
                 }
             }
+            return article;
         }
-        return article;
-    }
 
-    private string DownloadJson(string Url)
-    {
-        using (HttpClient client = new HttpClient())
+
+
+
+
+        public List<Article> ConvertDataToArticles(Config config, List<MappingTable> mapping)
         {
-            return client.GetStringAsync(Url).Result;
-        }
-    }
+            var articles = new List<Article>();
+            JObject jsonObject = JObject.Parse(config.Data);
 
-    public string GetNews(string Url)
-    {
-        return DownloadJson(Url);
-    }
-
-    public List<Article> ConvertDataToArticles(Config config, List<MappingTable> mapping)
-    {
-        var articles = new List<Article>();
-        JObject jsonObject = JObject.Parse(config.Data);
-
-        if (jsonObject[config.Item] is JArray newsArray)
-        {
-            foreach (JObject newsItem in newsArray)
+            if (jsonObject[config.Item] is JArray newsArray)
             {
-                var article = MapToArticle(newsItem, mapping);
-                articles.Add(article);
+                foreach (JObject newsItem in newsArray.OfType<JObject>())
+                {
+                    var article = MapToArticle(newsItem, mapping);
+                    articles.Add(article);
+                }
             }
+            return articles;
         }
-        return articles;
     }
 }

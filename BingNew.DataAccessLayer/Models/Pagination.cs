@@ -2,7 +2,7 @@
 {
     public class Pagination
     {
-        private Pagination pagination;
+        public Pagination pagination { get; set; }
 
         public Pagination(Pagination pagination)
         {
@@ -16,7 +16,7 @@
             get
             {
                 return (int)Math.Ceiling((double)Total * 1.0 / Size);
-            } set { } 
+            } 
         } 
 
     }

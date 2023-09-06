@@ -2,6 +2,6 @@
 {
     public class SportsCategory
     {
-
+        public SportsCategory() { }
     }
 }
