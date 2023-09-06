@@ -100,7 +100,7 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public void GetWeatherInfor()
+        public void GetWeatherInforNotNull()
         {
             var service = new NewsService();
             var config = new Config();
