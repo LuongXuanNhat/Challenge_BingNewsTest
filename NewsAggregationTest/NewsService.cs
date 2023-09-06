@@ -283,6 +283,6 @@ public class NewsService
 
     public List<MappingTable> CreateMapping(string jsonConfigMapping)
     {
-        return JsonConvert.DeserializeObject<List<MappingTable>>(jsonConfigMapping);
+        return JsonConvert.DeserializeObject<List<MappingTable>>(jsonConfigMapping) ?? new List<MappingTable>();
     }
 }

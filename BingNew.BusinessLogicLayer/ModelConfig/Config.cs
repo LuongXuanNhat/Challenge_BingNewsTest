@@ -16,7 +16,6 @@ public class Config
     public string Language { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
     public string Channel { get; set; } = string.Empty;
-    public XNamespace Namespace { get; set; } = "";
     public string DateTimeOffSetFormat { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
     public string Item { get; set; } = string.Empty;

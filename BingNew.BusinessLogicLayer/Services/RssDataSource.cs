@@ -106,13 +106,24 @@ public class RssDataSource : IDataSource
         }
         return articles;
     }
+
     private Article MapToArticle(XElement item, List<MappingTable> mapping)
     {
         var article = new Article();
         foreach (var obj in mapping)
         {
-            var sourceValue = item.Element(obj.SouPropertyPath)?.Value;
-            obj.SouValue = sourceValue ?? string.Empty;
+            XNamespace ns = XNamespace.Get(obj.Namespace);
+
+            try
+            {
+                var sourceValue = (ns != null)
+                ? item.Element(ns + obj.SouPropertyPath)?.Value
+                : item.Element(obj.SouPropertyPath)?.Value;
+
+                obj.SouValue = sourceValue ?? string.Empty;
+            } catch(Exception e)  {
+                Console.WriteLine(e.Message);
+            }
 
             var propertyInfo = typeof(Article).GetProperty(obj.DesProperty);
             if (propertyInfo != null && propertyInfo.PropertyType != null)
@@ -128,7 +139,7 @@ public class RssDataSource : IDataSource
                 {
                     var convertedValue = Convert.ChangeType(obj.SouValue, propertyInfo.PropertyType);
                     propertyInfo.SetValue(article, convertedValue);
-                } 
+                }
             }
         }
         return article;

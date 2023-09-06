@@ -6,5 +6,6 @@
     public string DesProperty { get; set; } = string.Empty;
     public string DesDatatype { get; set; } = string.Empty;
     public string DesValue { get; set; } = string.Empty;
+    public string Namespace { get; set; } = string.Empty;
 
 }
