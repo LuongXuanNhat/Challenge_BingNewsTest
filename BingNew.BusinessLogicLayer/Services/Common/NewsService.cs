@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.Json.Nodes;
 
-namespace BingNew.BusinessLogicLayer.Services
+namespace BingNew.BusinessLogicLayer.Services.Common
 {
     public class NewsService
     {

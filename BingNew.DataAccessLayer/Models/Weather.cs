@@ -2,7 +2,6 @@
 {
     public class Weather
     {
-
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Place { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;

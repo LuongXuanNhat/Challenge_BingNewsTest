@@ -1,7 +1,7 @@
 ﻿using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.DataAccessLayer.Models;
 
-namespace BingNew.BusinessLogicLayer.Services;
+namespace BingNew.BusinessLogicLayer.Interfaces;
 public interface IDataSource
 {
     public List<Article> ConvertDataToArticles(Config config, List<MappingTable> mapping);

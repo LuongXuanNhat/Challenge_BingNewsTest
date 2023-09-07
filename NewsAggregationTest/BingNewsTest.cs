@@ -1,6 +1,10 @@
-﻿using BingNew.BusinessLogicLayer.ModelConfig;
+﻿using BingNew.BusinessLogicLayer;
+using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.BusinessLogicLayer.Services;
+using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Models;
+using BingNew.DataAccessLayer.Repositories;
 using BingNew.DataAccessLayer.TestData;
 
 namespace NewsAggregationTest
@@ -137,5 +141,30 @@ namespace NewsAggregationTest
             Assert.NotNull(result.HourlyWeather);
         }
 
+        [Fact]
+        public async Task AddArticleToDatabaseSuccess()
+        {
+            var data = new DbContext();
+            var articleRepo = new ArticleRepository(data);
+            var articleService = new ArticleService(articleRepo);
+            var article = new Article()
+            {
+                Title = "Test",
+                Description = "Test",
+                ImgUrl = "Test",
+                Category = "Test",
+                Channel = "Test",
+                CommentNumber = 0,
+                DisLikeNumber = 0,
+                LikeNumber = 0,
+                PubDate = DateTime.Now,
+                Url = "Test",
+                ViewNumber = 0
+            };
+
+            var result = await articleService.Add(article);
+
+            Assert.True(result);
+        }
     }
 }

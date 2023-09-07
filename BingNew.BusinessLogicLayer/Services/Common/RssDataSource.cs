@@ -1,4 +1,5 @@
-﻿using BingNew.BusinessLogicLayer.ModelConfig;
+﻿using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.DataAccessLayer.Models;
 using System;
 using System.Globalization;
@@ -6,7 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace BingNew.BusinessLogicLayer.Services
+namespace BingNew.BusinessLogicLayer.Services.Common
 {
     public class RssDataSource : IDataSource
     {

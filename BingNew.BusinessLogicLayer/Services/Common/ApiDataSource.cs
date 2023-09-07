@@ -1,20 +1,18 @@
-﻿using System.ServiceModel.Syndication;
-using System.Xml.Linq;
-using System.Xml;
-using BingNew.DataAccessLayer.Models;
+﻿using BingNew.DataAccessLayer.Models;
 using Newtonsoft.Json.Linq;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using System.Globalization;
 using BingNew.DataAccessLayer.TestData;
+using BingNew.BusinessLogicLayer.Interfaces;
 
-namespace BingNew.BusinessLogicLayer.Services
+namespace BingNew.BusinessLogicLayer.Services.Common
 {
     public class ApiDataSource : IDataSource
     {
         private readonly NewsService _NewsService;
         public ApiDataSource()
         {
-            _NewsService = new NewsService();   
+            _NewsService = new NewsService();
         }
         public string GetNews(string Url)
         {
