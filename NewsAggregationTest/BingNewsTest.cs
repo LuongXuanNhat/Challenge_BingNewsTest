@@ -1,7 +1,7 @@
 ﻿using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.DataAccessLayer.Models;
-using NewsAggregationTest.TestData;
+using BingNew.DataAccessLayer.TestData;
 
 namespace NewsAggregationTest
 {
@@ -119,7 +119,7 @@ namespace NewsAggregationTest
         [Fact]
         public void ConvertDataToWeatherNotNull()
         {
-            var service = new NewsService();
+            IDataSource dataSource = new ApiDataSource();
             var config = new Config();
             config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
             config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
@@ -129,11 +129,12 @@ namespace NewsAggregationTest
             config.Location = "location";
             config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
 
-            var mappingConfig = _newsService.CreateMapping(_dataSample.GetNewsDataIoMappingConfiguration());
-            var data = service.GetWeatherInfor(config);
-            var result = service.ConvertDataToWeather(data, mappingConfig);
+            var weatherMappingConfig = _newsService.CreateMapping(_dataSample.GetWeatherMappingConfiguration());
+            var data = dataSource.GetWeatherInfor(config);
+            var result = dataSource.ConvertDataToWeather(data, weatherMappingConfig);
 
             Assert.NotNull(result);
+            Assert.NotNull(result.HourlyWeather);
         }
 
     }

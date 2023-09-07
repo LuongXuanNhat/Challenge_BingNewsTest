@@ -85,5 +85,15 @@ namespace BingNew.BusinessLogicLayer.Services
             }
             return article;
         }
+
+        public string GetWeatherInfor(Config config)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Weather ConvertDataToWeather(string data, List<MappingTable> mapping)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

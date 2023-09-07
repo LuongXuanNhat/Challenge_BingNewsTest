@@ -5,14 +5,16 @@ using BingNew.DataAccessLayer.Models;
 using Newtonsoft.Json.Linq;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using System.Globalization;
+using BingNew.DataAccessLayer.TestData;
 
 namespace BingNew.BusinessLogicLayer.Services
 {
     public class ApiDataSource : IDataSource
     {
+        private readonly NewsService _NewsService;
         public ApiDataSource()
         {
-
+            _NewsService = new NewsService();   
         }
         public string GetNews(string Url)
         {
@@ -79,6 +81,122 @@ namespace BingNew.BusinessLogicLayer.Services
                 }
             }
             return articles;
+        }
+
+        public string GetWeatherInfor(Config config)
+        {
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(config.Url),
+                Headers =
+            {
+                { "X-RapidAPI-Key", config.Headers.RapidApiKey },
+                { "X-RapidAPI-Host", config.Headers.RapidApiHost },
+            }
+            };
+            return GetDataWeather(request);
+        }
+
+        private string GetDataWeather(HttpRequestMessage request)
+        {
+            var client = new HttpClient();
+            using (var response = client.SendAsync(request).Result)
+            {
+                response.EnsureSuccessStatusCode();
+                return response.Content.ReadAsStringAsync().Result;
+            }
+        }
+
+        public Weather ConvertDataToWeather(string data, List<MappingTable> mapping)
+        {
+            var weather = new Weather();
+            JObject jsonObject = JObject.Parse(data);
+            foreach (var obj in mapping)
+            {
+                try
+                {
+                    var sourceValue = jsonObject.SelectToken(obj.SouPropertyPath)?.ToString();
+                    obj.SouValue = sourceValue ?? string.Empty;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+                var propertyInfo = typeof(Weather).GetProperty(obj.DesProperty);
+                if (propertyInfo != null && propertyInfo.PropertyType != null)
+                {
+                    if (obj.SouDatatype == "string" && obj.DesDatatype == "DateTime")
+                    {
+                        string dateString = obj.SouValue;
+                        dateString = dateString.Replace(" GMT+7", "");
+                        CultureInfo culture = CultureInfo.InvariantCulture;
+                        DateTime convertedValue = DateTime.Parse(dateString, culture);
+                        propertyInfo.SetValue(weather, convertedValue);
+                    }
+                    else if (obj.SouDatatype == "string" && obj.DesDatatype == "List<WeatherInfo>")
+                    {
+                        var TestData = new DataSample();
+                        var weatherInfoMappingConfig = _NewsService.CreateMapping(TestData.GetWeatherInforMappingConfiguration());
+
+                        var hourlyWeatherList = jsonObject.SelectToken(obj.SouPropertyPath);
+                        if (hourlyWeatherList != null)
+                        {
+                            var weatherInfors = new List<WeatherInfo>();
+                            foreach (var item in hourlyWeatherList)
+                            {
+                                weatherInfors.Add(ConvertDataToWeatherInfor(item.ToString(), weatherInfoMappingConfig));
+                            }
+                            propertyInfo.SetValue(weather, weatherInfors);
+                        }
+
+                    }
+                    else
+                    {
+                        var convertedValue = Convert.ChangeType(obj.SouValue, propertyInfo.PropertyType);
+                        propertyInfo.SetValue(weather, convertedValue);
+                    }
+                }
+            }
+
+            return weather;
+        }
+        private WeatherInfo ConvertDataToWeatherInfor(string data, List<MappingTable> weatherInfoMappingConfig)
+        {
+            var weatherInHour = new WeatherInfo();
+            JObject jsonObject = JObject.Parse(data);
+            foreach (var obj in weatherInfoMappingConfig)
+            {
+                try
+                {
+                    var sourceValue = jsonObject.SelectToken(obj.SouPropertyPath)?.ToString();
+                    obj.SouValue = sourceValue ?? string.Empty;
+
+                    var propertyInfo = typeof(WeatherInfo).GetProperty(obj.DesProperty);
+                    if (propertyInfo != null && propertyInfo.PropertyType != null)
+                    {
+                        if (obj.SouDatatype == "string" && obj.DesDatatype == "DateTime.Hour")
+                        {
+                            string dateString = obj.SouValue;
+                            dateString = dateString.Replace(" GMT+7", "");
+                            CultureInfo culture = CultureInfo.InvariantCulture;
+                            DateTime convertedValue = DateTime.Parse(dateString, culture);
+                            propertyInfo.SetValue(weatherInHour, convertedValue.Hour);
+                        }
+                        else
+                        {
+                            var convertedValue = Convert.ChangeType(obj.SouValue, propertyInfo.PropertyType);
+                            propertyInfo.SetValue(weatherInHour, convertedValue);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+            return weatherInHour;
         }
     }
 }

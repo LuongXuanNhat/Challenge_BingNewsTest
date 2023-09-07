@@ -2,7 +2,8 @@
 {
     public class WeatherInfo
     {
-        public Guid Id { get; set; }
+
+        public Guid Id { get; set; } = Guid.NewGuid();
         public double Temperature { get; set; }
         public int Humidity { get; set; }
         public double AmountOfRain { get; set; }

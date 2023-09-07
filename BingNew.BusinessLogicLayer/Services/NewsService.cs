@@ -2,13 +2,15 @@
 using BingNew.DataAccessLayer.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json.Nodes;
 
-namespace NewsAggregationTest
+namespace BingNew.BusinessLogicLayer.Services
 {
     public class NewsService
     {
+
         public NewsService()
         {
 
@@ -43,9 +45,7 @@ namespace NewsAggregationTest
             return JsonConvert.DeserializeObject<List<MappingTable>>(jsonConfigMapping) ?? new List<MappingTable>();
         }
 
-        public Weather ConvertDataToWeather(string data, List<MappingTable> mappingConfig)
-        {
-            throw new NotImplementedException();
-        }
+
+
     }
 }
