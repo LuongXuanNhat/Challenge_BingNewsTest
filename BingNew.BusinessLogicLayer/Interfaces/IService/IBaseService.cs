@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BingNew.BusinessLogicLayer.Interfaces
+namespace BingNew.BusinessLogicLayer.Interfaces.IService
 {
     public interface IBaseService<TEntity> where TEntity : class
     {

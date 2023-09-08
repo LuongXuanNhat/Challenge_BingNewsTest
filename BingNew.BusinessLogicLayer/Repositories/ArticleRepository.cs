@@ -1,16 +1,16 @@
 ﻿using BingNew.BusinessLogicLayer;
-using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IRepository;
 using BingNew.DataAccessLayer.Models;
 using Dapper;
 using System.Data;
 
 namespace BingNew.DataAccessLayer.Repositories
 {
-    public class ArticleRepository : IBaseRepository<Article> 
+    public class ArticleRepository : IArticleRepository
     {
         private readonly IDbConnection _dbConnection;
-        public ArticleRepository(DbContext dbContext) {
-            _dbConnection = dbContext.CreateConnection();
+        public ArticleRepository() {
+            _dbConnection = new DbContext().CreateConnection();
         }
         public async Task Add(Article article)
         {
@@ -22,16 +22,19 @@ namespace BingNew.DataAccessLayer.Repositories
             _dbConnection.Close();
         }
 
-        public void Delete(string id)
+        public async Task Delete(string id)
         {
-            throw new NotImplementedException();
+            _dbConnection.Open();
+            string query = "DELETE FROM Article WHERE Id = @Id";
+            await _dbConnection.ExecuteAsync(query, new { Id = id });
+            _dbConnection.Close();
         }
 
-        public IEnumerable<Article> GetAll()
+        public async Task<IEnumerable<Article>> GetAll()
         {
             _dbConnection.Open();
             string query = "SELECT * FROM Article";
-            var result = _dbConnection.Query<Article>(query);
+            var result = await _dbConnection.QueryAsync<Article>(query);
             _dbConnection.Close();
             return result;
         }
@@ -45,9 +48,14 @@ namespace BingNew.DataAccessLayer.Repositories
             return result;
         }
 
-        public void Update(Article entity)
+        public async Task Update(Article article)
         {
-            throw new NotImplementedException();
+            _dbConnection.Open();
+            string query = "UPDATE Article SET Title = @Title, ImgUrl = @ImgUrl, Description = @Description, PubDate = @PubDate, " +
+                "Url = @Url, LikeNumber = @LikeNumber, DisLikeNumber = @DisLikeNumber, ViewNumber = @ViewNumber, CommentNumber = @CommentNumber " +
+                "WHERE Id = @Id";
+            await _dbConnection.ExecuteAsync(query, article);
+            _dbConnection.Close();
         }
     }
 }

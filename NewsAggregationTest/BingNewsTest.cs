@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using BingNew.BusinessLogicLayer;
 using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.BusinessLogicLayer.Services.Common;
@@ -17,9 +18,9 @@ namespace NewsAggregationTest
         private readonly DataSample _dataSample;
         private readonly Config _config;
         private readonly IFixture _fixture;
-        private readonly DbContext _dbContext;
-        private readonly ArticleService _articleService;
-        private readonly ArticleRepository _articleRepository;
+        private readonly IDataSource _apiDataSource;
+        private readonly IDataSource _rssDataSource;
+        private readonly IArticleService _articleService;
 
         public BingNewsTest()
         {
@@ -27,9 +28,9 @@ namespace NewsAggregationTest
             _newsService = new NewsService();
             _config = new Config();
             _fixture = new Fixture();
-            _dbContext = new DbContext();
-            _articleRepository = new ArticleRepository(_dbContext);
-            _articleService = new ArticleService(_articleRepository);
+            _apiDataSource = new ApiDataSource();
+            _rssDataSource = new RssDataSource();
+            _articleService = new ArticleService();
         }
 
         [Fact]
@@ -42,16 +43,14 @@ namespace NewsAggregationTest
         [Fact]
         public void GetNewsFromRssTuoiTreNotNull()
         {
-            IDataSource _dataSource = new RssDataSource();
-            var result = _dataSource.GetNews("https://tuoitre.vn/rss/tin-moi-nhat.rss");
+            var result = _rssDataSource.GetNews("https://tuoitre.vn/rss/tin-moi-nhat.rss");
             Assert.NotNull(result);
         }
 
         [Fact]
         public void GetNewsFromRssGoogleTrendNotNull()
         {
-            IDataSource _dataSource = new RssDataSource();
-            var result = _dataSource.GetNews("https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN");
+            var result = _rssDataSource.GetNews("https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN");
             Assert.NotNull(result);
         }
 
@@ -63,9 +62,8 @@ namespace NewsAggregationTest
             config.Language = "&language=" + "vi";
             config.Item = "results";
             config.Url = "https://newsdata.io/api/1/news?" + config.Key + config.Language;
-            IDataSource _dataSource = new ApiDataSource();
 
-            var result = _dataSource.GetNews(config.Url);
+            var result = _apiDataSource.GetNews(config.Url);
 
             Assert.NotNull(result);
         }
@@ -73,13 +71,12 @@ namespace NewsAggregationTest
         [Fact]
         public void ConvertDataFromTuoiTreNewsToArticlesNotNull()
         {
-            IDataSource _dataSource = new RssDataSource();
-            _config.Data = _dataSource.GetNews("https://tuoitre.vn/rss/tin-moi-nhat.rss");
+            _config.Data = _rssDataSource.GetNews("https://tuoitre.vn/rss/tin-moi-nhat.rss");
             _config.Item = "item";
             _config.Channel = "Tuoi Tre News";
 
             var mappingConfig = _newsService.CreateMapping(_dataSample.GetRssTuoiTreNewsDataMappingConfiguration());
-            var result = _dataSource.ConvertDataToArticles(_config, mappingConfig);
+            var result = _rssDataSource.ConvertDataToArticles(_config, mappingConfig);
 
             Assert.NotNull(result);
         }
@@ -87,12 +84,11 @@ namespace NewsAggregationTest
         [Fact]
         public void ConvertDataFromGgTrendsToArticlesNotNull()
         {
-            IDataSource _dataSource = new RssDataSource();
-            _config.Data = _dataSource.GetNews("https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN");
+            _config.Data = _rssDataSource.GetNews("https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN");
             _config.Item = "item";
 
             var mappingConfig = _newsService.CreateMapping(_dataSample.GetGgTrendsNewsDataMappingConfiguration());
-            var result = _dataSource.ConvertDataToArticles(_config, mappingConfig);
+            var result = _rssDataSource.ConvertDataToArticles(_config, mappingConfig);
 
             Assert.NotNull(result);
         }
@@ -100,16 +96,15 @@ namespace NewsAggregationTest
         [Fact]
         public void ConvertDataFromNewsDataToArticlesNotNull()
         {
-            IDataSource _dataSource = new ApiDataSource();
             _config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
             _config.Language = "&language=" + "vi";
             _config.Category = "&category=" + "business,entertainment";
             _config.Url = "https://newsdata.io/api/1/news?" + _config.Key + _config.Language + _config.Category;
-            _config.Data = _dataSource.GetNews(_config.Url);
+            _config.Data = _apiDataSource.GetNews(_config.Url);
             _config.Item = "results";
 
             var mappingConfig = _newsService.CreateMapping(_dataSample.GetNewsDataIoMappingConfiguration());
-            var result = _dataSource.ConvertDataToArticles(_config, mappingConfig);
+            var result = _apiDataSource.ConvertDataToArticles(_config, mappingConfig);
 
             Assert.NotNull(result);
         }
@@ -134,7 +129,6 @@ namespace NewsAggregationTest
         [Fact]
         public void ConvertDataToWeatherNotNull()
         {
-            IDataSource dataSource = new ApiDataSource();
             var config = new Config();
             config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
             config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
@@ -145,8 +139,8 @@ namespace NewsAggregationTest
             config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
 
             var weatherMappingConfig = _newsService.CreateMapping(_dataSample.GetWeatherMappingConfiguration());
-            var data = dataSource.GetWeatherInfor(config);
-            var result = dataSource.ConvertDataToWeather(data, weatherMappingConfig);
+            var data = _apiDataSource.GetWeatherInfor(config);
+            var result = _apiDataSource.ConvertDataToWeather(data, weatherMappingConfig);
 
             Assert.NotNull(result);
             Assert.NotNull(result.HourlyWeather);
@@ -155,12 +149,9 @@ namespace NewsAggregationTest
         [Fact]
         public async Task AddArticleToDatabaseSuccess()
         {
-            var data = new DbContext();
-            var articleRepo = new ArticleRepository(data);
-            var articleService = new ArticleService(articleRepo);
             Article article = _fixture.Create<Article>();
 
-            var result = await articleService.Add(article);
+            var result = await _articleService.Add(article);
 
             Assert.True(result);
         }
@@ -189,5 +180,41 @@ namespace NewsAggregationTest
             Assert.True(result);
             Assert.Equal(newArticle.Title, newTitle);
         }
+
+        [Fact]
+        public async Task GetAllArticleNotNull()
+        {
+            var articles = await _articleService.GetAll();
+            Assert.NotNull(articles);
+            Assert.NotEmpty(articles);
+        }
+
+        [Fact]
+        public async Task DeleteArticleToDatabaseSuccess()
+        {
+            Article article = _fixture.Create<Article>();
+            await _articleService.Add(article);
+
+            var result = await _articleService.Delete(article.Id.ToString());
+
+            Assert.True(result);
+        }
+
+        //[Fact]
+        //public async Task AddArticleToDatabaseFromApi()
+        //{
+        //    IDataSource _dataSource = new RssDataSource();
+        //    _config.Data = _dataSource.GetNews("https://tuoitre.vn/rss/tin-moi-nhat.rss");
+        //    _config.Item = "item";
+        //    _config.Channel = "Tuoi Tre News";
+        //    var mappingConfig = _newsService.CreateMapping(_dataSample.GetRssTuoiTreNewsDataMappingConfiguration());
+        //    var articles = _dataSource.ConvertDataToArticles(_config, mappingConfig);
+
+        //    var result = await _articleService.AddRange(articles);
+
+        //    Assert.True(result);
+        //}
+
+
     }
 }

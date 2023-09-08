@@ -1,4 +1,5 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces;
+﻿using BingNew.BusinessLogicLayer.Interfaces.IRepository;
+using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.Repositories;
 using System;
@@ -12,34 +13,68 @@ using static Dapper.SqlMapper;
 
 namespace BingNew.BusinessLogicLayer.Services
 {
-    public class ArticleService : IBaseService<Article>
+    public class ArticleService : IArticleService
     {
-        private readonly ArticleRepository _articleRepository;
-        public ArticleService(ArticleRepository articleRepository)
+        private readonly IBaseRepository<Article> _articleRepository;
+        public ArticleService()
         {
-            _articleRepository = articleRepository;
+            _articleRepository = new ArticleRepository();
         }   
         public async Task<bool> Add(Article entity)
         {
             try
             {
                await _articleRepository.Add(entity);
-
             } catch (Exception e) {
-                Debug.WriteLine("BUG KÌA, FIX ĐI: " + e.Message.ToString());
+                Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
                 return false;
             }
             return true;
         }
 
-        public Task<bool> Delete(string id)
+        public async Task<bool> AddRange(IEnumerable<Article> articles)
         {
-            throw new NotImplementedException();
+            foreach (var item in articles)
+            {
+                try
+                {
+                    await _articleRepository.Add(item);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
+                    return false;
+                }
+            }
+            return true;
         }
 
-        public Task<IEnumerable<Article>> GetAll()
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _articleRepository.Delete(id);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<IEnumerable<Article>> GetAll()
+        {
+            try
+            {
+                var result = await _articleRepository.GetAll();
+                return result;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
+                return new List<Article>();
+            }
         }
 
         public async Task<Article> GetById(string id)
@@ -51,14 +86,23 @@ namespace BingNew.BusinessLogicLayer.Services
             }
             catch (Exception e)
             {
-                Debug.WriteLine("BUG KÌA, FIX ĐI: " + e.ToString());
+                Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
                 return new Article();
             }
         }
 
-        public Task<bool> Update(Article entity)
+        public async Task<bool> Update(Article entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _articleRepository.Update(entity);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
+                return false;
+            }
         }
     }
 }
