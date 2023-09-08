@@ -1,4 +1,5 @@
-﻿using BingNew.BusinessLogicLayer;
+﻿using AutoFixture;
+using BingNew.BusinessLogicLayer;
 using BingNew.BusinessLogicLayer.Interfaces;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.BusinessLogicLayer.Services;
@@ -6,6 +7,7 @@ using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.Repositories;
 using BingNew.DataAccessLayer.TestData;
+using Xunit.Sdk;
 
 namespace NewsAggregationTest
 {
@@ -14,11 +16,20 @@ namespace NewsAggregationTest
         private readonly NewsService _newsService;
         private readonly DataSample _dataSample;
         private readonly Config _config;
+        private readonly IFixture _fixture;
+        private readonly DbContext _dbContext;
+        private readonly ArticleService _articleService;
+        private readonly ArticleRepository _articleRepository;
+
         public BingNewsTest()
         {
             _dataSample = new DataSample();
             _newsService = new NewsService();
             _config = new Config();
+            _fixture = new Fixture();
+            _dbContext = new DbContext();
+            _articleRepository = new ArticleRepository(_dbContext);
+            _articleService = new ArticleService(_articleRepository);
         }
 
         [Fact]
@@ -147,24 +158,36 @@ namespace NewsAggregationTest
             var data = new DbContext();
             var articleRepo = new ArticleRepository(data);
             var articleService = new ArticleService(articleRepo);
-            var article = new Article()
-            {
-                Title = "Test",
-                Description = "Test",
-                ImgUrl = "Test",
-                Category = "Test",
-                Channel = "Test",
-                CommentNumber = 0,
-                DisLikeNumber = 0,
-                LikeNumber = 0,
-                PubDate = DateTime.Now,
-                Url = "Test",
-                ViewNumber = 0
-            };
+            Article article = _fixture.Create<Article>();
 
             var result = await articleService.Add(article);
 
             Assert.True(result);
+        }
+        
+        [Theory]
+        [InlineData("257b736d-8451-49b0-ac9d-20fbbf1e3e1b")]
+        public async Task GetByArticleIdToDatabaseSuccess(string id)
+        {
+            var result = await _articleService.GetById(id);
+
+            Assert.NotNull(result.Title);
+            Assert.NotEmpty(result.Description);
+        }
+
+        [Theory]
+        [InlineData("257b736d-8451-49b0-ac9d-20fbbf1e3e1b")]
+        public async Task UpdateArticleToDatabaseSuccess(string id)
+        {
+            var newTitle = Guid.NewGuid().ToString();
+            var article = await _articleService.GetById(id);
+
+            article.Title = newTitle;
+            var result = await _articleService.Update(article);
+            var newArticle = await _articleService.GetById(article.Id.ToString());
+
+            Assert.True(result);
+            Assert.Equal(newArticle.Title, newTitle);
         }
     }
 }

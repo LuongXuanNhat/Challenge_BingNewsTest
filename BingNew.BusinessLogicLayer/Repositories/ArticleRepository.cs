@@ -18,7 +18,7 @@ namespace BingNew.DataAccessLayer.Repositories
             string query = "INSERT INTO Article (Id, Title, ImgUrl, Description, PubDate, Url, LikeNumber, DisLikeNumber, ViewNumber, CommentNumber) " +
                  "VALUES (@Id, @Title, @ImgUrl, @Description, @PubDate, @Url, @LikeNumber, @DisLikeNumber, @ViewNumber, @CommentNumber)";
 
-            _dbConnection.Execute(query, article);
+            await _dbConnection.ExecuteAsync(query, article);
             _dbConnection.Close();
         }
 
@@ -36,9 +36,13 @@ namespace BingNew.DataAccessLayer.Repositories
             return result;
         }
 
-        public void GetById(string id)
+        public async Task<Article> GetById(string id)
         {
-            throw new NotImplementedException();
+            _dbConnection.Open();
+            string query = "SELECT * FROM Article WHERE Id = @Id";
+            var result = await _dbConnection.QueryFirstOrDefaultAsync<Article>(query, new { Id = id });
+            _dbConnection.Close();
+            return result;
         }
 
         public void Update(Article entity)

@@ -3,10 +3,12 @@ using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static Dapper.SqlMapper;
 
 namespace BingNew.BusinessLogicLayer.Services
 {
@@ -23,8 +25,8 @@ namespace BingNew.BusinessLogicLayer.Services
             {
                await _articleRepository.Add(entity);
 
-            } catch (Exception e) { 
-                Console.WriteLine(e.ToString());
+            } catch (Exception e) {
+                Debug.WriteLine("BUG KÌA, FIX ĐI: " + e.Message.ToString());
                 return false;
             }
             return true;
@@ -40,9 +42,18 @@ namespace BingNew.BusinessLogicLayer.Services
             throw new NotImplementedException();
         }
 
-        public Task<Article> GetById(string id)
+        public async Task<Article> GetById(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _articleRepository.GetById(id);
+                return result;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("BUG KÌA, FIX ĐI: " + e.ToString());
+                return new Article();
+            }
         }
 
         public Task<bool> Update(Article entity)
