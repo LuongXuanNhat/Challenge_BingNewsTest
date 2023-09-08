@@ -1,14 +1,11 @@
 ﻿using AutoFixture;
-using BingNew.BusinessLogicLayer;
 using BingNew.BusinessLogicLayer.Interfaces;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Models;
-using BingNew.DataAccessLayer.Repositories;
 using BingNew.DataAccessLayer.TestData;
-using Xunit.Sdk;
 
 namespace NewsAggregationTest
 {

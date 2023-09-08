@@ -1,7 +1,11 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces.IRepository;
+﻿using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IRepository;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
+using BingNew.BusinessLogicLayer.ModelConfig;
+using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.Repositories;
+using BingNew.DataAccessLayer.TestData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,9 +19,18 @@ namespace BingNew.BusinessLogicLayer.Services
 {
     public class ArticleService : IArticleService
     {
+        private readonly NewsService _newsService;
+        private readonly DataSample _dataSample;
+        private readonly IDataSource _apiDataSource;
+        private readonly IDataSource _rssDataSource;
         private readonly IBaseRepository<Article> _articleRepository;
+
         public ArticleService()
         {
+            _newsService = new NewsService();
+            _dataSample = new DataSample();
+            _apiDataSource = new ApiDataSource();
+            _rssDataSource = new RssDataSource();
             _articleRepository = new ArticleRepository();
         }   
         public async Task<bool> Add(Article entity)
@@ -47,6 +60,16 @@ namespace BingNew.BusinessLogicLayer.Services
                 }
             }
             return true;
+        }
+
+        public List<Article> ConvertDataToArticles(Config config, List<MappingTable> mapping)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Weather ConvertDataToWeather(string data, List<MappingTable> mapping)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> Delete(string id)
@@ -91,6 +114,16 @@ namespace BingNew.BusinessLogicLayer.Services
             }
         }
 
+        public string GetNews(string Url)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetWeatherInfor(Config config)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> Update(Article entity)
         {
             try
@@ -102,6 +135,21 @@ namespace BingNew.BusinessLogicLayer.Services
             {
                 Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
                 return false;
+            }
+        }
+
+        public List<Article> UpdateArticlesFromTuoiTreNews(Config config)
+        {
+            try
+            {
+                config.Data = _rssDataSource.GetNews(config.Url);
+                var result = _rssDataSource.ConvertDataToArticles(config, config.MappingTables);
+                return result;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
+                return new List<Article>();
             }
         }
     }

@@ -18,7 +18,6 @@ namespace BingNew.BusinessLogicLayer.ModelConfig
         public string Category { get; set; } = string.Empty;
         public string Channel { get; set; } = string.Empty;
         public string DateTimeOffSetFormat { get; set; } = string.Empty;
-        public string Country { get; set; } = string.Empty;
         public string Item { get; set; } = string.Empty;
         public string NewsItems { get; set; } = string.Empty;
         public string DayNumber { get; set; } = string.Empty;
@@ -26,5 +25,7 @@ namespace BingNew.BusinessLogicLayer.ModelConfig
         public string Date { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public string Data { get; set; } = string.Empty;
+        public List<MappingTable> MappingTables { get; set; } = new List<MappingTable>();
+
     }
 }

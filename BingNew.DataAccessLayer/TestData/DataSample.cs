@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 
+// The path where the test data is stored | Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData")
+// Example                                | D:\INTERN\BingNewsTest\NewsAggregationTest\bin\Debug\net6.0\TestData
+
 namespace BingNew.DataAccessLayer.TestData
 {
     public class DataSample
