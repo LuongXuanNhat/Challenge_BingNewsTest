@@ -62,16 +62,6 @@ namespace BingNew.BusinessLogicLayer.Services
             return true;
         }
 
-        public List<Article> ConvertDataToArticles(Config config, List<MappingTable> mapping)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Weather ConvertDataToWeather(string data, List<MappingTable> mapping)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> Delete(string id)
         {
             try
@@ -119,11 +109,6 @@ namespace BingNew.BusinessLogicLayer.Services
             throw new NotImplementedException();
         }
 
-        public string GetWeatherInfor(Config config)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> Update(Article entity)
         {
             try
@@ -138,19 +123,30 @@ namespace BingNew.BusinessLogicLayer.Services
             }
         }
 
-        public List<Article> UpdateArticlesFromTuoiTreNews(Config config)
+        public async Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config)
         {
             try
             {
                 config.Data = _rssDataSource.GetNews(config.Url);
                 var result = _rssDataSource.ConvertDataToArticles(config, config.MappingTables);
-                return result;
+                return await FilterArticles(result);
             }
             catch (Exception e)
             {
                 Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
                 return new List<Article>();
             }
+        }
+
+        private async Task<List<Article>> FilterArticles(List<Article> result)
+        {
+            var news = await _articleRepository.GetAll();
+            var latestNews = news.OrderBy(x => x.PubDate).FirstOrDefault();
+            if (latestNews != null)
+            {
+                return result.Where(x => x.PubDate > latestNews.PubDate).ToList();
+            }
+            return result;
         }
     }
 }

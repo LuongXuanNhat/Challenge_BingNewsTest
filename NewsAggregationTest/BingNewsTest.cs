@@ -197,20 +197,20 @@ namespace NewsAggregationTest
             Assert.True(result);
         }
 
-        //[Fact]
-        //public async Task AddArticleToDatabaseFromApi()
-        //{
-        //    IDataSource _dataSource = new RssDataSource();
-        //    _config.Data = _dataSource.GetNews("https://tuoitre.vn/rss/tin-moi-nhat.rss");
-        //    _config.Item = "item";
-        //    _config.Channel = "Tuoi Tre News";
-        //    var mappingConfig = _newsService.CreateMapping(_dataSample.GetRssTuoiTreNewsDataMappingConfiguration());
-        //    var articles = _dataSource.ConvertDataToArticles(_config, mappingConfig);
+        [Fact]
+        public async Task AddArticleToDatabaseFromApi()
+        {
+            IDataSource _dataSource = new RssDataSource();
+            _config.Data = _dataSource.GetNews("https://tuoitre.vn/rss/tin-moi-nhat.rss");
+            _config.Item = "item";
+            _config.Channel = "Tuoi Tre News";
+            var mappingConfig = _newsService.CreateMapping(_dataSample.GetRssTuoiTreNewsDataMappingConfiguration());
+            var articles = _dataSource.ConvertDataToArticles(_config, mappingConfig);
 
-        //    var result = await _articleService.AddRange(articles);
+            var result = await _articleService.AddRange(articles);
 
-        //    Assert.True(result);
-        //}
+            Assert.True(result);
+        }
 
 
     }

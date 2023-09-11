@@ -11,6 +11,6 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
     public interface IArticleService : IBaseService<Article>
     {
         Task<bool> AddRange(IEnumerable<Article> articles);
-        List<Article> UpdateArticlesFromTuoiTreNews(Config config);
+        Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config);
     }
 }

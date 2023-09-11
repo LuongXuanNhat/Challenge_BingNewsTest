@@ -27,9 +27,10 @@ namespace BingNew.PresentationLayer.Controllers
         }
 
         [HttpPost("UpdateArticlesFromTuoiTreNews")]
-        public List<Article> UpdateArticlesFromTuoiTreNews(Config config)
+        public async Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config)
         {
-            var result = _articleService.UpdateArticlesFromTuoiTreNews(config);
+            var result = await _articleService.UpdateArticlesFromTuoiTreNews(config);
+            await _articleService.AddRange(result);
             return result;
         }
 
