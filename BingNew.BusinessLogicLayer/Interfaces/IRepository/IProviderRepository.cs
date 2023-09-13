@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BingNew.BusinessLogicLayer.Interfaces.IRepository
 {
-    public interface IWeatherRepository : IBaseRepository<Weather>
+    public interface IProviderRepository : IBaseRepository<Provider>
     {
-        Task AddWeatherHour(WeatherInfo weatherInfo);
+
     }
 }

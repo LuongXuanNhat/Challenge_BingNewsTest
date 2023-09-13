@@ -15,18 +15,18 @@ namespace BingNew.PresentationLayer.Controllers
         public BingNewsController() {
             _articleService = new ArticleService();
         }
-        // GET: api/<ArticleController>
+        // GET: api/Article
         [HttpGet("Article")]
         public async Task<IEnumerable<Article>> GetArticle()
         {
             return await _articleService.GetAll();
         }
 
-        // GET api/<ArticleController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/TrendingStories
+        [HttpGet("TrendingStories")]
+        public async Task<IEnumerable<Article>> GetTrendingStories()
         {
-            return "value";
+            return await _articleService.TrendingStories();
         }
     }
 }

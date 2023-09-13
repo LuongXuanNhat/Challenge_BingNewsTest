@@ -4,17 +4,17 @@
     {
         public Topic()
         {
-            Channels = new List<Channel>();
+            Channels = new List<Provider>();
         }
 
-        public Topic(string category, Channel channel)
+        public Topic(string category, Provider channel)
         {
             Name = category;
-            Channels = new List<Channel> { channel };
+            Channels = new List<Provider> { channel };
         }
 
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public List<Channel> Channels { get; set; }
+        public List<Provider> Channels { get; set; }
     }
 }

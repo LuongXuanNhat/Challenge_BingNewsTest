@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BingNew.BusinessLogicLayer.Interfaces.IService
 {
-    public interface IWeatherService : IBaseService<Weather>
+    public interface IProviderService : IBaseService<Provider>
     {
-        Task<bool> AddRangeWeatherHour(List<WeatherInfo> hourlyWeather);
+
     }
 }

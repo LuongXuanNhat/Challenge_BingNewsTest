@@ -6,6 +6,7 @@ using BingNew.BusinessLogicLayer.Services;
 using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.TestData;
+using BingNew.PresentationLayer.ViewModels;
 
 namespace NewsAggregationTest
 {
@@ -18,6 +19,8 @@ namespace NewsAggregationTest
         private readonly IDataSource _apiDataSource;
         private readonly IDataSource _rssDataSource;
         private readonly IArticleService _articleService;
+        private readonly IMappingService _mappingService;
+        private readonly IWeatherService _weatherService;
 
         public BingNewsTest()
         {
@@ -28,6 +31,21 @@ namespace NewsAggregationTest
             _apiDataSource = new ApiDataSource();
             _rssDataSource = new RssDataSource();
             _articleService = new ArticleService();
+            _mappingService = new MappingService();
+            _weatherService = new WeatherService();
+        }
+
+        private Config WeatherConfig()
+        {
+            var config = new Config();
+            config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
+            config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
+            config.KeyWork = "q=" + "Ho Chi Minh";
+            config.DayNumber = "&day=" + "3";
+            config.Language = "&lang=" + "vi";
+            config.Location = "location";
+            config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
+            return config;
         }
 
         [Fact]
@@ -126,15 +144,7 @@ namespace NewsAggregationTest
         [Fact]
         public void ConvertDataToWeatherNotNull()
         {
-            var config = new Config();
-            config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
-            config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
-            config.KeyWork = "q=" + "Ho Chi Minh";
-            config.DayNumber = "&day=" + "3";
-            config.Language = "&lang=" + "vi";
-            config.Location = "location";
-            config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
-
+            var config = WeatherConfig();
             var weatherMappingConfig = _newsService.CreateMapping(_dataSample.GetWeatherMappingConfiguration());
             var data = _apiDataSource.GetWeatherInfor(config);
             var result = _apiDataSource.ConvertDataToWeather(data, weatherMappingConfig);
@@ -198,11 +208,11 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public async Task AddArticleToDatabaseFromApi()
+        public async Task AddArticleToDatabaseFromTuoiTreNews()
         {
             IDataSource _dataSource = new RssDataSource();
             _config.Data = _dataSource.GetNews("https://tuoitre.vn/rss/tin-moi-nhat.rss");
-            _config.Item = "item";
+            _config.Item = "item";  
             _config.Channel = "Tuoi Tre News";
             var mappingConfig = _newsService.CreateMapping(_dataSample.GetRssTuoiTreNewsDataMappingConfiguration());
             var articles = _dataSource.ConvertDataToArticles(_config, mappingConfig);
@@ -211,7 +221,56 @@ namespace NewsAggregationTest
 
             Assert.True(result);
         }
+        [Fact]
+        public async Task AddArticleToDatabaseFromNewDataIo()
+        {
+            _config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
+            _config.Language = "&language=" + "vi";
+            _config.Category = "&category=" + "business,entertainment";
+            _config.Url = "https://newsdata.io/api/1/news?" + _config.Key + _config.Language + _config.Category;
+            _config.Data = _apiDataSource.GetNews(_config.Url);
+            _config.Item = "results";
 
+            var mappingConfig = _newsService.CreateMapping(_dataSample.GetNewsDataIoMappingConfiguration());
+            var articles = _apiDataSource.ConvertDataToArticles(_config, mappingConfig);
+            var result = await _articleService.AddRange(articles);
 
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task GetTrendingNews()
+        {
+            var result = await _articleService.TrendingStories();
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void TestMappingArticle()
+        {
+            var article = _fixture.Create<Article>();
+
+            var result = _mappingService.Map<Article, ArticleVm>(article);
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task AddWeatherToDatabaseFromApi()
+        {
+            var config = WeatherConfig();
+            var weatherMappingConfig = _newsService.CreateMapping(_dataSample.GetWeatherMappingConfiguration());
+            var data = _apiDataSource.GetWeatherInfor(config);
+            var wearther = _apiDataSource.ConvertDataToWeather(data, weatherMappingConfig);
+
+            var result = await _weatherService.Add(wearther);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void test()
+        {
+
+        }
     }
 }

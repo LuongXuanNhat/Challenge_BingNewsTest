@@ -12,5 +12,6 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
     {
         Task<bool> AddRange(IEnumerable<Article> articles);
         Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config);
+        Task<List<Article>> TrendingStories();
     }
 }

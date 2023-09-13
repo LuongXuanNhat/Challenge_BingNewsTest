@@ -1,19 +1,18 @@
 ﻿namespace BingNew.DataAccessLayer.Models
 {
-    public class Channel
+    public class Provider
     {
         public string Id { get; set; } = string.Empty;
         public string ChannelName { get; set; } = string.Empty;
         public string ChannelIcon { get; set; } = string.Empty;
-        public Channel? ChannelName1 { get; }
+        public string Url { get; set; } = string.Empty;
 
-        public Channel(string channel)
+        public Provider(string channel)
         {
             ChannelName = channel;
-            Id = channel;
         }
 
-        public Channel()
+        public Provider()
         {
         }
 
