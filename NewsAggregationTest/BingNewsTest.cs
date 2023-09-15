@@ -16,23 +16,24 @@ namespace NewsAggregationTest
         private readonly DataSample _dataSample;
         private readonly Config _config;
         private readonly IFixture _fixture;
-        private readonly IDataSource _apiDataSource;
-        private readonly IDataSource _rssDataSource;
+        private readonly IApiDataSource _apiDataSource;
+        private readonly IRssDataSource _rssDataSource;
         private readonly IArticleService _articleService;
         private readonly IMappingService _mappingService;
         private readonly IWeatherService _weatherService;
 
-        public BingNewsTest()
+        public BingNewsTest(IApiDataSource apiDataSource, IRssDataSource rssDataSource, 
+            IArticleService articleService, IMappingService mappingService, IWeatherService weatherService)
         {
             _dataSample = new DataSample();
             _newsService = new NewsService();
             _config = new Config();
             _fixture = new Fixture();
-            _apiDataSource = new ApiDataSource();
-            _rssDataSource = new RssDataSource();
-            _articleService = new ArticleService();
-            _mappingService = new MappingService();
-            _weatherService = new WeatherService();
+            _apiDataSource = apiDataSource;
+            _rssDataSource = rssDataSource;
+            _articleService = articleService;
+            _mappingService = mappingService;
+            _weatherService = weatherService;
         }
 
         private Config WeatherConfig()

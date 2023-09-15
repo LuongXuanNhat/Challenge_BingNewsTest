@@ -15,9 +15,9 @@ namespace BingNew.BusinessLogicLayer.Services
     {
         private readonly IWeatherRepository _weatherRepository;
 
-        public WeatherService()
+        public WeatherService(IWeatherRepository weatherRepository)
         {
-            _weatherRepository = new WeatherRepository();
+            _weatherRepository = weatherRepository;
         }
 
 

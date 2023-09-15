@@ -1,3 +1,11 @@
+using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IRepository;
+using BingNew.BusinessLogicLayer.Interfaces.IService;
+using BingNew.BusinessLogicLayer.Repositories;
+using BingNew.BusinessLogicLayer.Services;
+using BingNew.BusinessLogicLayer.Services.Common;
+using BingNew.DataAccessLayer.Repositories;
+
 namespace BingNew.PresentationLayer
 {
     public class Program
@@ -13,6 +21,15 @@ namespace BingNew.PresentationLayer
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<IArticleService, ArticleService>();
+            builder.Services.AddScoped<IMappingService, MappingService>();
+            builder.Services.AddScoped<IProviderService, ProviderService>();
+            builder.Services.AddScoped<IWeatherService, WeatherService>();
+            builder.Services.AddScoped<IRssDataSource, RssDataSource>();
+            builder.Services.AddScoped<IApiDataSource, ApiDataSource>();
+
+            builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+            builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
 
             var app = builder.Build();
 

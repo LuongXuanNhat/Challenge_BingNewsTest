@@ -1,4 +1,5 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.DataAccessLayer.Models;
 using System;
@@ -9,7 +10,7 @@ using System.Xml.Linq;
 
 namespace BingNew.BusinessLogicLayer.Services.Common
 {
-    public class RssDataSource : IDataSource
+    public class RssDataSource : IRssDataSource
     {
 
 
@@ -40,7 +41,8 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             foreach (var item in items)
             {
                 var article = MapToArticle(item, mapping);
-
+                if(config.Channel != null)
+                    article.Channel = config.Channel;
                 articles.Add(article);
             }
             return articles;

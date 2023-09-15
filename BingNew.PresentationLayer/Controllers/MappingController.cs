@@ -15,8 +15,8 @@ namespace BingNew.PresentationLayer.Controllers
 
         private readonly IArticleService _articleService;
 
-        public MappingController() {
-            _articleService = new ArticleService();
+        public MappingController(IArticleService articleService) {
+            _articleService = articleService;
         }
 
         // GET: api/<MappingController>
@@ -28,6 +28,14 @@ namespace BingNew.PresentationLayer.Controllers
 
         [HttpPost("UpdateArticlesFromTuoiTreNews")]
         public async Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config)
+        {
+            var result = await _articleService.UpdateArticlesFromTuoiTreNews(config);
+            await _articleService.AddRange(result);
+            return result;
+        }
+
+        [HttpPost("UpdateArticlesFromNewsDataIo")]
+        public async Task<List<Article>> UpdateArticlesFromNewsDataIo(Config config)
         {
             var result = await _articleService.UpdateArticlesFromTuoiTreNews(config);
             await _articleService.AddRange(result);

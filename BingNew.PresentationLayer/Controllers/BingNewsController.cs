@@ -12,8 +12,8 @@ namespace BingNew.PresentationLayer.Controllers
     public class BingNewsController : ControllerBase
     {
         private readonly IArticleService _articleService;
-        public BingNewsController() {
-            _articleService = new ArticleService();
+        public BingNewsController(IArticleService articleService) {
+            _articleService = articleService;
         }
         // GET: api/Article
         [HttpGet("Article")]

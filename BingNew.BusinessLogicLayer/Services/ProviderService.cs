@@ -17,9 +17,9 @@ namespace BingNew.BusinessLogicLayer.Services
     public class ProviderService : IProviderService
     {
         private readonly IProviderRepository _providerRepository;
-        public ProviderService()
+        public ProviderService(IProviderRepository providerRepository)
         {
-            _providerRepository = new ProviderRepository(); 
+            _providerRepository = providerRepository; 
         }
         public async Task<bool> Add(Provider provider)
         {
@@ -46,7 +46,7 @@ namespace BingNew.BusinessLogicLayer.Services
             var channels = await _providerRepository.GetAll();
             foreach (var item in providers)
             {
-                if (channels.Any(x => x.ChannelName.Equals(item)))
+                if (!channels.Any(x => x.ChannelName.Equals(item)))
                 {
                     Provider newProvider = new Provider(item);
                     await _providerRepository.Add(newProvider);

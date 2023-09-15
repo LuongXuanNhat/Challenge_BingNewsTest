@@ -23,7 +23,7 @@ namespace BingNew.BusinessLogicLayer.Repositories
         public async Task Add(Provider provider)
         {
             _dbConnection.Open();
-            string query = "INSERT INTO Provider (Id, ChannelName, ChannelIcon, Url ) " +
+            string query = "INSERT INTO Provider (Id, name, icon, link ) " +
                  "VALUES (@Id, @ChannelName, @ChannelIcon, @Url)";
             await _dbConnection.ExecuteAsync(query, provider);
             _dbConnection.Close();

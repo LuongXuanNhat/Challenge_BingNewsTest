@@ -4,10 +4,11 @@ using BingNew.BusinessLogicLayer.ModelConfig;
 using System.Globalization;
 using BingNew.DataAccessLayer.TestData;
 using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IService;
 
 namespace BingNew.BusinessLogicLayer.Services.Common
 {
-    public class ApiDataSource : IDataSource
+    public class ApiDataSource : IApiDataSource
     {
         private readonly NewsService _NewsService;
         public ApiDataSource()

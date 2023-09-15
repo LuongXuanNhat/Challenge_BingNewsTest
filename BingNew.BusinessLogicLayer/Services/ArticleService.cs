@@ -26,21 +26,17 @@ namespace BingNew.BusinessLogicLayer.Services
         private readonly float _disLikeMultiplier = 0.2f;
         private readonly int _trendingStoriesNumber = 9;
 
-        private readonly NewsService _newsService;
-        private readonly DataSample _dataSample;
-        private readonly IDataSource _apiDataSource;
-        private readonly IDataSource _rssDataSource;
+        private readonly IRssDataSource _rssDataSource;
         private readonly IProviderService _channelService;
         private readonly IArticleRepository _articleRepository;
 
-        public ArticleService()
+        public ArticleService(IArticleRepository articleRepository,
+                              IProviderService providerService,
+                              IRssDataSource dataSource )
         {
-            _newsService = new NewsService();
-            _dataSample = new DataSample();
-            _apiDataSource = new ApiDataSource();
-            _rssDataSource = new RssDataSource();
-            _articleRepository = new ArticleRepository();
-            _channelService = new ProviderService();
+            _articleRepository = articleRepository;
+            _channelService = providerService;
+            _rssDataSource = dataSource;
         }   
         public async Task<bool> Add(Article entity)
         {
@@ -56,7 +52,7 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public async Task<bool> AddRange(IEnumerable<Article> articles)
         {
-            await AddChannel(articles);
+            await _channelService.FilterChannelsToAdd(articles);
             try
             {
                 foreach (var item in articles)
@@ -174,8 +170,8 @@ namespace BingNew.BusinessLogicLayer.Services
             try
             {
                 var articles = await _articleRepository.GetAll();
-                DateTime specificDate = new DateTime(2023, 9, 12, 0, 0, 0, DateTimeKind.Utc);
-                articles = articles.Where(x=>x.PubDate.Date == specificDate.Date).ToList();
+              //  DateTime specificDate = new DateTime(2023, 9, 12, 0, 0, 0, DateTimeKind.Utc);
+                articles = articles.Where(x=>x.PubDate.Date == DateTime.Now.Date).ToList();
                 return GetTrendingStories(articles);
             }
             catch (Exception e)
