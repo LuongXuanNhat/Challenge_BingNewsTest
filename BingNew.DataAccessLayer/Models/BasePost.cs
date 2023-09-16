@@ -9,13 +9,33 @@ namespace BingNew.DataAccessLayer.Models
             Id = Guid.NewGuid();
         }
 
-        public Guid Id { get; set; }
-        public string ProviderId { get; set; } = string.Empty;
-        public DateTime PubDate { get; set; } 
-        public string Url { get; set; } = string.Empty; 
-        public string Title { get; set; } = string.Empty; 
-        public string Description { get; set; } = string.Empty;
+        protected Guid Id;
+        protected string ProviderId;
+        protected DateTime PubDate;
+        protected string Url;
+        protected string Title;
+        protected string Description;
 
-       
+        public Guid GetId()
+        {
+            return Id;
+        }
+        public DateTime GetPubDate()
+        {
+            return PubDate;
+        }
+        public string GetDescription()
+        {
+            return Description;
+        }
+
+        public void SetTitle(string newTitle)
+        {
+            Title = newTitle;
+        }
+        public string GetTitle()
+        {
+            return Title;   
+        }
     }
 }

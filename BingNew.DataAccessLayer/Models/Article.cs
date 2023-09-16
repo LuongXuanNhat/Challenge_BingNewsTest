@@ -1,20 +1,52 @@
-﻿namespace BingNew.DataAccessLayer.Models
+﻿using System.Collections;
+
+namespace BingNew.DataAccessLayer.Models
 {
 
     public class Article : BasePost
     {
-        public int LikeNumber { get; set; }
-        public int DisLikeNumber { get; set; }
-        public int CommentNumber { get; set; }
-        public int ViewNumber { get; set; }
-        public double Score { get; set; }
-        public string ImgUrl { get; set; } = string.Empty;
-        public string Channel { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
+        private int LikeNumber;
+        private int DisLikeNumber;
+        private int CommentNumber;
+        private int ViewNumber;
+        private double Score;
+        private string ImgUrl;
+        private string Channel;
+        private string Category;
 
         public Article() : base()
         {
             
         }
+
+        public float GetCommentNumber()
+        {
+            return CommentNumber;
+        }
+
+        public float GetDisLikeNumber()
+        {
+            return DisLikeNumber;
+        }
+
+        public float GetLikeNumber()
+        {
+            return LikeNumber;
+        }
+
+        public double GetScore()
+        {
+            return Score;
+        }
+        public float GetViewNumber()
+        {
+            return ViewNumber;
+        }
+
+        public void SetScore(float value)
+        {
+            Score = value;
+        }
+
     }
 }

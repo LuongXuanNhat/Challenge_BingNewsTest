@@ -1,8 +1,8 @@
 ﻿public class User
 {
-    public string Id { get; set; } = string.Empty;
-    public string UserName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    private string Id;
+    private string UserName;
+    private string Email;
     public User(string id, string userName, string email)
     {
         Id = id;

@@ -150,10 +150,10 @@ namespace BingNew.BusinessLogicLayer.Services
             try
             {
                 var news = await _articleRepository.GetAll();
-                var latestNews = news.OrderBy(x => x.PubDate).LastOrDefault();
+                var latestNews = news.OrderBy(x => x.GetPubDate()).LastOrDefault();
                 if (latestNews != null)
                 {
-                    return result.Where(x => x.PubDate > latestNews.PubDate).ToList();
+                    return result.Where(x => x.GetPubDate() > latestNews.GetPubDate()).ToList();
                 }
                 return result;
             }
@@ -165,13 +165,13 @@ namespace BingNew.BusinessLogicLayer.Services
             
         }
 
+        ////  DateTime specificDate = new DateTime(2023, 9, 12, 0, 0, 0, DateTimeKind.Utc);
         public async Task<List<Article>> TrendingStories()
         {
             try
             {
                 var articles = await _articleRepository.GetAll();
-              //  DateTime specificDate = new DateTime(2023, 9, 12, 0, 0, 0, DateTimeKind.Utc);
-                articles = articles.Where(x=>x.PubDate.Date == DateTime.Now.Date).ToList();
+                articles = articles.Where(x=>x.GetPubDate().Date == DateTime.Now.Date).ToList();
                 return GetTrendingStories(articles);
             }
             catch (Exception e)
@@ -185,9 +185,9 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             foreach (var item in articles)
             {
-                item.Score = item.ViewNumber * _viewMultiplier + item.LikeNumber * _likeMultiplier + item.DisLikeNumber * _disLikeMultiplier + item.CommentNumber * _commentMultiplier;
+                item.SetScore( item.GetViewNumber() * _viewMultiplier + item.GetLikeNumber() * _likeMultiplier + item.GetDisLikeNumber() * _disLikeMultiplier + item.GetCommentNumber() * _commentMultiplier );
             }
-            return articles.OrderByDescending(x => x.Score).Take(_trendingStoriesNumber).ToList();
+            return articles.OrderByDescending(x => x.GetScore()).Take(_trendingStoriesNumber).ToList();
         }
     }
 }

@@ -3,11 +3,11 @@
     public class WeatherInfo
     {
 
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public double Temperature { get; set; }
-        public int Humidity { get; set; }
-        public int Hour { get; set; }
-        public string WeatherIcon { get; set; } = string.Empty;
-        public Guid WeatherId { get; set; } = Guid.Empty;
+        private Guid Id;
+        private double Temperature;
+        private int Humidity;
+        private int Hour;
+        private string WeatherIcon;
+        private Guid WeatherId;
     }
 }

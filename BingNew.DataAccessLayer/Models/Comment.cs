@@ -2,10 +2,10 @@
 {
     public class Comment
     {
-        public Guid Id { get; set; } = Guid.Empty;
-        public string UserId { get; set; } = string.Empty;
-        public Guid ArticleId { get; set; } = Guid.Empty;
-        public string Content { get; set; } = string.Empty;
+        private Guid Id;
+        private string UserId;
+        private Guid ArticleId;
+        private string Content;
         public Comment()
         {
         }

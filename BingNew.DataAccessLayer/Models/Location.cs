@@ -2,10 +2,10 @@
 {
     public class Location
     {
-        public Guid Id { get; set; }
-        public string PlaceName { get; set; }
-        public int Longitude { get; set; }
-        public int Latitude { get; set; }
+        private Guid Id;
+        private string PlaceName;
+        private int Longitude;
+        private int Latitude;
         public Location()
         {
             Id = Guid.NewGuid();

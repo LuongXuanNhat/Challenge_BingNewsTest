@@ -16,17 +16,17 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             RssDataSource
         }
 
-        public static IDataSource CreateDataSource(DataSource dataSource)
-        {
-            IDataSource data = null;
-            switch (dataSource)
-            {
-                case DataSource.ApiDataSource:
-                    return new ApiDataSource();
-                case DataSource.RssDataSource:
-                    return new RssDataSource(); 
-            }
-            return data;
-        }
+        ////public static IDataSource CreateDataSource(DataSource dataSource)
+        ////{
+        ////    IDataSource data = null;
+        ////    switch (dataSource)
+        ////    {
+        ////        case DataSource.ApiDataSource:
+        ////            return new ApiDataSource();
+        ////        case DataSource.RssDataSource:
+        ////            return new RssDataSource(); 
+        ////    }
+        ////    return data;
+        ////}
     }
 }

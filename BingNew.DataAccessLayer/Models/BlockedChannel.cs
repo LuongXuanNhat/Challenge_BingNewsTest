@@ -2,9 +2,9 @@
 {
     public class BlockedChannel
     {
-        public string Id { get; set; } = string.Empty;
-        public string UserId { get; set; } = string.Empty;
-        public string ChannelId { get; private set; } = string.Empty;
+        private string Id;
+        private string UserId;
+        private string ChannelId;
 
         public BlockedChannel()
         {

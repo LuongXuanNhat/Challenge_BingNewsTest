@@ -13,8 +13,8 @@
             Channels = new List<Provider> { channel };
         }
 
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public List<Provider> Channels { get; set; }
+        private Guid Id;
+        private string Name;
+        private List<Provider> Channels;
     }
 }

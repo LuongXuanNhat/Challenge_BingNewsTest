@@ -151,7 +151,7 @@ namespace NewsAggregationTest
             var result = _apiDataSource.ConvertDataToWeather(data, weatherMappingConfig);
 
             Assert.NotNull(result);
-            Assert.NotNull(result.HourlyWeather);
+            Assert.NotNull(result.GetHourlyWeather());
         }
 
         [Fact]
@@ -170,8 +170,8 @@ namespace NewsAggregationTest
         {
             var result = await _articleService.GetById(id);
 
-            Assert.NotNull(result.Title);
-            Assert.NotEmpty(result.Description);
+            Assert.NotNull(result.GetTitle());
+            Assert.NotEmpty(result.GetDescription());
         }
 
         [Theory]
@@ -181,9 +181,9 @@ namespace NewsAggregationTest
             var newTitle = Guid.NewGuid().ToString();
             var article = await _articleService.GetById(id);
 
-            article.Title = newTitle;
+            article.SetTitle(newTitle);
             var result = await _articleService.Update(article);
-            var newArticle = await _articleService.GetById(article.Id.ToString());
+            var newArticle = await _articleService.GetById(article.GetId().ToString());
 
             Assert.True(result);
             Assert.Equal(newArticle.Title, newTitle);
@@ -203,7 +203,7 @@ namespace NewsAggregationTest
             Article article = _fixture.Create<Article>();
             await _articleService.Add(article);
 
-            var result = await _articleService.Delete(article.Id.ToString());
+            var result = await _articleService.Delete(article.GetId().ToString());
 
             Assert.True(result);
         }

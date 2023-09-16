@@ -2,14 +2,21 @@
 {
     public class Weather
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public string Place { get; set; } = string.Empty;
-        public string Icon { get; set; } = string.Empty;
-        public double Temperature { get; set; }
-        public int Humidity { get; set; }
-        public DateTime PubDate { get; set; }
-        public List<WeatherInfo> HourlyWeather { get; set; } = new List<WeatherInfo>();
-        public string Description { get; set; } = string.Empty;
+        public Weather() {
+            HourlyWeather = new List<WeatherInfo>();
+        }
+        private Guid Id;
+        private string Place;
+        private string Icon;
+        private double Temperature;
+        private int Humidity;
+        private DateTime PubDate;
+        private List<WeatherInfo> HourlyWeather;
+        private string Description;
 
+        public List<WeatherInfo> GetHourlyWeather()
+        {
+            return HourlyWeather;
+        }
     }
 }
