@@ -10,7 +10,7 @@ namespace BingNew.DataAccessLayer.Repositories
     {
         private readonly IDbConnection _dbConnection;
         public ArticleRepository() {
-            _dbConnection = new DbContext().CreateConnection();
+            _dbConnection = new DapperContext().CreateConnection();
         }
         public async Task Add(Article article)
         {

@@ -18,5 +18,15 @@
         {
             return HourlyWeather;
         }
+
+        public Guid GetId()
+        {
+            return Id;
+        }
+
+        public DateTime GetPubDate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

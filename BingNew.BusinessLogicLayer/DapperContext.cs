@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace BingNew.BusinessLogicLayer
 {
-    public class DbContext
+    public class DapperContext
     {
         private readonly ConstantCommon _constant;
-        public DbContext()
+        public DapperContext()
         {
             _constant = new ConstantCommon();
         }

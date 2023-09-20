@@ -17,7 +17,7 @@ namespace BingNew.BusinessLogicLayer.Repositories
 
         public ProviderRepository()
         {
-            _dbConnection = new DbContext().CreateConnection();
+            _dbConnection = new DapperContext().CreateConnection();
         }
 
         public async Task Add(Provider provider)

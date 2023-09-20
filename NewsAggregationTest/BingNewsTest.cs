@@ -2,7 +2,6 @@
 using BingNew.BusinessLogicLayer.Interfaces;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
-using BingNew.BusinessLogicLayer.Services;
 using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.TestData;
@@ -186,7 +185,7 @@ namespace NewsAggregationTest
             var newArticle = await _articleService.GetById(article.GetId().ToString());
 
             Assert.True(result);
-            Assert.Equal(newArticle.Title, newTitle);
+            Assert.Equal(newArticle.GetTitle(), newTitle);
         }
 
         [Fact]
@@ -268,10 +267,5 @@ namespace NewsAggregationTest
             Assert.True(result);
         }
 
-        [Fact]
-        public void test()
-        {
-
-        }
     }
 }

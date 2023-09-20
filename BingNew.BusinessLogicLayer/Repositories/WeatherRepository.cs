@@ -17,7 +17,7 @@ namespace BingNew.BusinessLogicLayer.Repositories
 
         public WeatherRepository()
         {
-            _dbConnection = new DbContext().CreateConnection();
+            _dbConnection = new DapperContext().CreateConnection();
         }
 
         public async Task Add(Weather entity)

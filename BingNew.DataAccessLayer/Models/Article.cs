@@ -19,6 +19,11 @@ namespace BingNew.DataAccessLayer.Models
             
         }
 
+        public object GetChannel()
+        {
+            throw new NotImplementedException();
+        }
+
         public float GetCommentNumber()
         {
             return CommentNumber;
@@ -41,6 +46,11 @@ namespace BingNew.DataAccessLayer.Models
         public float GetViewNumber()
         {
             return ViewNumber;
+        }
+
+        public void SetChannel(string channel)
+        {
+            Channel = channel;
         }
 
         public void SetScore(float value)

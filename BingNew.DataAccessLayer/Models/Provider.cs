@@ -19,5 +19,9 @@ namespace BingNew.DataAccessLayer.Models
         {
         }
 
+        public object GetChannelName()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

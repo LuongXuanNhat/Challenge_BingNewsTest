@@ -42,13 +42,13 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public async Task FilterChannelsToAdd(IEnumerable<Article> articles)
         {
-            var providers = articles.Select(x => x.Channel).Distinct().ToList();
+            var providers = articles.Select(x => x.GetChannel()).Distinct().ToList();
             var channels = await _providerRepository.GetAll();
             foreach (var item in providers)
             {
-                if (!channels.Any(x => x.ChannelName.Equals(item)))
+                if (!channels.Any(x => x.GetChannelName().Equals(item)))
                 {
-                    Provider newProvider = new Provider(item);
+                    Provider newProvider = new Provider(item.ToString());
                     await _providerRepository.Add(newProvider);
                 }
                 

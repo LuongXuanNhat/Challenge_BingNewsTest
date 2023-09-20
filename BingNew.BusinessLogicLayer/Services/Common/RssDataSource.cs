@@ -42,7 +42,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             {
                 var article = MapToArticle(item, mapping);
                 if(config.Channel != null)
-                    article.Channel = config.Channel;
+                    article.SetChannel(config.Channel);
                 articles.Add(article);
             }
             return articles;
