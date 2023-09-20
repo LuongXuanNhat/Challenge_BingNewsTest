@@ -1,9 +1,11 @@
+using BingNew.BusinessLogicLayer.DapperContext;
 using BingNew.BusinessLogicLayer.Interfaces;
 using BingNew.BusinessLogicLayer.Interfaces.IRepository;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.Repositories;
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.BusinessLogicLayer.Services.Common;
+using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.Repositories;
 
 namespace BingNew.PresentationLayer
@@ -28,9 +30,13 @@ namespace BingNew.PresentationLayer
             builder.Services.AddScoped<IRssDataSource, RssDataSource>();
             builder.Services.AddScoped<IApiDataSource, ApiDataSource>();
 
-            builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+        //    builder.Services.AddScoped<ArticleRepository<Article>>();
+        //    builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(ArticleRepository<>));
+        //    builder.Services.AddScoped<IBaseRepository<Article>, ArticleRepository<Article>>();
             builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
-
+            builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+            builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
+            builder.Services.AddScoped<DbContext>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

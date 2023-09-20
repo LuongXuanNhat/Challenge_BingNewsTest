@@ -1,4 +1,5 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces.IRepository;
+﻿using BingNew.BusinessLogicLayer.DapperContext;
+using BingNew.BusinessLogicLayer.Interfaces.IRepository;
 using BingNew.DataAccessLayer.Models;
 using Dapper;
 using System;
@@ -64,15 +65,21 @@ namespace BingNew.BusinessLogicLayer.Repositories
             return result;
         }
 
-        public async Task Update(Weather entity)
+        public async Task<bool> Update(Weather weather)
         {
             _dbConnection.Open();
+            string selectQuery = $@"SELECT * FROM Weather WHERE id = '{weather.GetId()}'";
+            var entity = await _dbConnection.QueryAsync<Weather>(selectQuery, weather.GetId());
+            if (entity is null)
+                return false;
+
             string query = "UPDATE Weather " +
                            "SET Place = @Place, Icon = @Icon, Description = @Description, " +
                            "PubDate = @PubDate, Temperature = @Temperature, Humidity = @Humidity " +
                            "WHERE Id = @Id";
             await _dbConnection.ExecuteAsync(query, entity);
             _dbConnection.Close();
+            return true;
         }
 
     }

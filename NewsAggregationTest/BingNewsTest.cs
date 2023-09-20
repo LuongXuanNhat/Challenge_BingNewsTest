@@ -1,5 +1,7 @@
 ﻿using AutoFixture;
+using BingNew.BusinessLogicLayer.DapperContext;
 using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IRepository;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.BusinessLogicLayer.Services;
@@ -7,6 +9,8 @@ using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.TestData;
 using BingNew.PresentationLayer.ViewModels;
+using Moq;
+using System.Reflection;
 
 namespace NewsAggregationTest
 {
@@ -22,18 +26,9 @@ namespace NewsAggregationTest
         private readonly IMappingService _mappingService;
         private readonly IWeatherService _weatherService;
 
-        public BingNewsTest(IApiDataSource apiDataSource, IRssDataSource rssDataSource, 
-            IArticleService articleService, IMappingService mappingService, IWeatherService weatherService)
+        public BingNewsTest()
         {
-            _dataSample = new DataSample();
-            _newsService = new NewsService();
-            _config = new Config();
-            _fixture = new Fixture();
-            _apiDataSource = apiDataSource;
-            _rssDataSource = rssDataSource;
-            _articleService = articleService;
-            _mappingService = mappingService;
-            _weatherService = weatherService;
+;
         }
 
         private Config WeatherConfig()
@@ -158,12 +153,32 @@ namespace NewsAggregationTest
         public async Task AddArticleToDatabaseSuccess()
         {
             Article article = _fixture.Create<Article>();
-
             var result = await _articleService.Add(article);
 
             Assert.True(result);
         }
-        
+
+        [Fact]
+        public async Task Add_ValidArticle_ReturnsTrue()
+        {
+            // Arrange
+            var dbContextMock = new DbContext();
+            var article = new Article(); // Create a valid Article object
+
+            var articleService = new ArticleService(
+                Mock.Of<IArticleRepository>(), // Replace with a mock for IArticleRepository if needed
+                Mock.Of<IProviderService>(), // Replace with a mock for IProviderService if needed
+                Mock.Of<IRssDataSource>(), // Replace with a mock for IRssDataSource if needed
+                dbContextMock
+            );
+            // Act
+            var result = await articleService.Add(article);
+
+            // Assert
+            Assert.True(result);
+           // dbContextMock.Verify(db => db.Add(article), Times.Once); // Ensure that DbContext.Add was called once
+        }
+
         [Theory]
         [InlineData("257b736d-8451-49b0-ac9d-20fbbf1e3e1b")]
         public async Task GetByArticleIdToDatabaseSuccess(string id)
@@ -186,7 +201,7 @@ namespace NewsAggregationTest
             var newArticle = await _articleService.GetById(article.GetId().ToString());
 
             Assert.True(result);
-            Assert.Equal(newArticle.Title, newTitle);
+            Assert.Equal(newArticle.GetTitle(), newTitle);
         }
 
         [Fact]

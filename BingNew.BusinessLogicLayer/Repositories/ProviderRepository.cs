@@ -1,4 +1,5 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces.IRepository;
+﻿using BingNew.BusinessLogicLayer.DapperContext;
+using BingNew.BusinessLogicLayer.Interfaces.IRepository;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.DataAccessLayer.Models;
 using Dapper;
@@ -48,11 +49,10 @@ namespace BingNew.BusinessLogicLayer.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Update(Provider entity)
+
+        public Task<bool> Update(Provider entity)
         {
             throw new NotImplementedException();
         }
-
-    
     }
 }

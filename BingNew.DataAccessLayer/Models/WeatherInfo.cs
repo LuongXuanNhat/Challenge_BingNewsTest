@@ -9,5 +9,15 @@
         private int Hour;
         private string WeatherIcon;
         private Guid WeatherId;
+
+        public Guid GetWeatherId()
+        {
+            return WeatherId;
+        }
+
+        public void SetWeatherId(Guid id)
+        {
+            WeatherId = id;
+        }
     }
 }

@@ -25,10 +25,10 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             try
             {
-                if (await CheckDate(entity.PubDate))
+                if (await CheckDate(entity.GetPubDate()))
                 {
                     await _weatherRepository.Add(entity);
-                    await AddRangeWeatherHour(entity.HourlyWeather);
+                    await AddRangeWeatherHour(entity.GetHourlyWeather());
                 }
             }
             catch (Exception e)
@@ -42,10 +42,10 @@ namespace BingNew.BusinessLogicLayer.Services
         private async Task<bool> CheckDate(DateTime pubDate)
         {
             var weathers = await _weatherRepository.GetAll();
-            var lastestWeather = weathers.OrderByDescending(x => x.PubDate).FirstOrDefault();
+            var lastestWeather = weathers.OrderByDescending(x => x.GetPubDate()).FirstOrDefault();
             if (lastestWeather != null)
             {
-                if (lastestWeather.PubDate.DayOfYear < pubDate.DayOfYear)
+                if (lastestWeather.GetPubDate().DayOfYear < pubDate.DayOfYear)
                     return true;
                 return false;
             }

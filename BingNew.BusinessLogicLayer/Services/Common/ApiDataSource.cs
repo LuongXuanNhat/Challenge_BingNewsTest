@@ -145,7 +145,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
                             var weatherInfors = new List<WeatherInfo>();
                             foreach (var item in hourlyWeatherList)
                             {
-                                weatherInfors.Add(ConvertDataToWeatherInfor(item.ToString(), weatherInfoMappingConfig, weather.Id));
+                                weatherInfors.Add(ConvertDataToWeatherInfor(item.ToString(), weatherInfoMappingConfig, weather.GetId()));
                             }
                             propertyInfo.SetValue(weather, weatherInfors);
                         }
@@ -189,7 +189,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
                             propertyInfo.SetValue(weatherInHour, convertedValue);
                         }
                     }
-                    weatherInHour.WeatherId = id;
+                    weatherInHour.SetWeatherId(id);
                 }
                 catch (Exception e)
                 {

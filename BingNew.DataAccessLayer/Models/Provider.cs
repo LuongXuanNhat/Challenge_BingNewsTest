@@ -19,5 +19,9 @@ namespace BingNew.DataAccessLayer.Models
         {
         }
 
+        public string GetChannelName()
+        {
+            return ChannelName;
+        }
     }
 }

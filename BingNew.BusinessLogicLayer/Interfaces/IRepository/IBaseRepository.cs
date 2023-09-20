@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace BingNew.BusinessLogicLayer.Interfaces.IRepository
 {
-    public interface IBaseRepository<TEntity> where TEntity : class
+    public interface IBaseRepository<T> where T : class
     {
-        Task Add(TEntity entity);
-        Task<TEntity> GetById(string id);
-        Task Update(TEntity entity);
+        Task Add(T entity);
+        Task<T> GetById(string id);
+        Task<bool> Update(T entity);
         Task Delete(string id);
-        Task<IEnumerable<TEntity>> GetAll();
+        Task<IEnumerable<T>> GetAll();
     }
 }

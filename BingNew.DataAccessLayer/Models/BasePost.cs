@@ -7,14 +7,18 @@ namespace BingNew.DataAccessLayer.Models
         public BasePost()
         {
             Id = Guid.NewGuid();
+            ProviderId = "1";
+            PubDate = DateTime.Now;
+            Url = "a";
+            Title = "b";
+            Description = "c";
         }
-
-        protected Guid Id;
-        protected string ProviderId;
-        protected DateTime PubDate;
-        protected string Url;
-        protected string Title;
-        protected string Description;
+        protected Guid Id { get; set; }
+        protected string ProviderId { get; set; }
+        protected DateTime PubDate { get; set; }
+        protected string Url { get; set; }
+        protected string Title { get; set; }
+        protected string Description { get; set; }
 
         public Guid GetId()
         {

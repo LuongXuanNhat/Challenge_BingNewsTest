@@ -1,4 +1,5 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces;
+﻿using BingNew.BusinessLogicLayer.DapperContext;
+using BingNew.BusinessLogicLayer.Interfaces;
 using BingNew.BusinessLogicLayer.Interfaces.IRepository;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
@@ -9,6 +10,7 @@ using BingNew.DataAccessLayer.Repositories;
 using BingNew.DataAccessLayer.TestData;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -20,6 +22,8 @@ namespace BingNew.BusinessLogicLayer.Services
 {
     public class ArticleService : IArticleService
     {
+        private readonly DbContext _dbContext;
+
         private readonly float _viewMultiplier = 0.2f;
         private readonly float _likeMultiplier = 0.3f;
         private readonly float _commentMultiplier = 0.3f;
@@ -32,11 +36,13 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public ArticleService(IArticleRepository articleRepository,
                               IProviderService providerService,
-                              IRssDataSource dataSource )
+                              IRssDataSource dataSource,
+                              DbContext dbContext)
         {
             _articleRepository = articleRepository;
             _channelService = providerService;
             _rssDataSource = dataSource;
+            _dbContext = dbContext;
         }   
         public async Task<bool> Add(Article entity)
         {

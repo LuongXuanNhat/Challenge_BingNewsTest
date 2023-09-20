@@ -18,5 +18,42 @@
         {
             return HourlyWeather;
         }
+
+        public Guid GetId()
+        {
+            return Id;
+        }
+
+        public string GetPlace()
+        {
+            return Place;
+        }
+
+        public string GetIcon()
+        {
+            return Icon;
+        }
+        public double GetTemperature()
+        {
+            return Temperature;
+        }
+        public int GetHumidity()
+        {
+            return Humidity;
+        }
+        public DateTime GetPubDate()
+        {
+            return PubDate;
+        }
+        public string GetDesciption()
+        {
+            return Description;
+        }
+        public List<WeatherInfo> GetWeatherInfo()
+        {
+            return HourlyWeather;
+        }
+
+
     }
 }
