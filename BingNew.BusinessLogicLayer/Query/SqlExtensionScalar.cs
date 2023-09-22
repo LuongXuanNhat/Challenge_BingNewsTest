@@ -1,0 +1,49 @@
+﻿using System;
+using System.Data.SqlClient;
+
+namespace BingNew.BusinessLogicLayer.Query
+{
+    public static class SqlExtensionScalar
+    {
+
+        public static dynamic? ExecuteScalar(this SqlConnection connection, string sql)
+        {
+            connection.Open();
+            using (var command = new SqlCommand(sql, connection))
+            {
+                var result = command.ExecuteScalar();
+                return result != DBNull.Value ? (dynamic)result : null;
+            }
+        }
+
+        public static T? ExecuteScalar<T>(this SqlConnection connection, string sql)
+        {
+            connection.Open();
+            using (var command = new SqlCommand(sql, connection))
+            {
+                var result = command.ExecuteScalar();
+                return result != DBNull.Value ? (T)result : default(T);
+            }
+        }
+
+        public static async Task<dynamic?> ExecuteScalarAsync(this SqlConnection connection, string sql)
+        {
+            await connection.OpenAsync();
+            using (var command = new SqlCommand(sql, connection))
+            {
+                var result = await command.ExecuteScalarAsync();
+                return result != DBNull.Value ? (dynamic)result : null;
+            }
+        }
+
+        public static async Task<T?> ExecuteScalarAsync<T>(this SqlConnection connection, string sql)
+        {
+            await connection.OpenAsync();
+            using (var command = new SqlCommand(sql, connection))
+            {
+                var result = await command.ExecuteScalarAsync();
+                return result != DBNull.Value ? (T?)result : default(T?);
+            }
+        }
+    }
+}
