@@ -1,6 +1,7 @@
 ﻿using BingNew.BusinessLogicLayer.Query;
 using BingNew.DataAccessLayer.Constants;
 using BingNew.DataAccessLayer.Models;
+using Dasync.Collections;
 using System.Data.SqlClient;
 
 namespace NewsAggregationTest
@@ -13,7 +14,7 @@ namespace NewsAggregationTest
             _connecString = new ConstantCommon().connectString;
         }
 
-        #region ORM Query Single Row
+        #region Query Single Row
         [Fact]
         public void GetArticle_Success_Using_QuerySingleT()
         {
@@ -241,11 +242,15 @@ namespace NewsAggregationTest
         {
             using (var connection = new SqlConnection(_connecString))
             {
-                var sql = "SELECT * FROM Article";
+                var sql = "SELECT * FROM Article WHERE ProviderId = '2';";
                 var result = connection.Query(sql).ToList();
+                var firstArticle = result.FirstOrDefault() as Article;
 
                 Assert.NotEmpty(result);
-                Assert.IsType<Article>(result.First());
+                if (firstArticle != null)
+                {
+                    Assert.NotNull(firstArticle.GetTitle());
+                } else Assert.True(false);
             }
         }
 
@@ -256,13 +261,170 @@ namespace NewsAggregationTest
             {
                 var sql = "SELECT * FROM Article";
                 var result = connection.Query<Article>(sql).ToList();
-                var first = result.First();
+                var first = result.FirstOrDefault();
 
                 Assert.NotEmpty(result);
                 Assert.IsType<Article>(first);
             }
         }
 
+        [Fact]
+        public async Task Get_Articles_Async_Success()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                var sql = "SELECT * FROM Article";
+                var result = await connection.QueryAsync(sql).ToListAsync();
+
+                Assert.NotEmpty(result);
+                Assert.IsType<Article>(result.FirstOrDefault());
+            }
+        }
+
+        [Fact]
+        public async Task Get_Articles_AsyncT_Success()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                var sql = "SELECT * FROM Article";
+                var result = await connection.QueryAsync<Article>(sql).ToListAsync();
+
+                Assert.NotEmpty(result);
+                Assert.IsType<Article>(result.FirstOrDefault());
+            }
+        }
+
+        #endregion
+
+        #region Query Multiple Results
+
+        [Fact]
+        public void Test_QueryMultiple()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                string sql = @"
+                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Provider WHERE Id = '2';
+            ";
+                var result = connection.QueryMultiple(sql).ToList();
+                var firstArticle = result.FirstOrDefault() as Article;
+
+                Assert.NotEmpty(result);
+                if (firstArticle != null)
+                {
+                    Assert.NotNull(firstArticle.GetTitle());
+                }
+                else Assert.True(false);
+            }
+        }
+        
+        [Fact]
+        public async Task Test_QueryMultipleAsync()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                string sql = @"
+                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Provider WHERE Id = '2';      
+                ";
+                var result = await connection.QueryMultipleAsync(sql);
+                var firstArticle = await result.FirstOrDefaultAsync() as Article;
+
+                Assert.NotNull(result);
+                if (firstArticle != null)   
+                     Assert.NotNull(firstArticle.GetTitle());
+                else Assert.True(false);
+                
+            }
+        }
+
+        [Fact]
+        public void Read_QueryMultiple_Success()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                string sql = @"
+                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Provider WHERE Id = '2';      
+                ";
+                var result = connection.QueryMultiple(sql);
+
+                var articles = result.Read<Article>().ToList();
+                Assert.NotNull(articles);
+
+                var providers = result.Read<Provider>().ToList();
+                Assert.NotNull(providers);
+            }
+        }
+
+        [Fact]
+        public void ReadFirst_QueryMultiple_Success()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                string sql = @"
+                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Provider WHERE Id = '2';      
+                ";
+                var result = connection.QueryMultiple(sql);
+
+                var article = result.ReadFirst<Article>();
+                Assert.NotNull(article);
+                Assert.IsType<Article>(article);
+
+                var provider = result.ReadFirst<Provider>();
+                Assert.NotNull(provider);
+            }
+        }
+
+        [Fact]
+        public async Task ReadAsync_QueryMultiple_Success()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                string sql = @"
+                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Provider WHERE Id = '2';      
+                ";
+                var result = await connection.QueryMultipleAsync(sql);
+
+                var articles = await result.ReadAsync<Article>().ToListAsync();
+                var firstArticle = articles.FirstOrDefault();
+
+                Assert.NotNull(articles);
+                if (firstArticle != null) Assert.NotNull(firstArticle.GetTitle());
+                else Assert.True(false);
+            }
+        }
+
+        [Fact]
+        public async Task ReadFirstAsync_QueryMultiple_Success()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                string sql = @"
+                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Provider WHERE Id = '2'; ";
+                var result = await connection.QueryMultipleAsync(sql);
+
+                var article = await result.ReadFirstAsync<Article>();
+                Assert.NotNull(article);
+
+                var provider = await result.ReadFirstAsync<Topic>();
+                Assert.Null(provider);
+            }
+        }
+
+        #endregion
+
+        #region Non-Query with CRUD
+
+        [Fact]
+        public void Object_Insert_Success()
+        {
+
+        }
 
         #endregion
     }

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BingNew.BusinessLogicLayer.Query
 {
@@ -15,7 +9,7 @@ namespace BingNew.BusinessLogicLayer.Query
         public static T QuerySingle<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
-            connection.Open();
+            if (connection.State == ConnectionState.Closed) connection.Open();
             using (var command = connection.CreateCommand())
             {
                 command.Connection = connection;
@@ -36,7 +30,7 @@ namespace BingNew.BusinessLogicLayer.Query
         public static T? QuerySingleOrDefault<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
-            connection.Open();
+            if (connection.State == ConnectionState.Closed) connection.Open();
             using (var command = connection.CreateCommand())
             {
                 command.Connection = connection;
@@ -64,7 +58,7 @@ namespace BingNew.BusinessLogicLayer.Query
         public static T QueryFirst<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
-            connection.Open();
+            if (connection.State == ConnectionState.Closed) connection.Open();
             using (var command = connection.CreateCommand())
             {
                 command.Connection = connection;
@@ -85,7 +79,7 @@ namespace BingNew.BusinessLogicLayer.Query
         public static T? QueryFirstOrDefault<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
-            connection.Open();
+            if (connection.State == ConnectionState.Closed) connection.Open();
             using (var command = connection.CreateCommand())
             {
                 command.Connection = connection;
@@ -104,10 +98,10 @@ namespace BingNew.BusinessLogicLayer.Query
             }
         }
 
-        public static dynamic QuerySingle(this SqlConnection connectionn, string sql)
+        public static dynamic QuerySingle(this SqlConnection connection, string sql)
         {
-            connectionn.Open();
-            using (var command = new SqlCommand(sql, connectionn))
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            using (var command = new SqlCommand(sql, connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
@@ -141,10 +135,10 @@ namespace BingNew.BusinessLogicLayer.Query
             }
         }
 
-        public static dynamic? QuerySingleOrDefault(this SqlConnection connectionn, string sql)
+        public static dynamic? QuerySingleOrDefault(this SqlConnection connection, string sql)
         {
-            connectionn.Open();
-            using (var command = new SqlCommand(sql, connectionn))
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            using (var command = new SqlCommand(sql, connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
@@ -180,10 +174,10 @@ namespace BingNew.BusinessLogicLayer.Query
             }
         }
 
-        public static dynamic QueryFirst(this SqlConnection connectionn, string sql)
+        public static dynamic QueryFirst(this SqlConnection connection, string sql)
         {
-            connectionn.Open();
-            using (var command = new SqlCommand(sql, connectionn))
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            using (var command = new SqlCommand(sql, connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
@@ -209,10 +203,10 @@ namespace BingNew.BusinessLogicLayer.Query
             }
         }
 
-        public static dynamic? QueryFirstOrDefault(this SqlConnection connectionn, string sql)
+        public static dynamic? QueryFirstOrDefault(this SqlConnection connection, string sql)
         {
-            connectionn.Open();
-            using (var command = new SqlCommand(sql, connectionn))
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            using (var command = new SqlCommand(sql, connection))
             {
                 using (var reader = command.ExecuteReader())
                 {

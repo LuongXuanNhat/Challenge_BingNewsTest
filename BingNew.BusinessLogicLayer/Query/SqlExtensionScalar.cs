@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace BingNew.BusinessLogicLayer.Query
@@ -8,7 +9,7 @@ namespace BingNew.BusinessLogicLayer.Query
 
         public static dynamic? ExecuteScalar(this SqlConnection connection, string sql)
         {
-            connection.Open();
+            if (connection.State == ConnectionState.Closed) connection.Open();
             using (var command = new SqlCommand(sql, connection))
             {
                 var result = command.ExecuteScalar();
@@ -18,7 +19,7 @@ namespace BingNew.BusinessLogicLayer.Query
 
         public static T? ExecuteScalar<T>(this SqlConnection connection, string sql)
         {
-            connection.Open();
+            if (connection.State == ConnectionState.Closed) connection.Open();
             using (var command = new SqlCommand(sql, connection))
             {
                 var result = command.ExecuteScalar();
@@ -28,7 +29,7 @@ namespace BingNew.BusinessLogicLayer.Query
 
         public static async Task<dynamic?> ExecuteScalarAsync(this SqlConnection connection, string sql)
         {
-            await connection.OpenAsync();
+            if (connection.State == ConnectionState.Closed) await connection.OpenAsync();
             using (var command = new SqlCommand(sql, connection))
             {
                 var result = await command.ExecuteScalarAsync();
@@ -38,7 +39,7 @@ namespace BingNew.BusinessLogicLayer.Query
 
         public static async Task<T?> ExecuteScalarAsync<T>(this SqlConnection connection, string sql)
         {
-            await connection.OpenAsync();
+            if (connection.State == ConnectionState.Closed) await connection.OpenAsync();
             using (var command = new SqlCommand(sql, connection))
             {
                 var result = await command.ExecuteScalarAsync();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BingNew.BusinessLogicLayer.Query
 {
-    public static class SqlExtensionCommon
+    public static class SqlExtensionCommon 
     {
         public static string? ExtractTypeNameFromSql(string? sql)
         {
@@ -36,8 +37,7 @@ namespace BingNew.BusinessLogicLayer.Query
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies)
             {
-                var type = assembly.GetType(typeName);
-                type = assembly.GetTypes().FirstOrDefault(t => t.Name == typeName);
+                var type = assembly.GetTypes().FirstOrDefault(t => t.Name == typeName);
                 if (type != null)
                 {
                     return type;
