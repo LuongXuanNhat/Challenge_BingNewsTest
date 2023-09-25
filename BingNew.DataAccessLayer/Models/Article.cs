@@ -9,28 +9,40 @@ namespace BingNew.DataAccessLayer.Models
         private int DisLikeNumber;
         private int CommentNumber ;
         private int ViewNumber ;
-        private double Score ;
+       //// private double Score ;
         private string ImgUrl;
-        private string Channel;
-        private string Category;
+      ///  private string Channel;
+        private string TopicId;
 
+
+        public Article(int likeNumber, int disLikeNumber, int commentNumber, int viewNumber, string imgUrl,
+         string category, string providerId, DateTime pubDate, string url, string title, string description)
+        {
+            Id = Guid.NewGuid();
+            LikeNumber = likeNumber;
+            DisLikeNumber = disLikeNumber;
+            CommentNumber = commentNumber;
+            ViewNumber = viewNumber;
+            ImgUrl = imgUrl;
+            TopicId = category;
+            ProviderId = providerId;
+            PubDate = pubDate;
+            Url = url;
+            Title = title;
+            Description = description;
+        }
         public Article() : base()
         {
             ImgUrl = string.Empty;
-            Channel = string.Empty;
-            Category = string.Empty;
+            TopicId = string.Empty;
         }
         public string GetImgUrl()
         {
             return ImgUrl;
         }
-        public string GetChannel()
-        {
-            return Channel;
-        }
         public string GetCategory()
         {
-            return Category;
+            return TopicId;
         }
 
         public float GetCommentNumber()
@@ -47,19 +59,9 @@ namespace BingNew.DataAccessLayer.Models
         {
             return LikeNumber;
         }
-
-        public double GetScore()
-        {
-            return Score;
-        }
         public float GetViewNumber()
         {
             return ViewNumber;
-        }
-
-        public void SetChannel(string channel)
-        {
-            Channel = channel;
         }
         public void SetLikeNumber(int value)
         {
@@ -80,12 +82,6 @@ namespace BingNew.DataAccessLayer.Models
         {
             ViewNumber = value;
         }
-
-        public void SetScore(double value)
-        {
-            Score = value;
-        }
-
         public void SetImgUrl(string value)
         {
             ImgUrl = value;
@@ -93,7 +89,7 @@ namespace BingNew.DataAccessLayer.Models
 
         public void SetCategory(string value)
         {
-            Category = value;
+            TopicId = value;
         }
 
     }

@@ -1,15 +1,14 @@
-﻿using Dasync.Collections;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 
-namespace BingNew.BusinessLogicLayer.Query
+namespace BingNew.ORM.Query
 {
     public static class SqlExtensionMultipleRows
     {
         public static IEnumerable<dynamic> Query(this SqlConnection connection, string sql)
         {
-            if (connection.State == ConnectionState.Closed)  connection.Open();
+            if (connection.State == ConnectionState.Closed) connection.Open();
             using (var command = new SqlCommand(sql, connection))
             {
                 using (var reader = command.ExecuteReader())

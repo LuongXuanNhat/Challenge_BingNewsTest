@@ -20,11 +20,11 @@ namespace BingNew.BusinessLogicLayer.Services
 {
     public class ArticleService : IArticleService
     {
-        private readonly float _viewMultiplier = 0.2f;
-        private readonly float _likeMultiplier = 0.3f;
-        private readonly float _commentMultiplier = 0.3f;
-        private readonly float _disLikeMultiplier = 0.2f;
-        private readonly int _trendingStoriesNumber = 9;
+        ////private readonly float _viewMultiplier = 0.2f;
+        ////private readonly float _likeMultiplier = 0.3f;
+        ////private readonly float _commentMultiplier = 0.3f;
+        ////private readonly float _disLikeMultiplier = 0.2f;
+        ////private readonly int _trendingStoriesNumber = 9;
 
         private readonly IRssDataSource _rssDataSource;
         private readonly IProviderService _channelService;
@@ -52,7 +52,7 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public async Task<bool> AddRange(IEnumerable<Article> articles)
         {
-            await _channelService.FilterChannelsToAdd(articles);
+          ////  await _channelService.FilterChannelsToAdd(articles);
             try
             {
                 foreach (var item in articles)
@@ -166,28 +166,28 @@ namespace BingNew.BusinessLogicLayer.Services
         }
 
         ////  DateTime specificDate = new DateTime(2023, 9, 12, 0, 0, 0, DateTimeKind.Utc);
-        public async Task<List<Article>> TrendingStories()
-        {
-            try
-            {
-                var articles = await _articleRepository.GetAll();
-                articles = articles.Where(x=>x.GetPubDate().Date == DateTime.Now.Date).ToList();
-                return GetTrendingStories(articles);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
-                return new List<Article>();
-            }
-        }
+        //public async Task<List<Article>> TrendingStories()
+        //{
+        //    try
+        //    {
+        //        var articles = await _articleRepository.GetAll();
+        //        articles = articles.Where(x=>x.GetPubDate().Date == DateTime.Now.Date).ToList();
+        //        return GetTrendingStories(articles);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
+        //        return new List<Article>();
+        //    }
+        //}
 
-        private List<Article> GetTrendingStories(IEnumerable<Article> articles)
-        {
-            foreach (var item in articles)
-            {
-                item.SetScore( item.GetViewNumber() * _viewMultiplier + item.GetLikeNumber() * _likeMultiplier + item.GetDisLikeNumber() * _disLikeMultiplier + item.GetCommentNumber() * _commentMultiplier );
-            }
-            return articles.OrderByDescending(x => x.GetScore()).Take(_trendingStoriesNumber).ToList();
-        }
+        //private List<Article> GetTrendingStories(IEnumerable<Article> articles)
+        //{
+        //    foreach (var item in articles)
+        //    {
+        //        item.SetScore( item.GetViewNumber() * _viewMultiplier + item.GetLikeNumber() * _likeMultiplier + item.GetDisLikeNumber() * _disLikeMultiplier + item.GetCommentNumber() * _commentMultiplier );
+        //    }
+        //    return articles.OrderByDescending(x => x.GetScore()).Take(_trendingStoriesNumber).ToList();
+        //}
     }
 }

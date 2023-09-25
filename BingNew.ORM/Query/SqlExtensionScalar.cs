@@ -1,8 +1,7 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 
-namespace BingNew.BusinessLogicLayer.Query
+namespace BingNew.ORM.Query
 {
     public static class SqlExtensionScalar
     {
@@ -23,7 +22,7 @@ namespace BingNew.BusinessLogicLayer.Query
             using (var command = new SqlCommand(sql, connection))
             {
                 var result = command.ExecuteScalar();
-                return result != DBNull.Value ? (T)result : default(T);
+                return result != DBNull.Value ? (T)result : default;
             }
         }
 
@@ -43,7 +42,7 @@ namespace BingNew.BusinessLogicLayer.Query
             using (var command = new SqlCommand(sql, connection))
             {
                 var result = await command.ExecuteScalarAsync();
-                return result != DBNull.Value ? (T?)result : default(T?);
+                return result != DBNull.Value ? (T?)result : default;
             }
         }
     }

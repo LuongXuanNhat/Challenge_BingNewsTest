@@ -1,17 +1,22 @@
-﻿using BingNew.BusinessLogicLayer.Query;
-using BingNew.DataAccessLayer.Constants;
+﻿using BingNew.DataAccessLayer.Constants;
 using BingNew.DataAccessLayer.Models;
 using Dasync.Collections;
 using System.Data.SqlClient;
+using BingNew.ORM.Query;
+using BingNew.BusinessLogicLayer;
+using System.Data;
+using BingNew.ORM.NonQuery;
 
 namespace NewsAggregationTest
 {
     public class ORMTest
     {
         private readonly string _connecString;
+        private readonly IDbConnection _dataContext;
         public ORMTest()
         {
             _connecString = new ConstantCommon().connectString;
+            _dataContext = new DapperContext().CreateConnection();
         }
 
         #region Query Single Row
@@ -420,11 +425,78 @@ namespace NewsAggregationTest
 
         #region Non-Query with CRUD
 
+
         [Fact]
         public void Object_Insert_Success()
         {
-
+            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", "News Category",
+                                    "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
+            using (var connection = new SqlConnection(_connecString))
+            {
+                bool result = connection.Insert(article);
+                Assert.True(result);
+            }
         }
+
+        [Fact]
+        public void Object_Insert_Success_With_Parameter_Empty()
+        {
+            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", null,
+                                    "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
+            using (var connection = new SqlConnection(_connecString))
+            {
+                bool result = connection.Insert(article);
+                Assert.True(result);
+            }
+        }
+
+        [Fact]
+        public void Object_GetById_Success()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                Guid articleId = new Guid("CAA91D5E-453B-45B2-857F-00E279711534");
+                var article = connection.GetById<Article>(articleId);
+
+                Assert.NotNull(article);
+                Assert.Equal(articleId, article.GetId());
+            }
+        }
+
+        [Fact]
+        public void Object_Update_Success()
+        {
+            using (var connection = new SqlConnection(_connecString))
+            {
+                Guid articleId = new Guid("CAA91D5E-453B-45B2-857F-00E279711534");
+                var article = connection.GetById<Article>(articleId);
+                article.SetTitle("Updated Title");
+
+                bool result = connection.Update(article);
+                Assert.True(result);
+
+                var updatedArticle = connection.GetById<Article>(article.GetId());
+                Assert.Equal("Updated Title", updatedArticle.GetTitle());
+            }
+        }
+
+        [Fact]
+        public void Object_Delete_Success()
+        {
+            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", null,
+                "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
+            using (var connection = new SqlConnection(_connecString))
+            {
+                connection.Insert(article);
+                bool result = connection.Delete<Article>(article.GetId());
+                Assert.True(result);
+
+                var deletedArticle = connection.GetById<Article>(article.GetId());
+                Assert.Null(deletedArticle);
+            }
+        }
+
+        
 
         #endregion
     }

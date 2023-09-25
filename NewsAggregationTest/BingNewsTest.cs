@@ -273,8 +273,6 @@ namespace NewsAggregationTest
 
         #endregion
 
-        
-
     }
 
   

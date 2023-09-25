@@ -22,11 +22,11 @@ namespace BingNew.PresentationLayer.Controllers
             return await _articleService.GetAll();
         }
 
-        // GET api/TrendingStories
-        [HttpGet("TrendingStories")]
-        public async Task<IEnumerable<Article>> GetTrendingStories()
-        {
-            return await _articleService.TrendingStories();
-        }
+        //// GET api/TrendingStories
+        ////[HttpGet("TrendingStories")]
+        ////public async Task<IEnumerable<Article>> GetTrendingStories()
+        ////{
+        ////    return await _articleService.TrendingStories();
+        ////}
     }
 }

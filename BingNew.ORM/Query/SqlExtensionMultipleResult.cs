@@ -1,16 +1,8 @@
-﻿using BingNew.DataAccessLayer.Models;
-using Dasync.Collections;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
+﻿using System.Data.SqlClient;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace BingNew.BusinessLogicLayer.Query
+
+namespace BingNew.ORM.Query
 {
     public static class SqlExtensionMultipleResult
     {
@@ -93,10 +85,10 @@ namespace BingNew.BusinessLogicLayer.Query
                         field.SetValue(result, fieldValue);
                     }
 
-                    return result; 
+                    return result;
                 }
             }
-            return default(T);
+            return default;
         }
 
         public static async IAsyncEnumerable<T> ReadAsync<T>(this IAsyncEnumerable<dynamic> queryResults) where T : new()
@@ -121,21 +113,21 @@ namespace BingNew.BusinessLogicLayer.Query
         public static async Task<T?> ReadFirstAsync<T>(this IAsyncEnumerable<dynamic> queryResults) where T : new()
         {
             await foreach (var queryResult in queryResults)
+            {
+                if (queryResult is T typedResult)
                 {
-                    if (queryResult is T typedResult)
-                    {
-                        var result = new T();
-                        var fields = typeof(T).GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+                    var result = new T();
+                    var fields = typeof(T).GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
 
-                        foreach (var field in fields)
-                        {
-                            var fieldValue = field.GetValue(typedResult);
-                            field.SetValue(result, fieldValue);
-                        }
-                        return result;
+                    foreach (var field in fields)
+                    {
+                        var fieldValue = field.GetValue(typedResult);
+                        field.SetValue(result, fieldValue);
                     }
+                    return result;
                 }
-            return default(T);
+            }
+            return default;
         }
 
 

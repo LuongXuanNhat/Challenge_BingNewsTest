@@ -2,7 +2,7 @@
 using System.Data;
 using System.Reflection;
 
-namespace BingNew.BusinessLogicLayer.Query
+namespace BingNew.ORM.Query
 {
     public static class SqlExtensionSingle
     {

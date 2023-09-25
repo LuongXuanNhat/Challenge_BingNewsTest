@@ -7,9 +7,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BingNew.BusinessLogicLayer.Query
+namespace BingNew.ORM.Query
 {
-    public static class SqlExtensionCommon 
+    public static class SqlExtensionCommon
     {
         public static string? ExtractTypeNameFromSql(string? sql)
         {
@@ -24,7 +24,8 @@ namespace BingNew.BusinessLogicLayer.Query
                     if (tableNameEndIndex == -1)
                     {
                         return tableNameSubstring;
-                    } else
+                    }
+                    else
                     {
                         return tableNameSubstring.Substring(0, tableNameEndIndex);
                     }

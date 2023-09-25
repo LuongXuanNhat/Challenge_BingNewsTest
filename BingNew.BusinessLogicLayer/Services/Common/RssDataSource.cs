@@ -41,8 +41,8 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             foreach (var item in items)
             {
                 var article = MapToArticle(item, mapping);
-                if(config.Channel != null)
-                    article.SetChannel(config.Channel);
+                //if(config.Channel != null)
+                //    article.SetChannel(config.Channel);
                 articles.Add(article);
             }
             return articles;

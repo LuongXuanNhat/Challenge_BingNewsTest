@@ -40,20 +40,20 @@ namespace BingNew.BusinessLogicLayer.Services
             throw new NotImplementedException();
         }
 
-        public async Task FilterChannelsToAdd(IEnumerable<Article> articles)
-        {
-            var providers = articles.Select(x => x.GetChannel()).Distinct().ToList();
-            var channels = await _providerRepository.GetAll();
-            foreach (var item in providers)
-            {
-                if (!channels.Any(x => x.GetChannelName().Equals(item)))
-                {
-                    Provider newProvider = new Provider(item.ToString());
-                    await _providerRepository.Add(newProvider);
-                }
+        ////public async Task FilterChannelsToAdd(IEnumerable<Article> articles)
+        ////{
+        ////    var providers = articles.Select(x => x.GetChannel()).Distinct().ToList();
+        ////    var channels = await _providerRepository.GetAll();
+        ////    foreach (var item in providers)
+        ////    {
+        ////        if (!channels.Any(x => x.GetChannelName().Equals(item)))
+        ////        {
+        ////            Provider newProvider = new Provider(item.ToString());
+        ////            await _providerRepository.Add(newProvider);
+        ////        }
                 
-            }
-        }
+        ////    }
+        ////}
 
         public Task<IEnumerable<Provider>> GetAll()
         {
