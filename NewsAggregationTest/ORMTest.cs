@@ -12,11 +12,9 @@ namespace NewsAggregationTest
     public class ORMTest
     {
         private readonly string _connecString;
-        private readonly IDbConnection _dataContext;
         public ORMTest()
         {
             _connecString = new ConstantCommon().connectString;
-            _dataContext = new DapperContext().CreateConnection();
         }
 
         #region Query Single Row
@@ -441,7 +439,7 @@ namespace NewsAggregationTest
         [Fact]
         public void Object_Insert_Success_With_Parameter_Empty()
         {
-            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", null,
+            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", "",
                                     "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
             using (var connection = new SqlConnection(_connecString))
             {
@@ -483,7 +481,7 @@ namespace NewsAggregationTest
         [Fact]
         public void Object_Delete_Success()
         {
-            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", null,
+            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", "",
                 "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
             using (var connection = new SqlConnection(_connecString))
             {

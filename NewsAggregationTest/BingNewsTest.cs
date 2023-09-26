@@ -21,9 +21,6 @@ namespace NewsAggregationTest
         private readonly string _connecString;
         private readonly IApiDataSource _apiDataSource;
         private readonly IRssDataSource _rssDataSource;
-        ////private readonly IArticleService _articleService;
-        ////private readonly IMappingService _mappingService;
-        ////private readonly IWeatherService _weatherService;
 
         public BingNewsTest()
         {

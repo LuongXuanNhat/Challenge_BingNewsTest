@@ -6,7 +6,7 @@ namespace BingNew.ORM.Query
 {
     public static class SqlExtensionMultipleRows
     {
-        public static IEnumerable<dynamic> Query(this SqlConnection connection, string sql)
+        public static IEnumerable<dynamic?> Query(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) connection.Open();
             using (var command = new SqlCommand(sql, connection))
@@ -36,7 +36,31 @@ namespace BingNew.ORM.Query
                 }
             }
         }
-
+        public static IEnumerable<T> Query<T>(this SqlConnection connection, string sql)
+        {
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            using (var command = new SqlCommand(sql, connection))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var obj = Activator.CreateInstance<T>();
+                        for (var i = 0; i < reader.FieldCount; i++)
+                        {
+                            var columnName = reader.GetName(i);
+                            var propertyInfo = typeof(T).GetField(columnName, BindingFlags.NonPublic | BindingFlags.Instance);
+                            if (propertyInfo != null && !reader.IsDBNull(i))
+                            {
+                                var value = reader.GetValue(i);
+                                propertyInfo.SetValue(obj, value);
+                            }
+                        }
+                        yield return obj;
+                    }
+                }
+            }
+        }
         public static async IAsyncEnumerable<dynamic> QueryAsync(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) await connection.OpenAsync();
@@ -67,36 +91,6 @@ namespace BingNew.ORM.Query
                 }
             }
         }
-
-
-
-
-        public static IEnumerable<T> Query<T>(this SqlConnection connection, string sql)
-        {
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            using (var command = new SqlCommand(sql, connection))
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var obj = Activator.CreateInstance<T>();
-                        for (var i = 0; i < reader.FieldCount; i++)
-                        {
-                            var columnName = reader.GetName(i);
-                            var propertyInfo = typeof(T).GetField(columnName, BindingFlags.NonPublic | BindingFlags.Instance);
-                            if (propertyInfo != null && !reader.IsDBNull(i))
-                            {
-                                var value = reader.GetValue(i);
-                                propertyInfo.SetValue(obj, value);
-                            }
-                        }
-                        yield return obj;
-                    }
-                }
-            }
-        }
-
         public static async IAsyncEnumerable<T> QueryAsync<T>(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) await connection.OpenAsync();

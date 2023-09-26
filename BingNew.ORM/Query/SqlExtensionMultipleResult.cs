@@ -16,11 +16,10 @@ namespace BingNew.ORM.Query
             {
                 if (!string.IsNullOrWhiteSpace(sqlCommand))
                 {
-                    var queryResult = connection.QueryAsync(sqlCommand);
+                    var queryResult =  connection.QueryAsync(sqlCommand);
                     resultList.Add(queryResult);
                 }
             }
-
             async IAsyncEnumerable<dynamic> CombineResults()
             {
                 foreach (var result in resultList)
@@ -35,7 +34,7 @@ namespace BingNew.ORM.Query
             return CombineResults();
         }
 
-        public static IEnumerable<dynamic> QueryMultiple(this SqlConnection connection, string sql)
+        public static IEnumerable<dynamic?> QueryMultiple(this SqlConnection connection, string sql)
         {
             var sqlCommands = sql.Split(';')
                                  .Where(s => !string.IsNullOrWhiteSpace(s))
