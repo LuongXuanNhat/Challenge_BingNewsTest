@@ -23,27 +23,6 @@ namespace BingNew.ORM.Query
             {
                 yield return item;
             }
-            //using (var command = new SqlCommand(sql, connection))
-            //{
-            //    using (var reader = command.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            var obj = Activator.CreateInstance<T>();
-            //            for (var i = 0; i < reader.FieldCount; i++)
-            //            {
-            //                var columnName = reader.GetName(i);
-            //                var propertyInfo = typeof(T).GetField(columnName, BindingFlags.NonPublic | BindingFlags.Instance);
-            //                if (propertyInfo != null && !reader.IsDBNull(i))
-            //                {
-            //                    var value = reader.GetValue(i);
-            //                    propertyInfo.SetValue(obj, value);
-            //                }
-            //            }
-            //            yield return obj;
-            //        }
-            //    }
-            //}
         }
 
         private static IEnumerable<dynamic?> ReadValue(string sql, SqlConnection sqlConnection, Type resultType)
