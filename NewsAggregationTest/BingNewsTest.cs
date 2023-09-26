@@ -17,8 +17,6 @@ namespace NewsAggregationTest
         private readonly NewsService _newsService;
         private readonly DataSample _dataSample;
         private readonly Config _config;
-        private readonly IFixture _fixture;
-        private readonly string _connecString;
         private readonly IApiDataSource _apiDataSource;
         private readonly IRssDataSource _rssDataSource;
 
@@ -27,10 +25,8 @@ namespace NewsAggregationTest
             _dataSample = new DataSample();
             _newsService = new NewsService();
             _config = new Config();
-            _fixture = new Fixture();
             _apiDataSource = new ApiDataSource();
             _rssDataSource = new RssDataSource();
-            _connecString = new ConstantCommon().connectString;
         }
 
         private Config WeatherConfig()

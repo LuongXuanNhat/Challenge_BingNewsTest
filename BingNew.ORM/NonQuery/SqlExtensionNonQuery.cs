@@ -157,12 +157,12 @@ namespace BingNew.ORM.NonQuery
                     }
                 }
 
-                return default(T);
+                return new T();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("XUẤT HIỆN LỖI KHÔNG MONG MUỐN: " + ex.Message.ToString());
-                return default(T);
+                return new T();
             }
         }
 

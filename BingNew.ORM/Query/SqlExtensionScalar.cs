@@ -32,7 +32,7 @@ namespace BingNew.ORM.Query
             using (var command = new SqlCommand(sql, connection))
             {
                 var result = await command.ExecuteScalarAsync();
-                return result != DBNull.Value ? (dynamic)result : null;
+                return result != DBNull.Value ? result : null;
             }
         }
 
