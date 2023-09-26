@@ -354,7 +354,7 @@ namespace NewsAggregationTest
                 var result = connection.QueryMultiple(sql);
 
                 var articles = result.Read<Article>().ToList();
-                Assert.NotNull(articles);
+                Assert.Equal(2, articles.Count);
 
                 var providers = result.Read<Provider>().ToList();
                 Assert.NotNull(providers);
