@@ -27,15 +27,12 @@ namespace BingNew.BusinessLogicLayer.Services
         ////private readonly int _trendingStoriesNumber = 9;
 
         private readonly IRssDataSource _rssDataSource;
-        private readonly IProviderService _channelService;
         private readonly IArticleRepository _articleRepository;
 
         public ArticleService(IArticleRepository articleRepository,
-                              IProviderService providerService,
                               IRssDataSource dataSource )
         {
             _articleRepository = articleRepository;
-            _channelService = providerService;
             _rssDataSource = dataSource;
         }   
         public async Task<bool> Add(Article entity)
@@ -164,30 +161,5 @@ namespace BingNew.BusinessLogicLayer.Services
             }
             
         }
-
-        ////  DateTime specificDate = new DateTime(2023, 9, 12, 0, 0, 0, DateTimeKind.Utc);
-        //public async Task<List<Article>> TrendingStories()
-        //{
-        //    try
-        //    {
-        //        var articles = await _articleRepository.GetAll();
-        //        articles = articles.Where(x=>x.GetPubDate().Date == DateTime.Now.Date).ToList();
-        //        return GetTrendingStories(articles);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
-        //        return new List<Article>();
-        //    }
-        //}
-
-        //private List<Article> GetTrendingStories(IEnumerable<Article> articles)
-        //{
-        //    foreach (var item in articles)
-        //    {
-        //        item.SetScore( item.GetViewNumber() * _viewMultiplier + item.GetLikeNumber() * _likeMultiplier + item.GetDisLikeNumber() * _disLikeMultiplier + item.GetCommentNumber() * _commentMultiplier );
-        //    }
-        //    return articles.OrderByDescending(x => x.GetScore()).Take(_trendingStoriesNumber).ToList();
-        //}
     }
 }

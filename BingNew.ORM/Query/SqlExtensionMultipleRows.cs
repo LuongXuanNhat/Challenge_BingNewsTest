@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections;
+using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 
@@ -6,7 +7,7 @@ namespace BingNew.ORM.Query
 {
     public static class SqlExtensionMultipleRows
     {
-        public static IEnumerable<dynamic?>? Query(this SqlConnection sqlConnection, string sql)
+        public static IEnumerable<dynamic?> Query(this SqlConnection sqlConnection, string sql)
         {
             if (sqlConnection.State == ConnectionState.Closed) sqlConnection.Open();
             var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
@@ -14,9 +15,9 @@ namespace BingNew.ORM.Query
             if (resultType != null)
             {
                 return ReadValue(sql, sqlConnection, resultType);
-            } return default(dynamic);
+            } return new List<dynamic>();
         }
-        public static IEnumerable<T> Query<T>(this SqlConnection connection, string sql)
+        public static IEnumerable<T?> Query<T>(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) connection.Open();
             foreach (var item in ReadValue(sql, connection, typeof(T)))
@@ -50,7 +51,7 @@ namespace BingNew.ORM.Query
             }
         }
 
-        public static async IAsyncEnumerable<dynamic> QueryAsync(this SqlConnection connection, string sql)
+        public static async IAsyncEnumerable<dynamic?> QueryAsync(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) await connection.OpenAsync();
             var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
@@ -61,7 +62,7 @@ namespace BingNew.ORM.Query
             }
         }
 
-        public static async IAsyncEnumerable<T> QueryAsync<T>(this SqlConnection connection, string sql)
+        public static async IAsyncEnumerable<T?> QueryAsync<T>(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) await connection.OpenAsync();
             await foreach (var item in ReadValueAsync(connection, sql, typeof(T)))
