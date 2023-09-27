@@ -2,11 +2,8 @@
 using Newtonsoft.Json.Linq;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using System.Globalization;
-using BingNew.DataAccessLayer.TestData;
-using BingNew.BusinessLogicLayer.Interfaces;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using System.Reflection;
-using System.Text.Json.Nodes;
 
 namespace BingNew.BusinessLogicLayer.Services.Common
 {
@@ -136,13 +133,12 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             return weather;
         }
 
-        private void SetDateTimeProperty(PropertyInfo propertyInfo, Weather weather, string dateString)
+        private static void SetDateTimeProperty(PropertyInfo propertyInfo, Weather weather, string dateString)
         {
             if (string.IsNullOrEmpty(dateString))
             {
                 return;
             }
-
             dateString = dateString.Replace(" GMT+7", "");
             CultureInfo culture = CultureInfo.InvariantCulture;
             DateTime convertedValue = DateTime.Parse(dateString, culture);
@@ -168,7 +164,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             propertyInfo.SetValue(weather, weatherInfos);
         }
 
-        private void SetGeneralProperty(PropertyInfo propertyInfo, Weather weather, string sourceValue)
+        private static void SetGeneralProperty(PropertyInfo propertyInfo, Weather weather, string sourceValue)
         {
             if (string.IsNullOrEmpty(sourceValue))
             {
@@ -180,7 +176,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         }
 
 
-        private WeatherInfo ConvertDataToWeatherInfor(string data, List<MappingTable> weatherInfoMappingConfig)
+        private static WeatherInfo ConvertDataToWeatherInfor(string data, List<MappingTable> weatherInfoMappingConfig)
         {
             var weatherInHour = new WeatherInfo();
             JObject jsonObject = JObject.Parse(data);

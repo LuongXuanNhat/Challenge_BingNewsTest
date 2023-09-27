@@ -1,27 +1,18 @@
-﻿using AutoFixture;
-using BingNew.BusinessLogicLayer.Interfaces.IService;
+﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.BusinessLogicLayer.Services.Common;
-using BingNew.DataAccessLayer.Constants;
-using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.TestData;
-using System.Data;
-using System.Data.SqlClient;
-using System.Reflection;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace NewsAggregationTest
 {
     public class BingNewsTest
     {
-        private readonly DataSample _dataSample;
         private readonly Config _config;
         private readonly IApiDataSource _apiDataSource;
         private readonly IRssDataSource _rssDataSource;
 
         public BingNewsTest()
         {
-            _dataSample = new DataSample();
             _config = new Config();
             _apiDataSource = new ApiDataSource();
             _rssDataSource = new RssDataSource();
@@ -77,7 +68,7 @@ namespace NewsAggregationTest
             _config.Item = "item";
             _config.Channel = "Tuoi Tre News";
 
-            var mappingConfig = DataSourceFactory.CreateMapping(_dataSample.GetRssTuoiTreNewsDataMappingConfiguration());
+            var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetRssTuoiTreNewsDataMappingConfiguration());
             var result = _rssDataSource.ConvertDataToArticles(_config, mappingConfig);
 
             Assert.NotNull(result);
@@ -89,7 +80,7 @@ namespace NewsAggregationTest
             _config.Data = _rssDataSource.GetNews("https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN");
             _config.Item = "item";
 
-            var mappingConfig = DataSourceFactory.CreateMapping(_dataSample.GetGgTrendsNewsDataMappingConfiguration());
+            var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetGgTrendsNewsDataMappingConfiguration());
             var result = _rssDataSource.ConvertDataToArticles(_config, mappingConfig);
 
             Assert.NotNull(result);
@@ -105,7 +96,7 @@ namespace NewsAggregationTest
             _config.Data = _apiDataSource.GetNews(_config.Url);
             _config.Item = "results";
 
-            var mappingConfig = DataSourceFactory.CreateMapping(_dataSample.GetNewsDataIoMappingConfiguration());
+            var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetNewsDataIoMappingConfiguration());
             var result = _apiDataSource.ConvertDataToArticles(_config, mappingConfig);
 
             Assert.NotNull(result);

@@ -5,6 +5,7 @@ using System.Reflection;
 
 namespace BingNew.ORM.NonQuery
 {
+    #pragma warning disable S3011
     public static class SqlExtensionNonQuery
     {
         public static bool Insert<T>(this SqlConnection connection,T entity)
@@ -95,10 +96,10 @@ namespace BingNew.ORM.NonQuery
                 {
                     connection.Open();
                 }
+                string tableName = typeof(T).Name;
+                string query = $"DELETE {tableName} WHERE Id = @Id";
 
-                var sql = "DELETE FROM " + typeof(T).Name + " WHERE Id = @Id";
-
-                using (var command = new SqlCommand(sql, connection))
+                using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.Add(new SqlParameter("@Id", entityId));
                     command.ExecuteNonQuery();

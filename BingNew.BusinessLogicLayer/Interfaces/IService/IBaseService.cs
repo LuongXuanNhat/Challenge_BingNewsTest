@@ -1,11 +1,4 @@
-﻿using BingNew.DataAccessLayer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BingNew.BusinessLogicLayer.Interfaces.IService
+﻿namespace BingNew.BusinessLogicLayer.Interfaces.IService
 {
     public interface IBaseService<TEntity> where TEntity : class
     {

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace BingNew.DataAccessLayer.Models
+﻿namespace BingNew.DataAccessLayer.Models
 {
     public class BasePost
     {

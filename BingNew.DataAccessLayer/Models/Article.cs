@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace BingNew.DataAccessLayer.Models
+﻿namespace BingNew.DataAccessLayer.Models
 {
 
     public class Article : BasePost

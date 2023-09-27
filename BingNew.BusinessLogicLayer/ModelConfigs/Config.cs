@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace BingNew.BusinessLogicLayer.ModelConfig
+﻿namespace BingNew.BusinessLogicLayer.ModelConfig
 {
     public class Config
     {

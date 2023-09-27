@@ -1,20 +1,8 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces;
-using BingNew.BusinessLogicLayer.Interfaces.IRepository;
+﻿using BingNew.BusinessLogicLayer.Interfaces.IRepository;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
-using BingNew.BusinessLogicLayer.Repositories;
-using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Models;
-using BingNew.DataAccessLayer.Repositories;
-using BingNew.DataAccessLayer.TestData;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static Dapper.SqlMapper;
 
 namespace BingNew.BusinessLogicLayer.Services
 {

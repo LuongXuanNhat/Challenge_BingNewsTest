@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 
 namespace BingNew.ORM.Query
 {
+#pragma warning disable S3011
     public static class SqlExtensionMultipleRows
     {
         public static IEnumerable<dynamic?> Query(this SqlConnection sqlConnection, string sql)

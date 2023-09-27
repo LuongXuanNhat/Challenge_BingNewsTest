@@ -30,7 +30,7 @@ namespace BingNew.ORM.Query
                     }
                 }
             }
-            return CombineResults();
+            return await Task.Run(() => CombineResults());
         }
 
         public static IEnumerable<dynamic?> QueryMultiple(this SqlConnection connection, string sql)
@@ -77,6 +77,7 @@ namespace BingNew.ORM.Query
             return default;
         }
 
+        #pragma warning disable S3011
         private static T MapResult<T>(dynamic? result) where T : new()
         {
             var mappedResult = new T();
