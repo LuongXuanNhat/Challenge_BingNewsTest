@@ -1,4 +1,5 @@
-﻿public class MappingTable
+﻿namespace BingNew.BusinessLogicLayer.ModelConfig;
+public class MappingTable
 {
     public string SouPropertyPath { get; set; } = string.Empty;
     public string SouDatatype { get; set; } = string.Empty;

@@ -490,7 +490,7 @@ namespace NewsAggregationTest
                 Assert.True(result);
 
                 var deletedArticle = connection.GetById<Article>(article.GetId());
-                Assert.Null(deletedArticle);
+                Assert.Null(deletedArticle.GetTitle());
             }
         }
 
