@@ -96,8 +96,7 @@ namespace BingNew.ORM.NonQuery
                 {
                     connection.Open();
                 }
-                string tableName = typeof(T).Name;
-                string query = $"DELETE {tableName} WHERE Id = @Id";
+                string query = "DELETE "+ typeof(T).Name + " WHERE Id = @Id";
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -123,8 +122,7 @@ namespace BingNew.ORM.NonQuery
                 {
                     connection.Open();
                 }
-                var tableName = typeof(T).Name;
-                var sql = $"SELECT * FROM {tableName} WHERE Id = @Id";
+                var sql = "SELECT * FROM "+ typeof(T).Name + " WHERE Id = @Id";
 
                 using (var command = new SqlCommand(sql, connection))
                 {
