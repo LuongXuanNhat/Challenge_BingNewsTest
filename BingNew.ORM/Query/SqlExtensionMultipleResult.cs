@@ -30,7 +30,6 @@ namespace BingNew.ORM.Query
                     }
                 }
             }
-
             return CombineResults();
         }
 

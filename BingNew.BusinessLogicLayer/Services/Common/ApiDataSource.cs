@@ -5,6 +5,8 @@ using System.Globalization;
 using BingNew.DataAccessLayer.TestData;
 using BingNew.BusinessLogicLayer.Interfaces;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
+using System.Reflection;
+using System.Text.Json.Nodes;
 
 namespace BingNew.BusinessLogicLayer.Services.Common
 {
@@ -104,92 +106,111 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         {
             var weather = new Weather();
             JObject jsonObject = JObject.Parse(data);
+
             foreach (var obj in mapping)
             {
-                try
-                {
-                    var sourceValue = jsonObject.SelectToken(obj.SouPropertyPath)?.ToString();
-                    obj.SouValue = sourceValue ?? string.Empty;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
+                var sourceValue = jsonObject.SelectToken(obj.SouPropertyPath)?.ToString();
+                obj.SouValue = sourceValue ?? string.Empty;
 
                 var propertyInfo = typeof(Weather).GetProperty(obj.DesProperty);
-                if (propertyInfo != null && propertyInfo.PropertyType != null)
+
+                if (propertyInfo == null || propertyInfo.PropertyType == null)
                 {
-                    if (obj.SouDatatype == "string" && obj.DesDatatype == "DateTime")
-                    {
-                        string dateString = obj.SouValue;
-                        dateString = dateString.Replace(" GMT+7", "");
-                        CultureInfo culture = CultureInfo.InvariantCulture;
-                        DateTime convertedValue = DateTime.Parse(dateString, culture);
-                        propertyInfo.SetValue(weather, convertedValue);
-                    }
-                    else if (obj.SouDatatype == "string" && obj.DesDatatype == "List<WeatherInfo>")
-                    {
-                        var TestData = new DataSample();
-                        var weatherInfoMappingConfig = DataSourceFactory.CreateMapping(TestData.GetWeatherInforMappingConfiguration());
+                    continue;
+                }
 
-                        var hourlyWeatherList = jsonObject.SelectToken(obj.SouPropertyPath);
-                        if (hourlyWeatherList != null)
-                        {
-                            var weatherInfors = new List<WeatherInfo>();
-                            foreach (var item in hourlyWeatherList)
-                            {
-                                weatherInfors.Add(ConvertDataToWeatherInfor(item.ToString(), weatherInfoMappingConfig, weather.GetId()));
-                            }
-                            propertyInfo.SetValue(weather, weatherInfors);
-                        }
-
-                    }
-                    else
-                    {
-                        var convertedValue = Convert.ChangeType(obj.SouValue, propertyInfo.PropertyType);
-                        propertyInfo.SetValue(weather, convertedValue);
-                    }
+                if (obj.SouDatatype == "string" && obj.DesDatatype == "DateTime")
+                {
+                    SetDateTimeProperty(propertyInfo, weather, obj.SouValue);
+                }
+                else if (obj.SouDatatype == "string" && obj.DesDatatype == "List<WeatherInfo>")
+                {
+                    SetWeatherInfoListProperty(propertyInfo, weather, obj.SouPropertyPath, mapping, jsonObject);
+                }
+                else
+                {
+                    SetGeneralProperty(propertyInfo, weather, obj.SouValue);
                 }
             }
 
             return weather;
         }
-        private WeatherInfo ConvertDataToWeatherInfor(string data, List<MappingTable> weatherInfoMappingConfig, Guid id)
+
+        private void SetDateTimeProperty(PropertyInfo propertyInfo, Weather weather, string dateString)
+        {
+            if (string.IsNullOrEmpty(dateString))
+            {
+                return;
+            }
+
+            dateString = dateString.Replace(" GMT+7", "");
+            CultureInfo culture = CultureInfo.InvariantCulture;
+            DateTime convertedValue = DateTime.Parse(dateString, culture);
+            propertyInfo.SetValue(weather, convertedValue);
+        }
+
+        private void SetWeatherInfoListProperty(PropertyInfo propertyInfo, Weather weather, string sourcePropertyPath, List<MappingTable> mapping, JObject jsonObject)
+        {
+            var hourlyWeatherList = jsonObject.SelectToken(sourcePropertyPath);
+
+            if (hourlyWeatherList == null)
+            {
+                return;
+            }
+
+            var weatherInfos = new List<WeatherInfo>();
+
+            foreach (var item in hourlyWeatherList)
+            {
+                weatherInfos.Add(ConvertDataToWeatherInfor(item.ToString(), mapping));
+            }
+
+            propertyInfo.SetValue(weather, weatherInfos);
+        }
+
+        private void SetGeneralProperty(PropertyInfo propertyInfo, Weather weather, string sourceValue)
+        {
+            if (string.IsNullOrEmpty(sourceValue))
+            {
+                return;
+            }
+
+            var convertedValue = Convert.ChangeType(sourceValue, propertyInfo.PropertyType);
+            propertyInfo.SetValue(weather, convertedValue);
+        }
+
+
+        private WeatherInfo ConvertDataToWeatherInfor(string data, List<MappingTable> weatherInfoMappingConfig)
         {
             var weatherInHour = new WeatherInfo();
             JObject jsonObject = JObject.Parse(data);
+
             foreach (var obj in weatherInfoMappingConfig)
             {
-                try
-                {
-                    var sourceValue = jsonObject.SelectToken(obj.SouPropertyPath)?.ToString();
-                    obj.SouValue = sourceValue ?? string.Empty;
+                var sourceValue = jsonObject.SelectToken(obj.SouPropertyPath)?.ToString();
+                obj.SouValue = sourceValue ?? string.Empty;
 
-                    var propertyInfo = typeof(WeatherInfo).GetProperty(obj.DesProperty);
-                    if (propertyInfo != null && propertyInfo.PropertyType != null)
-                    {
-                        if (obj.SouDatatype == "string" && obj.DesDatatype == "DateTime.Hour")
-                        {
-                            string dateString = obj.SouValue;
-                            dateString = dateString.Replace(" GMT+7", "");
-                            CultureInfo culture = CultureInfo.InvariantCulture;
-                            DateTime convertedValue = DateTime.Parse(dateString, culture);
-                            propertyInfo.SetValue(weatherInHour, convertedValue.Hour);
-                        }
-                        else
-                        {
-                            var convertedValue = Convert.ChangeType(obj.SouValue, propertyInfo.PropertyType);
-                            propertyInfo.SetValue(weatherInHour, convertedValue);
-                        }
-                    }
-                    weatherInHour.SetWeatherId(id);
-                }
-                catch (Exception e)
+                var propertyInfo = typeof(WeatherInfo).GetProperty(obj.DesProperty);
+
+                if (propertyInfo != null && propertyInfo.PropertyType != null)
                 {
-                    Console.WriteLine(e.Message);
+                    if (obj.SouDatatype == "string" && obj.DesDatatype == "DateTime.Hour")
+                    {
+                        string dateString = obj.SouValue;
+                        dateString = dateString.Replace(" GMT+7", "");
+                        CultureInfo culture = CultureInfo.InvariantCulture;
+                        DateTime convertedValue = DateTime.Parse(dateString, culture);
+                        propertyInfo.SetValue(weatherInHour, convertedValue.Hour);
+                    }
+                    else
+                    {
+                        var convertedValue = Convert.ChangeType(obj.SouValue, propertyInfo.PropertyType);
+                        propertyInfo.SetValue(weatherInHour, convertedValue);
+                    }
                 }
             }
             return weatherInHour;
         }
+
     }
 }
