@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BingNew.DataAccessLayer.Models
+﻿namespace BingNew.DataAccessLayer.Models
 {
     public class Provider
     {

@@ -1,13 +1,7 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces.IRepository;
-using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.DataAccessLayer.Models;
 using Dapper;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BingNew.BusinessLogicLayer.Repositories
 {

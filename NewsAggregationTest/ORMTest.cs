@@ -3,8 +3,6 @@ using BingNew.DataAccessLayer.Models;
 using Dasync.Collections;
 using System.Data.SqlClient;
 using BingNew.ORM.Query;
-using BingNew.BusinessLogicLayer;
-using System.Data;
 using BingNew.ORM.NonQuery;
 
 namespace NewsAggregationTest

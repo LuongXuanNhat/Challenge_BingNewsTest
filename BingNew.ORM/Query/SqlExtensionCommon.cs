@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
+﻿using System.Data;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BingNew.ORM.Query
 {
+#pragma warning disable S3011
     public static class SqlExtensionCommon
     {
         public static string? ExtractTypeNameFromSql(string? sql)
@@ -42,7 +37,8 @@ namespace BingNew.ORM.Query
             }
             foreach (var assembly in assemblies)
             {
-                var type = assembly.GetTypes().FirstOrDefault(x=>x.Name.Equals(typeName));
+                var type = assembly.GetTypes().ToList().Find(x => x.Name.Equals(typeName));
+
                 if (type != null)
                 {
                     return type;
@@ -50,7 +46,6 @@ namespace BingNew.ORM.Query
             }
             return null;
         }
-        // ReSharper disable S3011
         public static T ConvertToObject<T>(IDataReader reader) where T : new()
         {
             var obj = new T();
@@ -69,7 +64,6 @@ namespace BingNew.ORM.Query
 
             return obj;
         }
-        // ReSharper restore S3011
         public static bool HasColumn(this IDataReader reader, string columnName)
         {
             for (var i = 0; i < reader.FieldCount; i++)

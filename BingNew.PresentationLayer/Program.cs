@@ -8,7 +8,7 @@ using BingNew.DataAccessLayer.Repositories;
 
 namespace BingNew.PresentationLayer
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

@@ -4,6 +4,7 @@ using System.Reflection;
 
 namespace BingNew.ORM.Query
 {
+#pragma warning disable S3011
     public static class SqlExtensionSingle
     {
         public static T QuerySingle<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
@@ -146,8 +147,7 @@ namespace BingNew.ORM.Query
         public static dynamic QueryFirst(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) connection.Open();
-            var obj = default(dynamic);
-            return QueryExcute(connection, sql, obj) ?? throw new InvalidOperationException("Invalid return data: zero");
+            return QueryExcute(connection, sql) ?? throw new InvalidOperationException("Invalid return data: zero");
         }
         public static T QueryFirst<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
@@ -195,13 +195,12 @@ namespace BingNew.ORM.Query
 
         public static dynamic? QueryFirstOrDefault(this SqlConnection connection, string sql)
         {
-            var obj = default(dynamic);
             if (connection.State == ConnectionState.Closed) connection.Open();
-            return QueryExcute(connection, sql,obj);
+            return QueryExcute(connection, sql);
             
         }
 
-        private static dynamic? QueryExcute(SqlConnection connection, string sql, dynamic obj)
+        private static dynamic? QueryExcute(SqlConnection connection, string sql)
         {
             using (var command = new SqlCommand(sql, connection))
             {
@@ -211,7 +210,7 @@ namespace BingNew.ORM.Query
                     var resultType = SqlExtensionCommon.FindTypeByName(typeName);
                     if (resultType != null && reader.Read())
                     {
-                        obj = Activator.CreateInstance(resultType);
+                        var obj = Activator.CreateInstance(resultType);
                         var properties = resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
                         foreach (var propertyInfo in properties)
                         {
@@ -222,8 +221,9 @@ namespace BingNew.ORM.Query
                                 propertyInfo.SetValue(obj, propertyValue);
                             }
                         }
+                        return obj;
                     }
-                    return obj;
+                    return null;
                 }
             }
         }

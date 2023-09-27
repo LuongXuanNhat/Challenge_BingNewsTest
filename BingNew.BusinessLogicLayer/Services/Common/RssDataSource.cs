@@ -1,11 +1,7 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces;
-using BingNew.BusinessLogicLayer.Interfaces.IService;
+﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.DataAccessLayer.Models;
-using System;
 using System.Globalization;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace BingNew.BusinessLogicLayer.Services.Common
@@ -19,7 +15,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
 
         }
 
-        private string DownloadXml(string url)
+        private static string DownloadXml(string url)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -41,14 +37,12 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             foreach (var item in items)
             {
                 var article = MapToArticle(item, mapping);
-                //if(config.Channel != null)
-                //    article.SetChannel(config.Channel);
                 articles.Add(article);
             }
             return articles;
         }
 
-        private Article MapToArticle(XElement item, List<MappingTable> mapping)
+        private static Article MapToArticle(XElement item, List<MappingTable> mapping)
         {
             var article = new Article();
             foreach (var obj in mapping)
