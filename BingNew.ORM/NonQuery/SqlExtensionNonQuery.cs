@@ -87,7 +87,7 @@ namespace BingNew.ORM.NonQuery
             return query;
         }
 
-        public static bool Delete<T>(this SqlConnection connection, Guid entityId)
+        public static bool Delete<T>(this SqlConnection connection, Guid entityId) where T : class
         {
             try
             {
@@ -96,11 +96,11 @@ namespace BingNew.ORM.NonQuery
                     connection.Open();
                 }
 
-                var sql = "DELETE FROM "+ typeof(T).Name + " WHERE Id = @Id";
+                var sql = "DELETE FROM " + typeof(T).Name + " WHERE Id = @Id";
 
                 using (var command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@Id", entityId);
+                    command.Parameters.Add(new SqlParameter("@Id", entityId));
                     command.ExecuteNonQuery();
                 }
 
@@ -111,6 +111,7 @@ namespace BingNew.ORM.NonQuery
                 Debug.WriteLine("XUẤT HIỆN LỖI KHÔNG MONG MUỐN: " + ex.Message.ToString());
                 return false;
             }
+
         }
 
         public static T GetById<T>(this SqlConnection connection, Guid entityId) where T : new()
@@ -126,7 +127,7 @@ namespace BingNew.ORM.NonQuery
 
                 using (var command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@Id", entityId);
+                    command.Parameters.Add(new SqlParameter("@Id", entityId));
 
                     using (var reader = command.ExecuteReader())
                     {

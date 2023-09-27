@@ -112,7 +112,7 @@ namespace BingNew.ORM.Query
                 command.CommandType = CommandType.Text;
                 command.CommandTimeout = commandTimeout ?? 30;
 
-                T result = null;
+                T? result = null;
                 bool hasResult = false;
                 using (var reader = command.ExecuteReader())
                 {
@@ -132,30 +132,8 @@ namespace BingNew.ORM.Query
         public static dynamic QueryFirst(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) connection.Open();
-            using (var command = new SqlCommand(sql, connection))
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    var obj = default(dynamic);
-                    var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
-                    var resultType = SqlExtensionCommon.FindTypeByName(typeName);
-                    if (resultType != null && reader.Read())
-                    {
-                        var properties = resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
-                        obj = Activator.CreateInstance(resultType);
-                        foreach (var propertyInfo in properties)
-                        {
-                            var columnName = propertyInfo.Name;
-                            if (reader.HasColumn(columnName) && !reader.IsDBNull(reader.GetOrdinal(columnName)))
-                            {
-                                var propertyValue = reader[columnName];
-                                propertyInfo.SetValue(obj, propertyValue);
-                            }
-                        }
-                    }
-                    return obj ?? throw new InvalidOperationException("Invalid return data: zero");
-                }
-            }
+            var obj = default(dynamic);
+            return QueryExcute(connection, sql, obj) ?? throw new InvalidOperationException("Invalid return data: zero");
         }
         public static T QueryFirst<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
@@ -203,18 +181,24 @@ namespace BingNew.ORM.Query
 
         public static dynamic? QueryFirstOrDefault(this SqlConnection connection, string sql)
         {
+            var obj = default(dynamic);
             if (connection.State == ConnectionState.Closed) connection.Open();
+            return QueryExcute(connection, sql,obj);
+            
+        }
+
+        private static object? QueryExcute(SqlConnection connection, string sql, dynamic obj)
+        {
             using (var command = new SqlCommand(sql, connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
-                    var obj = default(dynamic);
                     var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
                     var resultType = SqlExtensionCommon.FindTypeByName(typeName);
                     if (resultType != null && reader.Read())
                     {
-                        var properties = resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
                         obj = Activator.CreateInstance(resultType);
+                        var properties = resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
                         foreach (var propertyInfo in properties)
                         {
                             var columnName = propertyInfo.Name;
@@ -225,10 +209,9 @@ namespace BingNew.ORM.Query
                             }
                         }
                     }
-                    return obj ?? null;
+                    return obj;
                 }
             }
         }
-
     }
 }

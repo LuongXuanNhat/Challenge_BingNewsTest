@@ -14,35 +14,31 @@ namespace NewsAggregationTest
 {
     public class BingNewsTest
     {
-        private readonly DataSourceFactory _dataSourceFactory;
         private readonly DataSample _dataSample;
         private readonly Config _config;
-        private readonly ConstantCommon _constantCommon;
         private readonly IApiDataSource _apiDataSource;
         private readonly IRssDataSource _rssDataSource;
 
         public BingNewsTest()
         {
             _dataSample = new DataSample();
-            _dataSourceFactory = new DataSourceFactory();
             _config = new Config();
             _apiDataSource = new ApiDataSource();
             _rssDataSource = new RssDataSource();
-            _constantCommon = new ConstantCommon();
         }
 
-        //private Config WeatherConfig()
-        //{
-        //    var config = new Config();
-        //    config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
-        //    config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
-        //    config.KeyWork = "q=" + "Ho Chi Minh";
-        //    config.DayNumber = "&day=" + "3";
-        //    config.Language = "&lang=" + "vi";
-        //    config.Location = "location";
-        //    config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
-        //    return config;
-        //}
+        ////private Config WeatherConfig()
+        ////{
+        ////    var config = new Config();
+        ////    config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
+        ////    config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
+        ////    config.KeyWork = "q=" + "Ho Chi Minh";
+        ////    config.DayNumber = "&day=" + "3";
+        ////    config.Language = "&lang=" + "vi";
+        ////    config.Location = "location";
+        ////    config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
+        ////    return config;
+        ////}
 
         #region BingNews
 
@@ -81,7 +77,7 @@ namespace NewsAggregationTest
             _config.Item = "item";
             _config.Channel = "Tuoi Tre News";
 
-            var mappingConfig = _dataSourceFactory.CreateMapping(_dataSample.GetRssTuoiTreNewsDataMappingConfiguration());
+            var mappingConfig = DataSourceFactory.CreateMapping(_dataSample.GetRssTuoiTreNewsDataMappingConfiguration());
             var result = _rssDataSource.ConvertDataToArticles(_config, mappingConfig);
 
             Assert.NotNull(result);
@@ -93,7 +89,7 @@ namespace NewsAggregationTest
             _config.Data = _rssDataSource.GetNews("https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN");
             _config.Item = "item";
 
-            var mappingConfig = _dataSourceFactory.CreateMapping(_dataSample.GetGgTrendsNewsDataMappingConfiguration());
+            var mappingConfig = DataSourceFactory.CreateMapping(_dataSample.GetGgTrendsNewsDataMappingConfiguration());
             var result = _rssDataSource.ConvertDataToArticles(_config, mappingConfig);
 
             Assert.NotNull(result);
@@ -109,40 +105,40 @@ namespace NewsAggregationTest
             _config.Data = _apiDataSource.GetNews(_config.Url);
             _config.Item = "results";
 
-            var mappingConfig = _dataSourceFactory.CreateMapping(_dataSample.GetNewsDataIoMappingConfiguration());
+            var mappingConfig = DataSourceFactory.CreateMapping(_dataSample.GetNewsDataIoMappingConfiguration());
             var result = _apiDataSource.ConvertDataToArticles(_config, mappingConfig);
 
             Assert.NotNull(result);
         }
 
-        //[Fact]
-        //public void GetWeatherInforNotNull()
-        //{
-        //    var service = new NewsService();
-        //    var config = new Config();
-        //    config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
-        //    config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
-        //    config.KeyWork = "q=" + "Ho Chi Minh";
-        //    config.DayNumber = "&day=" + "3";
-        //    config.Language = "&lang=" + "vi";
-        //    config.Location = "location";
-        //    config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
+        ////[Fact]
+        ////public void GetWeatherInforNotNull()
+        ////{
+        ////    var service = new NewsService();
+        ////    var config = new Config();
+        ////    config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
+        ////    config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
+        ////    config.KeyWork = "q=" + "Ho Chi Minh";
+        ////    config.DayNumber = "&day=" + "3";
+        ////    config.Language = "&lang=" + "vi";
+        ////    config.Location = "location";
+        ////    config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
 
-        //    var result = service.GetWeatherInfor(config);
-        //    Assert.NotNull(result);
-        //}
+        ////    var result = service.GetWeatherInfor(config);
+        ////    Assert.NotNull(result);
+        ////}
 
-        //[Fact]
-        //public void ConvertDataToWeatherNotNull()
-        //{
-        //    var config = WeatherConfig();
-        //    var weatherMappingConfig = _newsService.CreateMapping(_dataSample.GetWeatherMappingConfiguration());
-        //    var data = _apiDataSource.GetWeatherInfor(config);
-        //    var result = _apiDataSource.ConvertDataToWeather(data, weatherMappingConfig);
+        ////[Fact]
+        ////public void ConvertDataToWeatherNotNull()
+        ////{
+        ////    var config = WeatherConfig();
+        ////    var weatherMappingConfig = _newsService.CreateMapping(_dataSample.GetWeatherMappingConfiguration());
+        ////    var data = _apiDataSource.GetWeatherInfor(config);
+        ////    var result = _apiDataSource.ConvertDataToWeather(data, weatherMappingConfig);
 
-        //    Assert.NotNull(result);
-        //    Assert.NotNull(result.GetHourlyWeather());
-        //}
+        ////    Assert.NotNull(result);
+        ////    Assert.NotNull(result.GetHourlyWeather());
+        ////}
         #endregion
 
         #region DI & Api
