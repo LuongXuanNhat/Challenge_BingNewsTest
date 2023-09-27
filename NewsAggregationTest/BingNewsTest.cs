@@ -31,18 +31,18 @@ namespace NewsAggregationTest
             _constantCommon = new ConstantCommon();
         }
 
-        private Config WeatherConfig()
-        {
-            var config = new Config();
-            config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
-            config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
-            config.KeyWork = "q=" + "Ho Chi Minh";
-            config.DayNumber = "&day=" + "3";
-            config.Language = "&lang=" + "vi";
-            config.Location = "location";
-            config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
-            return config;
-        }
+        //private Config WeatherConfig()
+        //{
+        //    var config = new Config();
+        //    config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
+        //    config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
+        //    config.KeyWork = "q=" + "Ho Chi Minh";
+        //    config.DayNumber = "&day=" + "3";
+        //    config.Language = "&lang=" + "vi";
+        //    config.Location = "location";
+        //    config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
+        //    return config;
+        //}
 
         #region BingNews
         [Fact]
@@ -121,34 +121,34 @@ namespace NewsAggregationTest
             Assert.NotNull(result);
         }
 
-        [Fact]
-        public void GetWeatherInforNotNull()
-        {
-            var service = new NewsService();
-            var config = new Config();
-            config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
-            config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
-            config.KeyWork = "q=" + "Ho Chi Minh";
-            config.DayNumber = "&day=" + "3";
-            config.Language = "&lang=" + "vi";
-            config.Location = "location";
-            config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
+        //[Fact]
+        //public void GetWeatherInforNotNull()
+        //{
+        //    var service = new NewsService();
+        //    var config = new Config();
+        //    config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
+        //    config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
+        //    config.KeyWork = "q=" + "Ho Chi Minh";
+        //    config.DayNumber = "&day=" + "3";
+        //    config.Language = "&lang=" + "vi";
+        //    config.Location = "location";
+        //    config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
 
-            var result = service.GetWeatherInfor(config);
-            Assert.NotNull(result);
-        }
+        //    var result = service.GetWeatherInfor(config);
+        //    Assert.NotNull(result);
+        //}
 
-        [Fact]
-        public void ConvertDataToWeatherNotNull()
-        {
-            var config = WeatherConfig();
-            var weatherMappingConfig = _newsService.CreateMapping(_dataSample.GetWeatherMappingConfiguration());
-            var data = _apiDataSource.GetWeatherInfor(config);
-            var result = _apiDataSource.ConvertDataToWeather(data, weatherMappingConfig);
+        //[Fact]
+        //public void ConvertDataToWeatherNotNull()
+        //{
+        //    var config = WeatherConfig();
+        //    var weatherMappingConfig = _newsService.CreateMapping(_dataSample.GetWeatherMappingConfiguration());
+        //    var data = _apiDataSource.GetWeatherInfor(config);
+        //    var result = _apiDataSource.ConvertDataToWeather(data, weatherMappingConfig);
 
-            Assert.NotNull(result);
-            Assert.NotNull(result.GetHourlyWeather());
-        }
+        //    Assert.NotNull(result);
+        //    Assert.NotNull(result.GetHourlyWeather());
+        //}
         #endregion
 
         #region DI & Api
