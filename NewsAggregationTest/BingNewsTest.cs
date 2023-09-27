@@ -17,6 +17,7 @@ namespace NewsAggregationTest
         private readonly NewsService _newsService;
         private readonly DataSample _dataSample;
         private readonly Config _config;
+        private readonly ConstantCommon _constantCommon;
         private readonly IApiDataSource _apiDataSource;
         private readonly IRssDataSource _rssDataSource;
 
@@ -27,12 +28,13 @@ namespace NewsAggregationTest
             _config = new Config();
             _apiDataSource = new ApiDataSource();
             _rssDataSource = new RssDataSource();
+            _constantCommon = new ConstantCommon();
         }
 
         private Config WeatherConfig()
         {
             var config = new Config();
-            config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
+            config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
             config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
             config.KeyWork = "q=" + "Ho Chi Minh";
             config.DayNumber = "&day=" + "3";
@@ -124,7 +126,7 @@ namespace NewsAggregationTest
         {
             var service = new NewsService();
             var config = new Config();
-            config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
+            config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
             config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
             config.KeyWork = "q=" + "Ho Chi Minh";
             config.DayNumber = "&day=" + "3";

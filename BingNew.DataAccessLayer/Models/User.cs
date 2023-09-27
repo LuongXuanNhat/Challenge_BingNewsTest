@@ -1,4 +1,6 @@
-﻿public class User
+﻿namespace BingNew.DataAccessLayer.Models;
+
+public class User
 {
     private string Id;
     private string UserName;

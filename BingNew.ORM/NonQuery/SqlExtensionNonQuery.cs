@@ -133,7 +133,6 @@ namespace BingNew.ORM.NonQuery
                 {
                     connection.Open();
                 }
-
                 var tableName = typeof(T).Name;
                 var sql = $"SELECT * FROM {tableName} WHERE Id = @Id";
 
