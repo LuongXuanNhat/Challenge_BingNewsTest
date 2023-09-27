@@ -16,14 +16,14 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         {
             return DownloadJson(Url);
         }
-        private string DownloadJson(string Url)
+        private static string DownloadJson(string Url)
         {
             using (HttpClient client = new HttpClient())
             {
                 return client.GetStringAsync(Url).Result;
             }
         }
-        private Article MapToArticle(JObject item, List<MappingTable> mapping)
+        private static Article MapToArticle(JObject item, List<MappingTable> mapping)
         {
             var article = new Article();
             foreach (var obj in mapping)
@@ -89,7 +89,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             return GetDataWeather(request);
         }
 
-        private string GetDataWeather(HttpRequestMessage request)
+        private static string GetDataWeather(HttpRequestMessage request)
         {
             var client = new HttpClient();
             using (var response = client.SendAsync(request).Result)
@@ -145,7 +145,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             propertyInfo.SetValue(weather, convertedValue);
         }
 
-        private void SetWeatherInfoListProperty(PropertyInfo propertyInfo, Weather weather, string sourcePropertyPath, List<MappingTable> mapping, JObject jsonObject)
+        private static void SetWeatherInfoListProperty(PropertyInfo propertyInfo, Weather weather, string sourcePropertyPath, List<MappingTable> mapping, JObject jsonObject)
         {
             var hourlyWeatherList = jsonObject.SelectToken(sourcePropertyPath);
 

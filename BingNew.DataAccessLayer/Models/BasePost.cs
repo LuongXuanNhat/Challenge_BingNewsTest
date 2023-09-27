@@ -11,6 +11,15 @@
             Title = string.Empty;
             Description = string.Empty;
         }
+        public BasePost(string providerId, DateTime pubDate, string url, string title, string description)
+        {
+            Id = Guid.NewGuid();
+            ProviderId = providerId;
+            PubDate = pubDate;
+            Url = url;
+            Title = title;
+            Description = description;
+        }
 
         protected Guid Id;
         protected string ProviderId;

@@ -14,20 +14,14 @@
 
 
         public Article(int likeNumber, int disLikeNumber, int commentNumber, int viewNumber, string imgUrl,
-         string category, string providerId, DateTime pubDate, string url, string title, string description)
+         string category, string providerId, DateTime pubDate, string url, string title, string description) : base(providerId, pubDate, url,title,description)
         {
-            Id = Guid.NewGuid();
             LikeNumber = likeNumber;
             DisLikeNumber = disLikeNumber;
             CommentNumber = commentNumber;
             ViewNumber = viewNumber;
             ImgUrl = imgUrl;
             TopicId = category;
-            ProviderId = providerId;
-            PubDate = pubDate;
-            Url = url;
-            Title = title;
-            Description = description;
         }
         public Article() : base()
         {
