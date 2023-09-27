@@ -10,10 +10,10 @@ namespace BingNew.BusinessLogicLayer.Services.Common
 {
     public class ApiDataSource : IApiDataSource
     {
-        private readonly NewsService _NewsService;
+        private readonly DataSourceFactory _dataSourceFactory;
         public ApiDataSource()
         {
-            _NewsService = new NewsService();
+            _dataSourceFactory = new DataSourceFactory();
         }
         public string GetNews(string Url)
         {
@@ -137,7 +137,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
                     else if (obj.SouDatatype == "string" && obj.DesDatatype == "List<WeatherInfo>")
                     {
                         var TestData = new DataSample();
-                        var weatherInfoMappingConfig = _NewsService.CreateMapping(TestData.GetWeatherInforMappingConfiguration());
+                        var weatherInfoMappingConfig = _dataSourceFactory.CreateMapping(TestData.GetWeatherInforMappingConfiguration());
 
                         var hourlyWeatherList = jsonObject.SelectToken(obj.SouPropertyPath);
                         if (hourlyWeatherList != null)

@@ -13,27 +13,27 @@ namespace BingNew.PresentationLayer.Controllers
     public class MappingController : ControllerBase
     {
 
-        private readonly IArticleService _articleService;
+        ////private readonly IArticleService _articleService;
 
-        public MappingController(IArticleService articleService) {
-            _articleService = articleService;
-        }
+        ////public MappingController(IArticleService articleService) {
+        ////    _articleService = articleService;
+        ////}
 
-        [HttpPost("UpdateArticlesFromTuoiTreNews")]
-        public async Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config)
-        {
-            var result = await _articleService.UpdateArticlesFromTuoiTreNews(config);
-            await _articleService.AddRange(result);
-            return result;
-        }
+        ////[HttpPost("UpdateArticlesFromTuoiTreNews")]
+        ////public async Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config)
+        ////{
+        ////    var result = await _articleService.UpdateArticlesFromTuoiTreNews(config);
+        ////    await _articleService.AddRange(result);
+        ////    return result;
+        ////}
 
-        [HttpPost("UpdateArticlesFromNewsDataIo")]
-        public async Task<List<Article>> UpdateArticlesFromNewsDataIo(Config config)
-        {
-            var result = await _articleService.UpdateArticlesFromTuoiTreNews(config);
-            await _articleService.AddRange(result);
-            return result;
-        }
+        ////[HttpPost("UpdateArticlesFromNewsDataIo")]
+        ////public async Task<List<Article>> UpdateArticlesFromNewsDataIo(Config config)
+        ////{
+        ////    var result = await _articleService.UpdateArticlesFromTuoiTreNews(config);
+        ////    await _articleService.AddRange(result);
+        ////    return result;
+        ////}
 
     }
 }
