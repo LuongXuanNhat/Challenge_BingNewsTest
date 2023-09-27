@@ -10,10 +10,8 @@ namespace BingNew.BusinessLogicLayer.Services.Common
 {
     public class ApiDataSource : IApiDataSource
     {
-        private readonly DataSourceFactory _dataSourceFactory;
         public ApiDataSource()
         {
-            _dataSourceFactory = new DataSourceFactory();
         }
         public string GetNews(string Url)
         {
@@ -61,11 +59,6 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             }
             return article;
         }
-
-
-
-
-
         public List<Article> ConvertDataToArticles(Config config, List<MappingTable> mapping)
         {
             var articles = new List<Article>();
@@ -137,7 +130,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
                     else if (obj.SouDatatype == "string" && obj.DesDatatype == "List<WeatherInfo>")
                     {
                         var TestData = new DataSample();
-                        var weatherInfoMappingConfig = _dataSourceFactory.CreateMapping(TestData.GetWeatherInforMappingConfiguration());
+                        var weatherInfoMappingConfig = DataSourceFactory.CreateMapping(TestData.GetWeatherInforMappingConfiguration());
 
                         var hourlyWeatherList = jsonObject.SelectToken(obj.SouPropertyPath);
                         if (hourlyWeatherList != null)

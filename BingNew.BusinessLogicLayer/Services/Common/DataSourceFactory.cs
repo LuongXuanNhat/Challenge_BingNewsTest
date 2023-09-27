@@ -10,28 +10,16 @@ using System.Threading.Tasks;
 namespace BingNew.BusinessLogicLayer.Services.Common
 {
     // Factory Method Design Pattern
-    public class DataSourceFactory
+    public static class DataSourceFactory
     {
         public enum DataSource
         {
             ApiDataSource,
             RssDataSource
         }
-        public List<MappingTable> CreateMapping(string jsonConfigMapping)
+        public static List<MappingTable> CreateMapping(string jsonConfigMapping)
         {
             return JsonConvert.DeserializeObject<List<MappingTable>>(jsonConfigMapping) ?? new List<MappingTable>();
         }
-        ////public static IDataSource CreateDataSource(DataSource dataSource)
-        ////{
-        ////    IDataSource data = null;
-        ////    switch (dataSource)
-        ////    {
-        ////        case DataSource.ApiDataSource:
-        ////            return new ApiDataSource();
-        ////        case DataSource.RssDataSource:
-        ////            return new RssDataSource(); 
-        ////    }
-        ////    return data;
-        ////}
     }
 }
