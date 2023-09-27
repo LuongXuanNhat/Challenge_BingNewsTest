@@ -1,4 +1,6 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.ModelConfig;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +17,10 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             ApiDataSource,
             RssDataSource
         }
-
+        public List<MappingTable> CreateMapping(string jsonConfigMapping)
+        {
+            return JsonConvert.DeserializeObject<List<MappingTable>>(jsonConfigMapping) ?? new List<MappingTable>();
+        }
         ////public static IDataSource CreateDataSource(DataSource dataSource)
         ////{
         ////    IDataSource data = null;

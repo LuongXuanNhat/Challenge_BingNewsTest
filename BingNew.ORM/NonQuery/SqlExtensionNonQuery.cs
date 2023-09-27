@@ -17,25 +17,30 @@ namespace BingNew.ORM.NonQuery
 
                 }
                 var sql = GenerateInsertQuery(entity);
-                if (connection.State == ConnectionState.Closed) connection.Open();
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    foreach (var property in typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
-                    {
-                        var paramName = "@" + property.Name;
-                        var value = property.GetValue(entity);
-                        command.Parameters.AddWithValue(paramName, value ?? DBNull.Value);
-                    }
-
-                    command.ExecuteNonQuery();
-                }
-                return true;
+                return QueryExcute<T>(connection, sql, entity);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("-------------------------------------------   XUẤT HIỆN LỖI KHÔNG MONG MUỐN: " + ex.Message.ToString());
                 return false;
             }
+        }
+
+        private static bool QueryExcute<T>(SqlConnection connection, string sql, T entity)
+        {
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            using (var command = new SqlCommand(sql, connection))
+            {
+                foreach (var property in typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+                {
+                    var paramName = "@" + property.Name;
+                    var value = property.GetValue(entity);
+                    command.Parameters.AddWithValue(paramName, value ?? DBNull.Value);
+                }
+
+                command.ExecuteNonQuery();
+            }
+            return true;
         }
 
         public static string GenerateInsertQuery<T>(T entity)
@@ -63,23 +68,7 @@ namespace BingNew.ORM.NonQuery
                     throw new ArgumentNullException(nameof(entity));
                 }
                 var sql = GenerateUpdateQuery(entity);
-                if (connection.State == ConnectionState.Closed)
-                {
-                    connection.Open();
-                }
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    foreach (var property in typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
-                    {
-                        var paramName = "@" + property.Name;
-                        var value = property.GetValue(entity);
-                        command.Parameters.AddWithValue(paramName, value ?? DBNull.Value);
-                    }
-
-                    command.ExecuteNonQuery();
-                }
-
-                return true;
+                return QueryExcute<T>(connection, sql, entity);
             }
             catch (Exception ex)
             {
@@ -107,8 +96,7 @@ namespace BingNew.ORM.NonQuery
                     connection.Open();
                 }
 
-                var tableName = typeof(T).Name;
-                var sql = $"DELETE FROM {tableName} WHERE Id = @Id";
+                var sql = "DELETE FROM "+ typeof(T).Name + " WHERE Id = @Id";
 
                 using (var command = new SqlCommand(sql, connection))
                 {

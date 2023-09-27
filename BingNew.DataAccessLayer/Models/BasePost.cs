@@ -7,6 +7,11 @@ namespace BingNew.DataAccessLayer.Models
         public BasePost()
         {
             Id = Guid.NewGuid();
+            ProviderId = string.Empty;
+            PubDate = DateTime.Now;
+            Url = string.Empty;
+            Title = string.Empty;
+            Description = string.Empty;
         }
 
         protected Guid Id;
