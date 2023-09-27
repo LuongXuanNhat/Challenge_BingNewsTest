@@ -30,14 +30,15 @@ namespace BingNew.ORM.Query
         public static dynamic QuerySingle(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) connection.Open();
+
             using (var command = new SqlCommand(sql, connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
                     int rowCount = 0;
                     var obj = default(dynamic);
-                    var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
-                    var resultType = SqlExtensionCommon.FindTypeByName(typeName);
+                    var resultType = GetResultType(sql);
+
                     while (reader.Read())
                     {
                         rowCount++;
@@ -47,60 +48,73 @@ namespace BingNew.ORM.Query
                         }
                         if (resultType != null)
                         {
-                            obj = Activator.CreateInstance(resultType);
-                            foreach (var propertyInfo in resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
-                            {
-                                var columnName = propertyInfo.Name;
-                                if (reader.HasColumn(columnName) && !reader.IsDBNull(reader.GetOrdinal(columnName)))
-                                {
-                                    var propertyValue = reader[columnName];
-                                    propertyInfo.SetValue(obj, propertyValue);
-                                }
-                            }
+                            obj = CreateInstance(resultType, reader);
                         }
                     }
+
                     return obj ?? throw new InvalidOperationException("Invalid return data: zero");
                 }
             }
         }
+
+        private static Type? GetResultType(string sql)
+        {
+            var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
+            return SqlExtensionCommon.FindTypeByName(typeName);
+        }
+
+        private static dynamic? CreateInstance(Type? resultType, SqlDataReader reader)
+        {
+            if (resultType == null) return null;
+            var obj = Activator.CreateInstance(resultType);
+            foreach (var propertyInfo in resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+            {
+                var columnName = propertyInfo.Name;
+                if (reader.HasColumn(columnName) && !reader.IsDBNull(reader.GetOrdinal(columnName)))
+                {
+                    var propertyValue = reader[columnName];
+                    propertyInfo.SetValue(obj, propertyValue);
+                }
+            }
+            return obj;
+        }
+
         public static dynamic? QuerySingleOrDefault(this SqlConnection connection, string sql)
         {
             if (connection.State == ConnectionState.Closed) connection.Open();
+            var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
+            var resultType = SqlExtensionCommon.FindTypeByName(typeName);
+            if (resultType == null) return null;
+
             using (var command = new SqlCommand(sql, connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
-                    int rowCount = 0;
-                    if (reader.HasRows && reader.Read())
+                    var obj = Activator.CreateInstance(resultType);
+                    if (reader.Read())
                     {
-                        var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
-                        var resultType = SqlExtensionCommon.FindTypeByName(typeName);
-                        if (resultType != null)
+                        foreach (var propertyInfo in resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
                         {
-                            var obj = Activator.CreateInstance(resultType);
-                            do
+                            if (reader.HasColumn(propertyInfo.Name) && !reader.IsDBNull(reader.GetOrdinal(propertyInfo.Name)))
                             {
-                                rowCount++;
-                                if (rowCount > 1)
-                                {
-                                    throw new InvalidOperationException("Invalid return data: more than one element");
-                                }
-                                foreach (var propertyInfo in resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
-                                {
-                                    if (reader.HasColumn(propertyInfo.Name) && !reader.IsDBNull(reader.GetOrdinal(propertyInfo.Name)))
-                                    {
-                                        var propertyValue = reader[propertyInfo.Name];
-                                        propertyInfo.SetValue(obj, propertyValue);
-                                    }
-                                }
-                            } while (reader.Read());
-                            return obj ?? null;
+                                var propertyValue = reader[propertyInfo.Name];
+                                propertyInfo.SetValue(obj, propertyValue);
+                            }
                         }
+                        if (reader.Read())
+                        {
+                            throw new InvalidOperationException("Invalid return data: more than one element");
+                        }
+                        return obj;
                     }
-                    return null;
+                    else
+                    {
+                        return null; 
+                    }
                 }
             }
         }
+
         public static T? QuerySingleOrDefault<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
@@ -187,7 +201,7 @@ namespace BingNew.ORM.Query
             
         }
 
-        private static object? QueryExcute(SqlConnection connection, string sql, dynamic obj)
+        private static dynamic? QueryExcute(SqlConnection connection, string sql, dynamic obj)
         {
             using (var command = new SqlCommand(sql, connection))
             {

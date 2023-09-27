@@ -89,7 +89,7 @@ namespace NewsAggregationTest
             using (var connection = new SqlConnection(_connecString))
             {
                 var sql = "SELECT * FROM Article where ProviderId = 2";
-                var result = connection.QueryFirst(sql);
+                var result = connection.QueryFirst(sql); 
 
                 Assert.NotNull(result);
                 Assert.IsType<Article>(result);
