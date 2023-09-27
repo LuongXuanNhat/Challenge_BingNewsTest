@@ -19,13 +19,6 @@ namespace BingNew.PresentationLayer.Controllers
             _articleService = articleService;
         }
 
-        //// GET: api/<MappingController>
-        ////[HttpPost("GetArticlesOfTuoiTreNews")]
-        ////public string GetArticlesOfTuoiTreNews(string? url = "https://tuoitre.vn/rss/tin-moi-nhat.rss")
-        ////{
-        ////   return "s";
-        ////}
-
         [HttpPost("UpdateArticlesFromTuoiTreNews")]
         public async Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config)
         {
