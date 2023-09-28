@@ -12,16 +12,16 @@ namespace BingNew.PresentationLayer.Controllers
         public BingNewsController(IArticleService articleService) {
             _articleService = articleService;
         }
-        // GET: api/Article
+        // GET: api/ArticleVm
         [HttpGet("Article")]
-        public async Task<IEnumerable<Article>> GetArticle()
+        public async Task<IEnumerable<ArticleVm>> GetArticle()
         {
             return await _articleService.GetAll();
         }
 
         //// GET api/TrendingStories
         ////[HttpGet("TrendingStories")]
-        ////public async Task<IEnumerable<Article>> GetTrendingStories()
+        ////public async Task<IEnumerable<ArticleVm>> GetTrendingStories()
         ////{
         ////    return await _articleService.TrendingStories();
         ////}

@@ -2,21 +2,21 @@
 {
     public class Topic
     {
-        public Topic(string category, Provider channel)
+        public Topic(string category, ProviderVm channel)
         {
             Name = category;
-            Channels = new List<Provider> { channel };
+            Channels = new List<ProviderVm> { channel };
         }
         public Topic()
         {
             Id = Guid.NewGuid();
             Name = string.Empty;
-            Channels = new List<Provider>();
+            Channels = new List<ProviderVm>();
         }
 
         private Guid Id;
         private string Name;
-        private List<Provider> Channels;
+        private List<ProviderVm> Channels;
 
         public Guid GetId()
         {
@@ -42,13 +42,13 @@
         }
 
         // Phương thức get cho Channels
-        public List<Provider> GetChannels()
+        public List<ProviderVm> GetChannels()
         {
             return Channels;
         }
 
         // Phương thức set cho Channels
-        public void SetChannels(List<Provider> value)
+        public void SetChannels(List<ProviderVm> value)
         {
             Channels = value;
         }

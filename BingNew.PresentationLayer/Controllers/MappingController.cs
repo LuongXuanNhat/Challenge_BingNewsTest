@@ -13,7 +13,7 @@ namespace BingNew.PresentationLayer.Controllers
         ////}
 
         ////[HttpPost("UpdateArticlesFromTuoiTreNews")]
-        ////public async Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config)
+        ////public async Task<List<ArticleVm>> UpdateArticlesFromTuoiTreNews(Config config)
         ////{
         ////    var result = await _articleService.UpdateArticlesFromTuoiTreNews(config);
         ////    await _articleService.AddRange(result);
@@ -21,7 +21,7 @@ namespace BingNew.PresentationLayer.Controllers
         ////}
 
         ////[HttpPost("UpdateArticlesFromNewsDataIo")]
-        ////public async Task<List<Article>> UpdateArticlesFromNewsDataIo(Config config)
+        ////public async Task<List<ArticleVm>> UpdateArticlesFromNewsDataIo(Config config)
         ////{
         ////    var result = await _articleService.UpdateArticlesFromTuoiTreNews(config);
         ////    await _articleService.AddRange(result);

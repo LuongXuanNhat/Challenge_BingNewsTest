@@ -1,13 +1,13 @@
 ﻿namespace BingNew.DataAccessLayer.Models
 {
-    public class Provider
+    public class ProviderVm
     {
         private string Id;
         private string ChannelName;
         private string ChannelIcon ;
         private string Url ;
 
-        public Provider(string channel)
+        public ProviderVm(string channel)
         {
             Id = channel + Guid.NewGuid().ToString();
             ChannelName = channel;
@@ -15,7 +15,7 @@
             Url = string.Empty;
         }
 
-        public Provider()
+        public ProviderVm()
         {
             Id = string.Empty;
             ChannelName = string.Empty;

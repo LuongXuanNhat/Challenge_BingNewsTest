@@ -1,10 +1,8 @@
 ﻿using System.Data.SqlClient;
 using System.Data;
-using System.Reflection;
 
 namespace BingNew.ORM.Query
 {
-#pragma warning disable S3011
     public static class SqlExtensionSingle
     {
         public static T QuerySingle<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
@@ -68,7 +66,7 @@ namespace BingNew.ORM.Query
         {
             if (resultType == null) return null;
             var obj = Activator.CreateInstance(resultType);
-            foreach (var propertyInfo in resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+            foreach (var propertyInfo in resultType.GetProperties())
             {
                 var columnName = propertyInfo.Name;
                 if (reader.HasColumn(columnName) && !reader.IsDBNull(reader.GetOrdinal(columnName)))
@@ -94,7 +92,7 @@ namespace BingNew.ORM.Query
                     var obj = Activator.CreateInstance(resultType);
                     if (reader.Read())
                     {
-                        foreach (var propertyInfo in resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+                        foreach (var propertyInfo in resultType.GetProperties())
                         {
                             if (reader.HasColumn(propertyInfo.Name) && !reader.IsDBNull(reader.GetOrdinal(propertyInfo.Name)))
                             {
@@ -211,7 +209,7 @@ namespace BingNew.ORM.Query
                     if (resultType != null && reader.Read())
                     {
                         var obj = Activator.CreateInstance(resultType);
-                        var properties = resultType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+                        var properties = resultType.GetProperties();
                         foreach (var propertyInfo in properties)
                         {
                             var columnName = propertyInfo.Name;

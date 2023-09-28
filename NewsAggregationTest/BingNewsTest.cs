@@ -18,18 +18,18 @@ namespace NewsAggregationTest
             _rssDataSource = new RssDataSource();
         }
 
-        ////private Config WeatherConfig()
-        ////{
-        ////    var config = new Config();
-        ////    config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
-        ////    config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
-        ////    config.KeyWork = "q=" + "Ho Chi Minh";
-        ////    config.DayNumber = "&day=" + "3";
-        ////    config.Language = "&lang=" + "vi";
-        ////    config.Location = "location";
-        ////    config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
-        ////    return config;
-        ////}
+        private Config WeatherConfig()
+        {
+            var config = new Config();
+            config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
+            config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
+            config.KeyWork = "q=" + "Ho Chi Minh";
+            config.DayNumber = "&day=" + "3";
+            config.Language = "&lang=" + "vi";
+            config.Location = "location";
+            config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
+            return config;
+        }
 
         #region BingNews
 
@@ -69,7 +69,9 @@ namespace NewsAggregationTest
             _config.Channel = "Tuoi Tre News";
 
             var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetRssTuoiTreNewsDataMappingConfiguration());
-            var result = _rssDataSource.ConvertDataToArticles(_config, mappingConfig);
+            var listConfigMapping = new List<CustomConfig>();
+            listConfigMapping.Add(mappingConfig);
+            var result = _rssDataSource.ConvertDataToArticles(_config, listConfigMapping);
 
             Assert.NotNull(result);
         }
@@ -81,7 +83,9 @@ namespace NewsAggregationTest
             _config.Item = "item";
 
             var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetGgTrendsNewsDataMappingConfiguration());
-            var result = _rssDataSource.ConvertDataToArticles(_config, mappingConfig);
+            var listConfigMapping = new List<CustomConfig>();
+            listConfigMapping.Add(mappingConfig);
+            var result = _rssDataSource.ConvertDataToArticles(_config, listConfigMapping);
 
             Assert.NotNull(result);
         }
@@ -97,46 +101,46 @@ namespace NewsAggregationTest
             _config.Item = "results";
 
             var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetNewsDataIoMappingConfiguration());
-            var result = _apiDataSource.ConvertDataToArticles(_config, mappingConfig);
+            var listConfigMapping = new List<CustomConfig>();
+            listConfigMapping.Add(mappingConfig);
+            var result = _apiDataSource.ConvertDataToArticles(_config, listConfigMapping);
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public void GetWeatherInforNotNull()
+        {
+            var config = WeatherConfig();
+            var result = _apiDataSource.GetWeatherInfor(config);
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void ConvertDataToWeatherNotNull()
+        {
+            var config = WeatherConfig();
+            var listConfigMapping = new List<CustomConfig>();
+            var weatherMappingConfig = DataSourceFactory.CreateMapping(DataSample.GetWeatherMappingConfiguration());
+            var weatherInforMappingConfig = DataSourceFactory.CreateMapping(DataSample.GetWeatherInforMappingConfiguration());
+            listConfigMapping.Add(weatherMappingConfig);
+            listConfigMapping.Add(weatherInforMappingConfig);
+            var data = _apiDataSource.GetWeatherInfor(config);
+            var result = _apiDataSource.ConvertDataToWeather(data, listConfigMapping);
 
             Assert.NotNull(result);
         }
 
-        ////[Fact]
-        ////public void GetWeatherInforNotNull()
-        ////{
-        ////    var service = new NewsService();
-        ////    var config = new Config();
-        ////    config.Headers.RapidApiKey = _constantCommon.RapidApiKey;
-        ////    config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
-        ////    config.KeyWork = "q=" + "Ho Chi Minh";
-        ////    config.DayNumber = "&day=" + "3";
-        ////    config.Language = "&lang=" + "vi";
-        ////    config.Location = "location";
-        ////    config.Url = "https://weatherapi-com.p.rapidapi.com/forecast.json?" + config.KeyWork + config.DayNumber + config.Language;
 
-        ////    var result = service.GetWeatherInfor(config);
-        ////    Assert.NotNull(result);
-        ////}
 
-        ////[Fact]
-        ////public void ConvertDataToWeatherNotNull()
-        ////{
-        ////    var config = WeatherConfig();
-        ////    var weatherMappingConfig = _newsService.CreateMapping(_dataSample.GetWeatherMappingConfiguration());
-        ////    var data = _apiDataSource.GetWeatherInfor(config);
-        ////    var result = _apiDataSource.ConvertDataToWeather(data, weatherMappingConfig);
-
-        ////    Assert.NotNull(result);
-        ////    Assert.NotNull(result.GetHourlyWeather());
-        ////}
         #endregion
 
         #region DI & Api
         ////[Fact]
         ////public async Task AddArticleToDatabaseSuccess()
         ////{
-        ////    Article article = _fixture.Create<Article>();
+        ////    ArticleVm article = _fixture.Create<ArticleVm>();
 
         ////    var result = await _articleService.Add(article);
 
@@ -179,7 +183,7 @@ namespace NewsAggregationTest
         ////[Fact]
         ////public async Task DeleteArticleToDatabaseSuccess()
         ////{
-        ////    Article article = _fixture.Create<Article>();
+        ////    ArticleVm article = _fixture.Create<ArticleVm>();
         ////    await _articleService.Add(article);
 
         ////    var result = await _articleService.Delete(article.GetId().ToString());
@@ -228,9 +232,9 @@ namespace NewsAggregationTest
         ////[Fact]
         ////public void TestMappingArticle()
         ////{
-        ////    var article = _fixture.Create<Article>();
+        ////    var article = _fixture.Create<ArticleVm>();
 
-        ////    var result = _mappingService.Map<Article, ArticleVm>(article);
+        ////    var result = _mappingService.Map<ArticleVm, ArticleVm>(article);
         ////    Assert.NotNull(result);
         ////}
 
@@ -251,5 +255,5 @@ namespace NewsAggregationTest
 
     }
 
-  
+
 }

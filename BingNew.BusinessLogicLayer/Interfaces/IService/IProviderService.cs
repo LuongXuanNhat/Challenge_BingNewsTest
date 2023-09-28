@@ -2,8 +2,8 @@
 
 namespace BingNew.BusinessLogicLayer.Interfaces.IService
 {
-    public interface IProviderService : IBaseService<Provider>
+    public interface IProviderService : IBaseService<ProviderVm>
     {
-       //// Task FilterChannelsToAdd(IEnumerable<Article> articles);
+       //// Task FilterChannelsToAdd(IEnumerable<ArticleVm> articles);
     }
 }

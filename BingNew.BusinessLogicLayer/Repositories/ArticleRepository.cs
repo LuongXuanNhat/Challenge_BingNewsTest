@@ -12,7 +12,7 @@ namespace BingNew.DataAccessLayer.Repositories
         public ArticleRepository() {
             _dbConnection = new DapperContext().CreateConnection();
         }
-        public async Task Add(Article article)
+        public async Task Add(ArticleVm article)
         {
             _dbConnection.Open();
             string query = "INSERT INTO Article (Id, Title, ImgUrl, Description, PubDate, Url, LikeNumber, DisLikeNumber, ViewNumber, CommentNumber) " +
@@ -30,25 +30,25 @@ namespace BingNew.DataAccessLayer.Repositories
             _dbConnection.Close();
         }
 
-        public async Task<IEnumerable<Article>> GetAll()
+        public async Task<IEnumerable<ArticleVm>> GetAll()
         {
             _dbConnection.Open();
             string query = "SELECT * FROM Article";
-            var result = await _dbConnection.QueryAsync<Article>(query);
+            var result = await _dbConnection.QueryAsync<ArticleVm>(query);
             _dbConnection.Close();
             return result;
         }
 
-        public async Task<Article> GetById(string id)
+        public async Task<ArticleVm> GetById(string id)
         {
             _dbConnection.Open();
             string query = "SELECT * FROM Article WHERE Id = @Id";
-            var result = await _dbConnection.QueryFirstOrDefaultAsync<Article>(query, new { Id = id });
+            var result = await _dbConnection.QueryFirstOrDefaultAsync<ArticleVm>(query, new { Id = id });
             _dbConnection.Close();
             return result;
         }
 
-        public async Task Update(Article article)
+        public async Task Update(ArticleVm article)
         {
             _dbConnection.Open();
             string query = "UPDATE Article SET Title = @Title, ImgUrl = @ImgUrl, Description = @Description, PubDate = @PubDate, " +

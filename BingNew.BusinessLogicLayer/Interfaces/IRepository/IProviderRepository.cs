@@ -2,7 +2,7 @@
 
 namespace BingNew.BusinessLogicLayer.Interfaces.IRepository
 {
-    public interface IProviderRepository : IBaseRepository<Provider>
+    public interface IProviderRepository : IBaseRepository<ProviderVm>
     {
 
     }
