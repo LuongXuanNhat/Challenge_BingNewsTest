@@ -1,17 +1,20 @@
 ﻿using BingNew.DataAccessLayer.Constants;
-using BingNew.DataAccessLayer.Models;
 using Dasync.Collections;
 using System.Data.SqlClient;
 using BingNew.ORM.Query;
 using BingNew.ORM.NonQuery;
+using BingNew.DataAccessLayer.Entities;
+using AutoFixture;
 
 namespace NewsAggregationTest
 {
     public class ORMTest
     {
         private readonly string _connecString;
+        private readonly Fixture _fixture;
         public ORMTest()
         {
+            _fixture = new Fixture();
             _connecString = new ConstantCommon().connectString;
         }
 
@@ -250,7 +253,7 @@ namespace NewsAggregationTest
                 Assert.NotEmpty(result);
                 if (firstArticle != null)
                 {
-                    Assert.NotNull(firstArticle.GetTitle());
+                    Assert.NotNull(firstArticle.Title);
                 } else Assert.True(false);
             }
         }
@@ -314,7 +317,7 @@ namespace NewsAggregationTest
                 Assert.NotEmpty(result);
                 if (firstArticle != null)
                 {
-                    Assert.NotNull(firstArticle.GetTitle());
+                    Assert.NotNull(firstArticle.Title);
                 }
                 else Assert.True(false);
             }
@@ -334,7 +337,7 @@ namespace NewsAggregationTest
 
                 Assert.NotNull(result);
                 if (firstArticle != null)   
-                     Assert.NotNull(firstArticle.GetTitle());
+                     Assert.NotNull(firstArticle.Title);
                 else Assert.True(false);
                 
             }
@@ -394,7 +397,7 @@ namespace NewsAggregationTest
                 var firstArticle = articles.FirstOrDefault();
 
                 Assert.NotNull(articles);
-                if (firstArticle != null) Assert.NotNull(firstArticle.GetTitle());
+                if (firstArticle != null) Assert.NotNull(firstArticle.Title);
                 else Assert.True(false);
             }
         }
@@ -425,8 +428,7 @@ namespace NewsAggregationTest
         [Fact]
         public void Object_Insert_Success()
         {
-            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", "News Category",
-                                    "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
+            var article = _fixture.Create<Article>();
             using (var connection = new SqlConnection(_connecString))
             {
                 bool result = connection.Insert(article);
@@ -437,8 +439,8 @@ namespace NewsAggregationTest
         [Fact]
         public void Object_Insert_Success_With_Parameter_Empty()
         {
-            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", "",
-                                    "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
+            var article = _fixture.Create<Article>();
+            article.Description = null;
             using (var connection = new SqlConnection(_connecString))
             {
                 bool result = connection.Insert(article);
@@ -455,7 +457,7 @@ namespace NewsAggregationTest
                 var article = connection.GetById<Article>(articleId);
 
                 Assert.NotNull(article);
-                Assert.Equal(articleId, article.GetId());
+                Assert.Equal(articleId, article.Id);
             }
         }
 
@@ -466,20 +468,20 @@ namespace NewsAggregationTest
             {
                 Guid articleId = new Guid("CAA91D5E-453B-45B2-857F-00E279711534");
                 var article = connection.GetById<Article>(articleId);
-                article.SetTitle("Updated Title");
+                article.Title = "Updated Title";
 
                 bool result = connection.Update(article);
                 Assert.True(result);
 
-                var updatedArticle = connection.GetById<Article>(article.GetId());
-                Assert.Equal("Updated Title", updatedArticle.GetTitle());
+                var updatedArticle = connection.GetById<Article>(article.Id);
+                Assert.Equal("Updated Title", updatedArticle.Title);
             }
         }
 
         [Fact]
         public void Object_Delete_Success()
         {
-            var article = new Article(10, 5, 8, 100, "https://example.com/image.jpg", "",
+            var article = new BingNew.DataAccessLayer.Models.ArticleVm(10, 5, 8, 100, "https://example.com/image.jpg", "",
                 "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
             using (var connection = new SqlConnection(_connecString))
             {
@@ -488,7 +490,7 @@ namespace NewsAggregationTest
                 Assert.True(result);
 
                 var deletedArticle = connection.GetById<Article>(article.GetId());
-                Assert.Empty(deletedArticle.GetTitle());
+                Assert.Null(deletedArticle);
             }
         }
 

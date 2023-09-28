@@ -23,7 +23,7 @@ namespace BingNew.BusinessLogicLayer.Services
             _articleRepository = articleRepository;
             _rssDataSource = dataSource;
         }   
-        public async Task<bool> Add(Article entity)
+        public async Task<bool> Add(ArticleVm entity)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace BingNew.BusinessLogicLayer.Services
             return true;
         }
 
-        public async Task<bool> AddRange(IEnumerable<Article> articles)
+        public async Task<bool> AddRange(IEnumerable<ArticleVm> articles)
         {
           ////  await _channelService.FilterChannelsToAdd(articles);
             try
@@ -68,7 +68,7 @@ namespace BingNew.BusinessLogicLayer.Services
             return true;
         }
 
-        public async Task<IEnumerable<Article>> GetAll()
+        public async Task<IEnumerable<ArticleVm>> GetAll()
         {
             try
             {
@@ -78,11 +78,11 @@ namespace BingNew.BusinessLogicLayer.Services
             catch (Exception e)
             {
                 Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
-                return new List<Article>();
+                return new List<ArticleVm>();
             }
         }
 
-        public async Task<Article> GetById(string id)
+        public async Task<ArticleVm> GetById(string id)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace BingNew.BusinessLogicLayer.Services
             catch (Exception e)
             {
                 Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
-                return new Article();
+                return new ArticleVm();
             }
         }
 
@@ -101,7 +101,7 @@ namespace BingNew.BusinessLogicLayer.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> Update(Article entity)
+        public async Task<bool> Update(ArticleVm entity)
         {
             try
             {
@@ -115,22 +115,22 @@ namespace BingNew.BusinessLogicLayer.Services
             }
         }
 
-        public async Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config)
+        public async Task<List<ArticleVm>> UpdateArticlesFromTuoiTreNews(Config config)
         {
             try
             {
                 config.Data = _rssDataSource.GetNews(config.Url);
-                var result = _rssDataSource.ConvertDataToArticles(config, config.MappingTables);
-                return await FilterArticles(result);
+              ////  var result = _rssDataSource.ConvertDataToArticles(config, config.MappingTables);
+                return await FilterArticles(new List<ArticleVm>());
             }
             catch (Exception e)
             {
                 Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
-                return new List<Article>();
+                return new List<ArticleVm>();
             }
         }
 
-        private async Task<List<Article>> FilterArticles(List<Article> result)
+        private async Task<List<ArticleVm>> FilterArticles(List<ArticleVm> result)
         {
             try
             {
@@ -145,7 +145,7 @@ namespace BingNew.BusinessLogicLayer.Services
             catch (Exception e)
             {
                 Debug.WriteLine("-------------------------------------------   BUG KÌA, FIX ĐI: " + e.Message.ToString());
-                return new List<Article>();
+                return new List<ArticleVm>();
             }
             
         }

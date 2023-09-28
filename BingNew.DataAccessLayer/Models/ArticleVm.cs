@@ -1,7 +1,7 @@
 ﻿namespace BingNew.DataAccessLayer.Models
 {
 
-    public class Article : BasePost
+    public class ArticleVm : BasePost
     {
         private int LikeNumber;
         private int DisLikeNumber;
@@ -9,11 +9,10 @@
         private int ViewNumber ;
        //// private double Score ;
         private string ImgUrl;
-      ///  private string Channel;
         private string TopicId;
 
 
-        public Article(int likeNumber, int disLikeNumber, int commentNumber, int viewNumber, string imgUrl,
+        public ArticleVm(int likeNumber, int disLikeNumber, int commentNumber, int viewNumber, string imgUrl,
          string category, string providerId, DateTime pubDate, string url, string title, string description) : base(providerId, pubDate, url,title,description)
         {
             LikeNumber = likeNumber;
@@ -23,7 +22,7 @@
             ImgUrl = imgUrl;
             TopicId = category;
         }
-        public Article() : base()
+        public ArticleVm() : base()
         {
             ImgUrl = string.Empty;
             TopicId = string.Empty;

@@ -3,7 +3,6 @@ using System.Reflection;
 
 namespace BingNew.ORM.Query
 {
-#pragma warning disable S3011
     public static class SqlExtensionCommon
     {
         public static string? ExtractTypeNameFromSql(string? sql)
@@ -50,7 +49,7 @@ namespace BingNew.ORM.Query
         {
             var obj = new T();
             var type = typeof(T);
-            var properties = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+            var properties = type.GetProperties();
 
             foreach (var property in properties)
             {

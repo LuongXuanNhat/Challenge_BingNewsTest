@@ -14,7 +14,7 @@ namespace BingNew.BusinessLogicLayer.Repositories
             _dbConnection = new DapperContext().CreateConnection();
         }
 
-        public async Task Add(Provider provider)
+        public async Task Add(ProviderVm provider)
         {
             _dbConnection.Open();
             string query = "INSERT INTO Provider (Id, name, icon, link ) " +
@@ -28,21 +28,21 @@ namespace BingNew.BusinessLogicLayer.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Provider>> GetAll()
+        public async Task<IEnumerable<ProviderVm>> GetAll()
         {
             _dbConnection.Open();
             string query = "SELECT * FROM Provider";
-            var result = await _dbConnection.QueryAsync<Provider>(query);
+            var result = await _dbConnection.QueryAsync<ProviderVm>(query);
             _dbConnection.Close();
             return result;
         }
 
-        public Task<Provider> GetById(string id)
+        public Task<ProviderVm> GetById(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(Provider entity)
+        public Task Update(ProviderVm entity)
         {
             throw new NotImplementedException();
         }

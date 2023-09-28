@@ -4,7 +4,6 @@ using System.Reflection;
 
 namespace BingNew.ORM.Query
 {
-#pragma warning disable S3011
     public static class SqlExtensionMultipleRows
     {
         public static IEnumerable<dynamic?> Query(this SqlConnection sqlConnection, string sql)
@@ -38,7 +37,7 @@ namespace BingNew.ORM.Query
                         for (var i = 0; i < reader.FieldCount; i++)
                         {
                             var columnName = reader.GetName(i);
-                            var propertyInfo = resultType.GetField(columnName, BindingFlags.NonPublic | BindingFlags.Instance);
+                            var propertyInfo = resultType.GetProperty(columnName);
                             if (propertyInfo != null && !reader.IsDBNull(i))
                             {
                                 var value = reader.GetValue(i);
@@ -85,7 +84,7 @@ namespace BingNew.ORM.Query
                             for (var i = 0; i < reader.FieldCount; i++)
                             {
                                 var columnName = reader.GetName(i);
-                                var propertyInfo = resultType.GetField(columnName, BindingFlags.NonPublic | BindingFlags.Instance);
+                                var propertyInfo = resultType.GetProperty(columnName);
                                 if (propertyInfo != null && !reader.IsDBNull(i))
                                 {
                                     var value = reader.GetValue(i);

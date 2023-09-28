@@ -12,7 +12,7 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             _providerRepository = providerRepository; 
         }
-        public async Task<bool> Add(Provider provider)
+        public async Task<bool> Add(ProviderVm provider)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace BingNew.BusinessLogicLayer.Services
             throw new NotImplementedException();
         }
 
-        ////public async Task FilterChannelsToAdd(IEnumerable<Article> articles)
+        ////public async Task FilterChannelsToAdd(IEnumerable<ArticleVm> articles)
         ////{
         ////    var providers = articles.Select(x => x.GetChannel()).Distinct().ToList();
         ////    var channels = await _providerRepository.GetAll();
@@ -39,24 +39,24 @@ namespace BingNew.BusinessLogicLayer.Services
         ////    {
         ////        if (!channels.Any(x => x.GetChannelName().Equals(item)))
         ////        {
-        ////            Provider newProvider = new Provider(item.ToString());
+        ////            ProviderVm newProvider = new ProviderVm(item.ToString());
         ////            await _providerRepository.Add(newProvider);
         ////        }
                 
         ////    }
         ////}
 
-        public Task<IEnumerable<Provider>> GetAll()
+        public Task<IEnumerable<ProviderVm>> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Provider> GetById(string id)
+        public Task<ProviderVm> GetById(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(Provider entity)
+        public Task<bool> Update(ProviderVm entity)
         {
             throw new NotImplementedException();
         }

@@ -2,7 +2,7 @@
 
 namespace BingNew.BusinessLogicLayer.Interfaces.IRepository
 {
-    public interface IArticleRepository : IBaseRepository<Article>
+    public interface IArticleRepository : IBaseRepository<ArticleVm>
     {
 
     }

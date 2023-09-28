@@ -1,7 +1,6 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.ModelConfig;
-using BingNew.DataAccessLayer.Models;
-using System.Globalization;
+using BingNew.DataAccessLayer.Entities;
 using System.Xml.Linq;
 
 namespace BingNew.BusinessLogicLayer.Services.Common
@@ -15,20 +14,15 @@ namespace BingNew.BusinessLogicLayer.Services.Common
 
         }
 
-        private static string DownloadXml(string url)
+        public string GetNews(string Url)
         {
             using (HttpClient client = new HttpClient())
             {
-                return client.GetStringAsync(url).Result;
+                return client.GetStringAsync(Url).Result;
             }
         }
 
-        public string GetNews(string Url)
-        {
-            return DownloadXml(Url);
-        }
-
-        public List<Article> ConvertDataToArticles(Config config, List<MappingTable> mapping)
+        public List<Article> ConvertDataToArticles(Config config, List<CustomConfig> mapping)
         {
             var articles = new List<Article>();
             XDocument document = XDocument.Parse(config.Data);
@@ -42,53 +36,34 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             return articles;
         }
 
-        private static Article MapToArticle(XElement item, List<MappingTable> mapping)
+        private static Article MapToArticle(XElement item, List<CustomConfig> mapping)
         {
             var article = new Article();
-            foreach (var obj in mapping)
+            var articleMapping = mapping.First(x => x.TableName.Equals(typeof(Article).Name));
+            mapping = mapping.Where(x => x != articleMapping).ToList();
+            foreach (var obj in articleMapping.MappingTables)
             {
-                XNamespace ns = XNamespace.Get(obj.Namespace);
-
-                try
-                {
-                    var sourceValue = ns != null
-                    ? item.Element(ns + obj.SouPropertyPath)?.Value
-                    : item.Element(obj.SouPropertyPath)?.Value;
-
-                    obj.SouValue = sourceValue ?? string.Empty;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-
+                obj.SouValue = GetSourceValue(item, obj);
                 var propertyInfo = typeof(Article).GetProperty(obj.DesProperty);
-                if (propertyInfo != null && propertyInfo.PropertyType != null)
-                {
-                    if (obj.SouDatatype == "string" && obj.DesDatatype == "DateTime")
-                    {
-                        string dateString = obj.SouValue;
-                        dateString = dateString.Replace(" GMT+7", "");
-                        CultureInfo culture = CultureInfo.InvariantCulture;
-                        var convertedValue = DateTime.Parse(dateString, culture);
-                        propertyInfo.SetValue(article, convertedValue);
-                    }
-                    else
-                    {
-                        var convertedValue = Convert.ChangeType(obj.SouValue, propertyInfo.PropertyType);
-                        propertyInfo.SetValue(article, convertedValue);
-                    }
-                }
+                var getType = DataSourceFactory.ParseDatatype(obj.DesDatatype);
+                var convertedValue = DataSourceFactory.GetValueHandler(getType, obj.SouValue, mapping);
+                propertyInfo?.SetValue(article, convertedValue);
             }
             return article;
         }
-
+        private static string GetSourceValue(XElement item, MappingTable obj)
+        {
+            XNamespace ns = XNamespace.Get(obj.Namespace);
+            var sourceElement = (ns != null) ? item.Element(ns + obj.SouPropertyPath) : item.Element(obj.SouPropertyPath);
+            var sourceValue = sourceElement?.Value;
+            return sourceValue ?? string.Empty;
+        }
         public string GetWeatherInfor(Config config)
         {
             throw new NotImplementedException();
         }
 
-        public Weather ConvertDataToWeather(string data, List<MappingTable> mapping)
+        public Weather ConvertDataToWeather(string data, List<CustomConfig> mapping)
         {
             throw new NotImplementedException();
         }

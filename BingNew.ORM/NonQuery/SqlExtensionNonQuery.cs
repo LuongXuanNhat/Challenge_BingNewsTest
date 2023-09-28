@@ -5,7 +5,6 @@ using System.Reflection;
 
 namespace BingNew.ORM.NonQuery
 {
-    #pragma warning disable S3011
     public static class SqlExtensionNonQuery
     {
         public static bool Insert<T>(this SqlConnection connection,T entity)
@@ -32,7 +31,7 @@ namespace BingNew.ORM.NonQuery
             if (connection.State == ConnectionState.Closed) connection.Open();
             using (var command = new SqlCommand(sql, connection))
             {
-                foreach (var property in typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+                foreach (var property in typeof(T).GetProperties())
                 {
                     var paramName = "@" + property.Name;
                     var value = property.GetValue(entity);
@@ -47,7 +46,7 @@ namespace BingNew.ORM.NonQuery
         public static string GenerateInsertQuery<T>(T entity)
         {
             string tableName = typeof(T).Name;
-            FieldInfo[] properties = typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+            PropertyInfo[] properties = typeof(T).GetProperties();
             string columns = string.Join(", ", properties.Select(p => p.Name));
             string values = string.Join(", ", properties.Select(p => "@" + p.Name));
             string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
@@ -81,7 +80,7 @@ namespace BingNew.ORM.NonQuery
         public static string GenerateUpdateQuery<T>(T entity)
         {
             string tableName = typeof(T).Name;
-            FieldInfo[] properties = typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+            PropertyInfo[] properties = typeof(T).GetProperties();
             string setClause = string.Join(", ", properties.Select(p => p.Name + " = @" + p.Name));
             string query = $"UPDATE {tableName} SET {setClause} WHERE Id = @Id";
 
@@ -114,7 +113,7 @@ namespace BingNew.ORM.NonQuery
 
         }
 
-        public static T GetById<T>(this SqlConnection connection, Guid entityId) where T : new()
+        public static T? GetById<T>(this SqlConnection connection, Guid entityId) where T : new()
         {
             try
             {
@@ -133,7 +132,7 @@ namespace BingNew.ORM.NonQuery
                         if (reader.Read())
                         {
                             var entity = new T();
-                            foreach (var property in typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+                            foreach (var property in typeof(T).GetProperties())
                             {
                                 var value = reader[property.Name];
                                 property.SetValue(entity, value == DBNull.Value ? null : value);
@@ -143,8 +142,7 @@ namespace BingNew.ORM.NonQuery
                         }
                     }
                 }
-
-                return new T();
+                return default(T?);
             }
             catch (Exception ex)
             {

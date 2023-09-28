@@ -3,10 +3,10 @@ using BingNew.DataAccessLayer.Models;
 
 namespace BingNew.BusinessLogicLayer.Interfaces.IService
 {
-    public interface IArticleService : IBaseService<Article>
+    public interface IArticleService : IBaseService<ArticleVm>
     {
-        Task<bool> AddRange(IEnumerable<Article> articles);
-        Task<List<Article>> UpdateArticlesFromTuoiTreNews(Config config);
-      ////  Task<List<Article>> TrendingStories();
+        Task<bool> AddRange(IEnumerable<ArticleVm> articles);
+        Task<List<ArticleVm>> UpdateArticlesFromTuoiTreNews(Config config);
+      ////  Task<List<ArticleVm>> TrendingStories();
     }
 }
