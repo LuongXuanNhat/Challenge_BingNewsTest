@@ -131,7 +131,7 @@ namespace BingNew.ORM.NonQuery
                     {
                         if (reader.Read())
                         {
-                            var entity = new T();
+                            T entity = new T();
                             foreach (var property in typeof(T).GetProperties())
                             {
                                 var value = reader[property.Name];
@@ -142,12 +142,12 @@ namespace BingNew.ORM.NonQuery
                         }
                     }
                 }
-                return default(T?);
+                return default;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("XUẤT HIỆN LỖI KHÔNG MONG MUỐN: " + ex.Message.ToString());
-                return new T();
+                throw new NotImplementedException();
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace BingNew.DataAccessLayer.Entities
 {
-    public partial class WeatherInfo
+    public partial class WeatherInfor
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public double? Temperature { get; set; }

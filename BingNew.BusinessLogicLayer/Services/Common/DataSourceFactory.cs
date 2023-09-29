@@ -58,32 +58,27 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         {
             return JsonConvert.DeserializeObject<CustomConfig>(jsonConfigMapping) ?? new CustomConfig();
         }
-        private static List<WeatherInfo> SetValueWeatherInfor(List<CustomConfig>? mappings, string? souPropertyPath, JObject? jsonObjects)
+        private static List<WeatherInfor> SetValueWeatherInfor(List<CustomConfig>? mappings, string? souPropertyPath , JObject? jsonObjects)
         {
-            mappings = mappings ?? new List<CustomConfig>();
-            var weatherInfos = new List<WeatherInfo>();
-            var mapping = mappings.First(x => x.TableName.Equals(typeof(WeatherInfo).Name));
-            jsonObjects ??= new JObject(); 
-            
-            var hourlyWeatherList = !string.IsNullOrEmpty(souPropertyPath) 
-                ? jsonObjects.SelectToken(souPropertyPath) ?? new JArray() : new JArray();
+            mappings ??= new List<CustomConfig>();
+            jsonObjects ??= new JObject();
+            souPropertyPath ??= "";
+            var mapping = mappings.First(x => x.TableName.Equals(typeof(WeatherInfor).Name));
+            var hourlyWeatherList = jsonObjects.SelectToken(souPropertyPath) as JArray ?? new JArray();
 
-            foreach (var item in hourlyWeatherList)
-            {
-                JObject jsonObject = JObject.Parse(item.ToString());
-                weatherInfos.Add(ConvertDataToWeatherInfor(jsonObject, mapping));
-            }
-            return weatherInfos;
+            return hourlyWeatherList
+            .OfType<JObject>() 
+            .Select(item => ConvertJsonToWeatherInfo(item, mapping))
+            .ToList();
         }
-        private static WeatherInfo ConvertDataToWeatherInfor(JObject jsonObject, CustomConfig weatherInfoMappingConfig)
+        private static WeatherInfor ConvertJsonToWeatherInfo(JObject jsonObject, CustomConfig weatherInfoMappingConfig)
         {
-            var weatherInHour = new WeatherInfo();
+            var weatherInHour = new WeatherInfor();
             foreach (var obj in weatherInfoMappingConfig.MappingTables)
             {
-                var sourceValue = jsonObject.SelectToken(obj.SouPropertyPath)?.ToString();
-                obj.SouValue = sourceValue ?? string.Empty;
+                obj.SouValue = Convert.ToString(jsonObject.SelectToken(obj.SouPropertyPath)) ?? string.Empty;
 
-                var propertyInfo = typeof(WeatherInfo).GetProperty(obj.DesProperty);
+                var propertyInfo = typeof(WeatherInfor).GetProperty(obj.DesProperty);
                 var getType = ParseDatatype(obj.DesDatatype);
                 var convertedValue = GetValueHandler(getType, obj.SouValue);
                 propertyInfo?.SetValue(weatherInHour, convertedValue);
