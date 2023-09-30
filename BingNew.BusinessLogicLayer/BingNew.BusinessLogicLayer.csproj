@@ -18,4 +18,10 @@
     <ProjectReference Include="..\BingNew.DataAccessLayer\BingNew.DataAccessLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\IRepository\" />
+    <Folder Include="Interfaces\IService\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>

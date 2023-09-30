@@ -9,17 +9,13 @@ namespace BingNew.ORM.Query
             where T : class, new()
         {
             connection.Open();
-            using (var command = connection.CreateCommand())
-            {
-                command.Connection = connection;
-                command.CommandText = sql;
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = commandTimeout ?? 30;
-                using (var reader = command.ExecuteReader())
-                {
-                    return reader.Read() ? SqlExtensionCommon.ConvertToObject<T>(reader) : throw new InvalidOperationException("Invalid return data: zero or more than one element");
-                }
-            }
+            using var command = connection.CreateCommand();
+            command.Connection = connection;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            command.CommandTimeout = commandTimeout ?? 30;
+            using var reader = command.ExecuteReader();
+            return reader.Read() ? SqlExtensionCommon.ConvertToObject<T>(reader) : throw new InvalidOperationException("Invalid return data: zero or more than one element");
         }
         public static dynamic QuerySingle(this SqlConnection connection, string sql)
         {
@@ -83,29 +79,27 @@ namespace BingNew.ORM.Query
             where T : class, new()
         {
             if (connection.State == ConnectionState.Closed) connection.Open();
-            using (var command = connection.CreateCommand())
-            {
-                command.Connection = connection;
-                command.CommandText = sql;
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = commandTimeout ?? 30;
+            using var command = connection.CreateCommand();
+            command.Connection = connection;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            command.CommandTimeout = commandTimeout ?? 30;
 
-                T? result = null;
-                bool hasResult = false;
-                using (var reader = command.ExecuteReader())
+            T? result = null;
+            bool hasResult = false;
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    if (hasResult)
                     {
-                        if (hasResult)
-                        {
-                            throw new InvalidOperationException("Multiple rows found");
-                        }
-                        result = SqlExtensionCommon.ConvertToObject<T>(reader);
-                        hasResult = true;
+                        throw new InvalidOperationException("Multiple rows found");
                     }
+                    result = SqlExtensionCommon.ConvertToObject<T>(reader);
+                    hasResult = true;
                 }
-                return result ?? null;
             }
+            return result ?? null;
         }
         public static dynamic QueryFirst(this SqlConnection connection, string sql)
         {
@@ -116,43 +110,37 @@ namespace BingNew.ORM.Query
             where T : class, new()
         {
             if (connection.State == ConnectionState.Closed) connection.Open();
-            using (var command = connection.CreateCommand())
-            {
-                command.Connection = connection;
-                command.CommandText = sql;
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = commandTimeout ?? 30;
+            using var command = connection.CreateCommand();
+            command.Connection = connection;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            command.CommandTimeout = commandTimeout ?? 30;
 
-                using (var reader = command.ExecuteReader())
+            using (var reader = command.ExecuteReader())
+            {
+                if (reader.Read())
                 {
-                    if (reader.Read())
-                    {
-                        return SqlExtensionCommon.ConvertToObject<T>(reader);
-                    }
+                    return SqlExtensionCommon.ConvertToObject<T>(reader);
                 }
-                throw new InvalidOperationException("Invalid return data: zero or more than one element");
             }
+            throw new InvalidOperationException("Invalid return data: zero or more than one element");
         }
         public static T? QueryFirstOrDefault<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
             if (connection.State == ConnectionState.Closed) connection.Open();
-            using (var command = connection.CreateCommand())
-            {
-                command.Connection = connection;
-                command.CommandText = sql;
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = commandTimeout ?? 30;
+            using var command = connection.CreateCommand();
+            command.Connection = connection;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            command.CommandTimeout = commandTimeout ?? 30;
 
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        return SqlExtensionCommon.ConvertToObject<T>(reader);
-                    }
-                }
-                return null;
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                return SqlExtensionCommon.ConvertToObject<T>(reader);
             }
+            return null;
         }
         
 
@@ -165,30 +153,26 @@ namespace BingNew.ORM.Query
 
         private static dynamic? QueryExcute(SqlConnection connection, string sql)
         {
-            using (var command = new SqlCommand(sql, connection))
+            using var command = new SqlCommand(sql, connection);
+            using var reader = command.ExecuteReader();
+            var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
+            var resultType = SqlExtensionCommon.FindTypeByName(typeName);
+            if (resultType != null && reader.Read())
             {
-                using (var reader = command.ExecuteReader())
+                var obj = Activator.CreateInstance(resultType);
+                var properties = resultType.GetProperties();
+                foreach (var propertyInfo in properties)
                 {
-                    var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
-                    var resultType = SqlExtensionCommon.FindTypeByName(typeName);
-                    if (resultType != null && reader.Read())
+                    var columnName = propertyInfo.Name;
+                    if (reader.HasColumn(columnName) && !reader.IsDBNull(reader.GetOrdinal(columnName)))
                     {
-                        var obj = Activator.CreateInstance(resultType);
-                        var properties = resultType.GetProperties();
-                        foreach (var propertyInfo in properties)
-                        {
-                            var columnName = propertyInfo.Name;
-                            if (reader.HasColumn(columnName) && !reader.IsDBNull(reader.GetOrdinal(columnName)))
-                            {
-                                var propertyValue = reader[columnName];
-                                propertyInfo.SetValue(obj, propertyValue);
-                            }
-                        }
-                        return obj;
+                        var propertyValue = reader[columnName];
+                        propertyInfo.SetValue(obj, propertyValue);
                     }
-                    return null;
                 }
+                return obj;
             }
+            return null;
         }
     }
 }
