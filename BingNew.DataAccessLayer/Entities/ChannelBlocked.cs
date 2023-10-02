@@ -12,6 +12,6 @@ namespace BingNew.DataAccessLayer.Entities
         public string ProviderId { get; set; }
 
         public virtual Provider Provider { get; set; }
-        public virtual User User { get; set; }
+      //  public virtual User User { get; set; }
     }
 }
