@@ -18,24 +18,22 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         }
         private static string DownloadJson(string Url)
         {
-            using (HttpClient client = new HttpClient())
-            {
-                return client.GetStringAsync(Url).Result;
-            }
+            using HttpClient client = new HttpClient();
+            return client.GetStringAsync(Url).Result;
         }
         public List<Article> ConvertDataToArticles(Config config, List<CustomConfig> mapping)
         {
             var articles = new List<Article>();
             JObject jsonObject = JObject.Parse(config.Data);
 
-            if (jsonObject[config.Item] is JArray newsArray)
+            var newsArray = jsonObject[config.Item] as JArray;
+
+            foreach (JObject newsItem in newsArray?.OfType<JObject>() ?? Enumerable.Empty<JObject>())
             {
-                foreach (JObject newsItem in newsArray.OfType<JObject>())
-                {
-                    var article = ConvertDataToType<Article>(newsItem.ToString(), mapping);
-                    articles.Add(article);
-                }
+                var article = ConvertDataToType<Article>(newsItem.ToString(), mapping);
+                articles.Add(article);
             }
+
             return articles;
         }
 
