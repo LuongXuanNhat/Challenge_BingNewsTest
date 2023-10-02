@@ -36,7 +36,15 @@ namespace NewsAggregationTest
         {
             using var connection = new SqlConnection(_connecString);
             var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bb'";
-            Assert.Throws<NullReferenceException>(() => connection.QuerySingleOrDefault(sql));
+            var result = connection.QuerySingleOrDefault(sql);
+            Assert.Null(result);
+        }
+        [Fact]
+        public void Get_Article_Return_Error_When_More_Than_One_Element()
+        {
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            Assert.Throws<InvalidOperationException>(() => connection.QuerySingleOrDefault(sql));
         }
         [Fact]
         public void Get_Article_Return_Null_Using_QuerySingleOrDefaultT()
@@ -47,7 +55,7 @@ namespace NewsAggregationTest
             Assert.Null(result);
         }
         [Fact]
-        public void Get_Article_Error_Return_Exception_When_More_Than_One_Element()
+        public void Get_Article_Error_Return_Null_When_More_Than_One_Element()
         {
             using var connection = new SqlConnection(_connecString);
             var sql = "SELECT * FROM Article where ProviderId = '2'";
@@ -57,8 +65,16 @@ namespace NewsAggregationTest
         public void Get_Article_Error_Return_Exception_When_More_Than_One_Element_2()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var sql = "SELECT * FROM Article where ProviderId = '12345'";
             Assert.Throws<InvalidOperationException>(() => connection.QuerySingleOrDefault(sql));
+        }
+        [Fact]
+        public void Get_Article_Return_Null_When_Not_Found()
+        {
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '22'";
+            var result = connection.QuerySingleOrDefault(sql) ;
+            Assert.Null(result);
         }
         [Fact]
         public void Get_Article_First_Success()
@@ -257,7 +273,7 @@ namespace NewsAggregationTest
             ";
             var result = connection.QueryMultiple(sql).ToList();
             var firstArticle = result.FirstOrDefault() as Article;
-
+            connection.Close();
             Assert.NotEmpty(result);
             Assert.NotNull(firstArticle?.Title);
         }

@@ -20,7 +20,7 @@ namespace NewsAggregationTest
             _rssDataSource = new RssDataSource();
         }
 
-        private Config WeatherConfig()
+        private static Config WeatherConfig()
         {
             var config = new Config();
             config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
@@ -53,7 +53,7 @@ namespace NewsAggregationTest
         public void GetNewsFromApiNewsDataIoNotNull()
         {
             var config = new Config();
-            config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
+            config.Key = "apikey=" + DataSample.GetApiKeyOfNewsDataIo();
             config.Language = "&language=" + "vi";
             config.Item = "results";
             config.Url = "https://newsdata.io/api/1/news?" + config.Key + config.Language;
@@ -95,7 +95,7 @@ namespace NewsAggregationTest
         [Fact]
         public void ConvertDataFromNewsDataToArticlesNotNull()
         {
-            _config.Key = "apikey=" + "pub_2815763c25cffe45251bb8682ef275560ee69";
+            _config.Key = "apikey=" + DataSample.GetApiKeyOfNewsDataIo();
             _config.Language = "&language=" + "vi";
             _config.Category = "&category=" + "business,entertainment";
             _config.Url = "https://newsdata.io/api/1/news?" + _config.Key + _config.Language + _config.Category;
@@ -103,8 +103,10 @@ namespace NewsAggregationTest
             _config.Item = "results";
 
             var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetNewsDataIoMappingConfiguration());
-            var listConfigMapping = new List<CustomConfig>();
-            listConfigMapping.Add(mappingConfig);
+            var listConfigMapping = new List<CustomConfig>
+            {
+                mappingConfig
+            };
             var result = _apiDataSource.ConvertDataToArticles(_config, listConfigMapping);
 
             Assert.NotNull(result);

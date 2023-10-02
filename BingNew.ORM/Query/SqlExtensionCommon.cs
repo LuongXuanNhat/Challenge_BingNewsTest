@@ -1,10 +1,21 @@
 ﻿using System.Data;
+using System.Data.SqlClient;
 using System.Reflection;
 
 namespace BingNew.ORM.Query
 {
     public static class SqlExtensionCommon
     {
+        public static void OpenOrClose(this SqlConnection sqlConnection, ConnectionState state)
+        {
+            switch (state)
+            {
+                case ConnectionState.Closed:
+                    sqlConnection.Open();
+                    break;
+
+            }
+        }
         public static string ExtractTypeNameFromSql(string sql)
         {
             var tableNameStartIndex = sql.IndexOf("FROM ", StringComparison.OrdinalIgnoreCase);
@@ -12,11 +23,9 @@ namespace BingNew.ORM.Query
                 ? sql[(tableNameStartIndex + 5)..]
                     .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                     .FirstOrDefault()!
-                : throw new Exception("Table name not found in SQL");
+                : string.Empty;
         }
-
-
-        public static Type FindTypeByName(string typeName)
+        public static Type? FindTypeByName(string typeName)
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             Type? type = null;
@@ -24,7 +33,7 @@ namespace BingNew.ORM.Query
             {
                 type ??= assembly.GetTypes().ToList().Find(x => x.Name.Equals(typeName));
             }
-            return type ?? throw new NullReferenceException("Not found!");
+            return type;
         }
         public static T ConvertToObject<T>(IDataReader reader) where T : new()
         {
@@ -35,25 +44,20 @@ namespace BingNew.ORM.Query
             foreach (var property in properties)
             {
                 var columnName = property.Name;
-                if (reader.HasColumn(columnName) && !reader.IsDBNull(reader.GetOrdinal(columnName)))
-                {
-                    var propertyValue = reader[columnName];
-                    property.SetValue(obj, propertyValue);
-                }
+                var propertyValue = reader[columnName];
+                property.SetValue(obj, propertyValue);
             }
 
             return obj;
         }
         public static bool HasColumn(this IDataReader reader, string columnName)
         {
+            int? check = null;
             for (var i = 0; i < reader.FieldCount; i++)
             {
-                if (reader.GetName(i).Equals(columnName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
+                check ??= (reader.GetName(i).Equals(columnName, StringComparison.OrdinalIgnoreCase)) ? 1 : null;
             }
-            return false;
+            return check == 1;
         }
     }
 }
