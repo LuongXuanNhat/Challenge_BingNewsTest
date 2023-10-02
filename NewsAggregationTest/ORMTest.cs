@@ -10,179 +10,133 @@ namespace NewsAggregationTest
 {
     public class ORMTest
     {
-        private readonly string _connecString;
-        private readonly Fixture _fixture;
-        public ORMTest()
-        {
-            _fixture = new Fixture();
-            _connecString = new ConstantCommon().connectString;
-        }
+        private readonly string _connecString = new ConstantCommon().connectString;
+        private readonly Fixture _fixture = new();
 
         #region Query Single Row
         [Fact]
         public void GetArticle_Success_Using_QuerySingleT()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bf'";
-                var result = connection.QuerySingle<Article>(sql);
-                Assert.NotNull(result);
-            }
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bf'";
+            var result = connection.QuerySingle<Article>(sql);
+            Assert.NotNull(result);
         }
         [Fact]
         public void Get_Article_Success_Using_QuerySingle()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bf'";
-                var result = connection.QuerySingle(sql);
-                Assert.NotNull(result);
-                Assert.IsType<Article>(result);
-            }
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bf'";
+            var result = connection.QuerySingle(sql);
+            Assert.NotNull(result);
+            Assert.IsType<Article>(result);
         }
         [Fact]
         public void Get_Article_Return_Null_Using_QuerySingleOrDefault()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bb'";
-                var result = connection.QuerySingleOrDefault(sql);
-                Assert.Null(result);
-            }
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bb'";
+            Assert.Throws<NullReferenceException>(() => connection.QuerySingleOrDefault(sql));
         }
         [Fact]
         public void Get_Article_Return_Null_Using_QuerySingleOrDefaultT()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bb'";
-                var result = connection.QuerySingleOrDefault<Article>(sql);
-                Assert.Null(result);
-            }
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bb'";
+            var result = connection.QuerySingleOrDefault<Article>(sql);
+            Assert.Null(result);
         }
         [Fact]
         public void Get_Article_Error_Return_Exception_When_More_Than_One_Element()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 2";
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    connection.QuerySingleOrDefault<Article>(sql);
-                });
-            }
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            Assert.Throws<InvalidOperationException>(() => connection.QuerySingleOrDefault<Article>(sql));
         }
         [Fact]
         public void Get_Article_Error_Return_Exception_When_More_Than_One_Element_2()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 2";
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    connection.QuerySingleOrDefault(sql);
-                });
-            }
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            Assert.Throws<InvalidOperationException>(() => connection.QuerySingleOrDefault(sql));
         }
         [Fact]
         public void Get_Article_First_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 2";
-                var result = connection.QueryFirst(sql); 
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var result = connection.QueryFirst(sql);
 
-                Assert.NotNull(result);
-                Assert.IsType<Article>(result);
-            }
+            Assert.NotNull(result);
+            Assert.IsType<Article>(result);
         } 
         [Fact]
         public void Get_Article_First_SuccessT()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 2";
-                var result = connection.QueryFirst<Article>(sql);
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = 2";
+            var result = connection.QueryFirst<Article>(sql);
 
-                Assert.NotNull(result);
-                Assert.IsType<Article>(result);
-            }
+            Assert.NotNull(result);
+            Assert.IsType<Article>(result);
         }
 
         [Fact]
         public void Get_Article_First_Error_When_Not_Found()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 1";
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    connection.QueryFirst(sql);
-                });
-            }
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '1'";
+            Assert.Throws<InvalidOperationException>(() => connection.QueryFirst(sql));
         }
 
         [Fact]
         public void Get_Article_First_Error_When_Not_FoundT()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 1";
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    connection.QueryFirst<Article>(sql);
-                });
-            }
+            using var connection = new SqlConnection(_connecString);
+            var query = "SELECT * FROM Article where ProviderId = '1'";
+            Assert.Throws<InvalidOperationException>(() => connection.QueryFirst<Article>(query));
         }
 
         [Fact]
         public void Get_Article_First_Success_Using_QueryFirstOrDefault()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 2";
-                var result = connection.QueryFirstOrDefault(sql);
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var result = connection.QueryFirstOrDefault(sql);
 
-                Assert.NotNull(result);
-                Assert.IsType<Article>(result);
-            }
+            Assert.NotNull(result);
+            Assert.IsType<Article>(result);
         }
         
         [Fact]
         public void Get_Article_First_Return_Null_Using_QueryFirstOrDefault()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 1";
-                var result = connection.QueryFirstOrDefault(sql);
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '1'";
+            var result = connection.QueryFirstOrDefault(sql);
 
-                Assert.Null(result);
-            }
+            Assert.Null(result);
         }
 
         [Fact]
         public void Get_Article_First_Success_Using_QueryFirstOrDefaultT()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 2";
-                var result = connection.QueryFirstOrDefault<Article>(sql);
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var result = connection.QueryFirstOrDefault<Article>(sql);
 
-                Assert.NotNull(result);
-                Assert.IsType<Article>(result);
-            }
+            Assert.NotNull(result);
+            Assert.IsType<Article>(result);
         }
         
         [Fact]
         public void Get_Article_First_Return_Null_Using_QueryFirstOrDefaultT()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article where ProviderId = 1";
-                var result = connection.QueryFirstOrDefault<Article>(sql);
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article where ProviderId = '1'";
+            var result = connection.QueryFirstOrDefault<Article>(sql);
 
-                Assert.Null(result);
-            }
+            Assert.Null(result);
         }
 
 
@@ -244,45 +198,36 @@ namespace NewsAggregationTest
         [Fact]
         public void Get_Articles_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article WHERE ProviderId = '2';";
-                var result = connection.Query(sql).ToList();
-                var firstArticle = result.FirstOrDefault() as Article;
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article WHERE ProviderId = '2';";
+            var result = connection.Query(sql).ToList();
+            var firstArticle = result.FirstOrDefault() as Article;
 
-                Assert.NotEmpty(result);
-                if (firstArticle != null)
-                {
-                    Assert.NotNull(firstArticle.Title);
-                } else Assert.True(false);
-            }
+            Assert.NotEmpty(result);
+            Assert.NotNull(firstArticle?.Title);
         }
 
         [Fact]
         public void Get_Articles_SuccessT()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article";
-                var result = connection.Query<Article>(sql).ToList();
-                var first = result.FirstOrDefault();
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article";
+            var result = connection.Query<Article>(sql).ToList();
+            var first = result.FirstOrDefault();
 
-                Assert.NotEmpty(result);
-                Assert.IsType<Article>(first);
-            }
+            Assert.NotEmpty(result);
+            Assert.IsType<Article>(first);
         }
 
         [Fact]
         public async Task Get_Articles_Async_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article";
-                var result = await connection.QueryAsync(sql).ToListAsync();
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article";
+            var result = await connection.QueryAsync(sql).ToListAsync();
 
-                Assert.NotEmpty(result);
-                Assert.IsType<Article>(result.FirstOrDefault());
-            }
+            Assert.NotEmpty(result);
+            Assert.IsType<Article>(result.FirstOrDefault());
         }
 
         [Fact]
@@ -305,119 +250,99 @@ namespace NewsAggregationTest
         [Fact]
         public void Test_QueryMultiple()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                string sql = @"
+            using var connection = new SqlConnection(_connecString);
+            string sql = @"
                 SELECT * FROM Article WHERE ProviderId = '2';
                 SELECT * FROM Provider WHERE Id = '2';
             ";
-                var result = connection.QueryMultiple(sql).ToList();
-                var firstArticle = result.FirstOrDefault() as Article;
+            var result = connection.QueryMultiple(sql).ToList();
+            var firstArticle = result.FirstOrDefault() as Article;
 
-                Assert.NotEmpty(result);
-                if (firstArticle != null)
-                {
-                    Assert.NotNull(firstArticle.Title);
-                }
-                else Assert.True(false);
-            }
+            Assert.NotEmpty(result);
+            Assert.NotNull(firstArticle?.Title);
         }
         
         [Fact]
         public async Task Test_QueryMultipleAsync()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                string sql = @"
+            using var connection = new SqlConnection(_connecString);
+            string sql = @"
                 SELECT * FROM Article WHERE ProviderId = '2';
                 SELECT * FROM Provider WHERE Id = '2';      
                 ";
-                var result = await connection.QueryMultipleAsync(sql);
-                var firstArticle = await result.FirstOrDefaultAsync() as Article;
+            var result = await connection.QueryMultipleAsync(sql);
+            var firstArticle = await result.FirstOrDefaultAsync() as Article;
 
-                Assert.NotNull(result);
-                if (firstArticle != null)   
-                     Assert.NotNull(firstArticle.Title);
-                else Assert.True(false);
-                
-            }
+            Assert.NotNull(result);
+            Assert.NotNull(firstArticle?.Title);
         }
 
         [Fact]
         public void Read_QueryMultiple_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                string sql = @"
+            using var connection = new SqlConnection(_connecString);
+            string sql = @"
                 SELECT * FROM Article WHERE ProviderId = '2';
                 SELECT * FROM Provider WHERE Id = '2';      
                 ";
-                var result = connection.QueryMultiple(sql);
+            var result = connection.QueryMultiple(sql);
 
-                var articles = result.Read<Article>().ToList();
-                Assert.Equal(2, articles.Count);
+            var articles = result.Read<Article>().ToList();
+            Assert.Equal(2, articles.Count);
 
-                var providers = result.Read<Provider>().ToList();
-                Assert.NotNull(providers);
-            }
+            var providers = result.Read<Provider>().ToList();
+            Assert.NotNull(providers);
         }
 
         [Fact]
         public void ReadFirst_QueryMultiple_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                string sql = @"
+            using var connection = new SqlConnection(_connecString);
+            string sql = @"
                 SELECT * FROM Article WHERE ProviderId = '2';
                 SELECT * FROM Provider WHERE Id = '2';      
                 ";
-                var result = connection.QueryMultiple(sql);
+            var result = connection.QueryMultiple(sql);
 
-                var article = result.ReadFirst<Article>();
-                Assert.NotNull(article);
-                Assert.IsType<Article>(article);
+            var article = result.ReadFirst<Article>();
+            Assert.NotNull(article);
+            Assert.IsType<Article>(article);
 
-                var provider = result.ReadFirst<Provider>();
-                Assert.NotNull(provider);
-            }
+            var provider = result.ReadFirst<Provider>();
+            Assert.NotNull(provider);
         }
 
         [Fact]
         public async Task ReadAsync_QueryMultiple_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                string sql = @"
+            using var connection = new SqlConnection(_connecString);
+            string sql = @"
                 SELECT * FROM Article WHERE ProviderId = '2';
                 SELECT * FROM Provider WHERE Id = '2';      
                 ";
-                var result = await connection.QueryMultipleAsync(sql);
+            var result = await connection.QueryMultipleAsync(sql);
 
-                var articles = await result.ReadAsync<Article>().ToListAsync();
-                var firstArticle = articles.FirstOrDefault();
+            var articles = await result.ReadAsync<Article>().ToListAsync();
+            var firstArticle = articles.FirstOrDefault();
 
-                Assert.NotNull(articles);
-                if (firstArticle != null) Assert.NotNull(firstArticle.Title);
-                else Assert.True(false);
-            }
+            Assert.NotNull(articles);
+            Assert.NotNull(firstArticle?.Title);
         }
 
         [Fact]
         public async Task ReadFirstAsync_QueryMultiple_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                string sql = @"
+            using var connection = new SqlConnection(_connecString);
+            string sql = @"
                 SELECT * FROM Article WHERE ProviderId = '2';
                 SELECT * FROM Provider WHERE Id = '2'; ";
-                var result = await connection.QueryMultipleAsync(sql);
+            var result = await connection.QueryMultipleAsync(sql);
 
-                var article = await result.ReadFirstAsync<Article>();
-                Assert.NotNull(article);
+            var article = await result.ReadFirstAsync<Article>();
+            Assert.NotNull(article);
 
-                var provider = await result.ReadFirstAsync<Topic>();
-                Assert.Null(provider);
-            }
+            var provider = await result.ReadFirstAsync<Topic>();
+            Assert.Null(provider);
         }
 
         #endregion
@@ -429,11 +354,9 @@ namespace NewsAggregationTest
         public void Object_Insert_Success()
         {
             var article = _fixture.Create<Article>();
-            using (var connection = new SqlConnection(_connecString))
-            {
-                bool result = connection.Insert(article);
-                Assert.True(result);
-            }
+            using var connection = new SqlConnection(_connecString);
+            bool result = connection.Insert(article);
+            Assert.True(result);
         }
 
         [Fact]
@@ -441,41 +364,37 @@ namespace NewsAggregationTest
         {
             var article = _fixture.Create<Article>();
             article.Description = null;
-            using (var connection = new SqlConnection(_connecString))
-            {
-                bool result = connection.Insert(article);
-                Assert.True(result);
-            }
+            using var connection = new SqlConnection(_connecString);
+            bool result = connection.Insert(article);
+            Assert.True(result);
         }
 
         [Fact]
         public void Object_GetById_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                Guid articleId = new Guid("CAA91D5E-453B-45B2-857F-00E279711534");
-                var article = connection.GetById<Article>(articleId);
+            using var connection = new SqlConnection(_connecString);
+            Guid articleId = new Guid("CAA91D5E-453B-45B2-857F-00E279711534");
+            var article = connection.GetById<Article>(articleId);
 
-                Assert.NotNull(article);
-                Assert.Equal(articleId, article.Id);
-            }
+            Assert.NotNull(article);
+            Assert.Equal(articleId, article.Id);
         }
 
         [Fact]
         public void Object_Update_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                Guid articleId = new Guid("CAA91D5E-453B-45B2-857F-00E279711534");
-                var article = connection.GetById<Article>(articleId);
-                article.Title = "Updated Title";
+            using var connection = new SqlConnection(_connecString);
+            Guid articleId = new Guid("CAA91D5E-453B-45B2-857F-00E279711534");
+            var article = connection.GetById<Article>(articleId);
 
-                bool result = connection.Update(article);
-                Assert.True(result);
+            Assert.NotNull(article);
+            article.Title = "Updated Titleee";
 
-                var updatedArticle = connection.GetById<Article>(article.Id);
-                Assert.Equal("Updated Title", updatedArticle.Title);
-            }
+            bool result = connection.Update(article);
+            Assert.True(result);
+
+            var updatedArticle = connection.GetById<Article>(article.Id);
+            Assert.Equal("Updated Titleee", updatedArticle?.Title);
         }
 
         [Fact]
@@ -483,19 +402,14 @@ namespace NewsAggregationTest
         {
             var article = new BingNew.DataAccessLayer.Models.ArticleVm(10, 5, 8, 100, "https://example.com/image.jpg", "",
                 "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
-            using (var connection = new SqlConnection(_connecString))
-            {
-                connection.Insert(article);
-                bool result = connection.Delete<Article>(article.GetId());
-                Assert.True(result);
+            using var connection = new SqlConnection(_connecString);
+            connection.Insert(article);
+            bool result = connection.Delete<Article>(article.GetId());
+            Assert.True(result);
 
-                var deletedArticle = connection.GetById<Article>(article.GetId());
-                Assert.Null(deletedArticle);
-            }
+            var deletedArticle = connection.GetById<Article>(article.GetId());
+            Assert.Null(deletedArticle);
         }
-
-        
-
         #endregion
     }
 

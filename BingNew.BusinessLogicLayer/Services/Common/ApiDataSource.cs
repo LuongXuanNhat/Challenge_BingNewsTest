@@ -32,29 +32,30 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             {
                 foreach (JObject newsItem in newsArray.OfType<JObject>())
                 {
-                    var article = MapToArticle(newsItem, mapping);
+                    var article = ConvertDataToType<Article>(newsItem.ToString(), mapping);
                     articles.Add(article);
                 }
             }
             return articles;
         }
-        private static Article MapToArticle(JObject item, List<CustomConfig> mapping)
+
+        public T ConvertDataToType<T>(string data, List<CustomConfig> mapping) where T : new()
         {
-            var article = new Article();
-            var articleMapping = mapping.First(x => x.TableName.Equals(typeof(Article).Name));
-            mapping = mapping.Where(x => x != articleMapping).ToList();
-            foreach (var obj in articleMapping.MappingTables)
+            var obj = new T();
+            JObject jsonObject = JObject.Parse(data);
+            var mappingConfig = mapping.First(x => x.TableName.Equals(typeof(T).Name));
+            mapping = mapping.Where(x => x != mappingConfig).ToList();
+            foreach (var config in mappingConfig.MappingTables)
             {
-                var sourceValue = item[obj.SouPropertyPath]?.ToString();
-                obj.SouValue = sourceValue ?? string.Empty;
+                config.SouValue = Convert.ToString(jsonObject.SelectToken(config.SouPropertyPath)) ?? string.Empty;
 
-                var propertyInfo = typeof(Article).GetProperty(obj.DesProperty);
-                var getType = DataSourceFactory.ParseDatatype(obj.DesDatatype);
-                var convertedValue = DataSourceFactory.GetValueHandler(getType, obj.SouValue, mapping);
-                propertyInfo?.SetValue(article, convertedValue);
-
+                var propertyInfo = typeof(T).GetProperty(config.DesProperty);
+                var getType = DataSourceFactory.ParseDatatype(config.DesDatatype);
+                var convertedValue = DataSourceFactory.GetValueHandler(getType, config.SouValue, mapping, jsonObject, config.SouPropertyPath);
+                propertyInfo?.SetValue(obj, convertedValue);
             }
-            return article;
+
+            return obj;
         }
         public string GetWeatherInfor(Config config)
         {
@@ -63,42 +64,17 @@ namespace BingNew.BusinessLogicLayer.Services.Common
                 Method = HttpMethod.Get,
                 RequestUri = new Uri(config.Url),
                 Headers =
-            {
-                { "X-RapidAPI-Key", config.Headers.RapidApiKey },
-                { "X-RapidAPI-Host", config.Headers.RapidApiHost },
-            }
+                {
+                    { "X-RapidAPI-Key", config.Headers.RapidApiKey },
+                    { "X-RapidAPI-Host", config.Headers.RapidApiHost },
+                }
             };
-            return GetDataWeather(request);
-        }
-
-        private static string GetDataWeather(HttpRequestMessage request)
-        {
             var client = new HttpClient();
             using (var response = client.SendAsync(request).Result)
             {
                 response.EnsureSuccessStatusCode();
                 return response.Content.ReadAsStringAsync().Result;
             }
-        }
-
-        public Weather ConvertDataToWeather(string data, List<CustomConfig> mapping)
-        {
-            var weather = new Weather();
-            JObject jsonObject = JObject.Parse(data);
-            var weatherMapping = mapping.First(x => x.TableName.Equals(typeof(Weather).Name));
-            mapping = mapping.Where(x => x != weatherMapping).ToList();
-            foreach (var obj in weatherMapping.MappingTables)
-            {
-                var sourceValue = jsonObject.SelectToken(obj.SouPropertyPath)?.ToString();
-                obj.SouValue = sourceValue ?? string.Empty;
-
-                var propertyInfo = typeof(Weather).GetProperty(obj.DesProperty) ;
-                var getType = DataSourceFactory.ParseDatatype(obj.DesDatatype);
-                var convertedValue = DataSourceFactory.GetValueHandler(getType, obj.SouValue, mapping, jsonObject, obj.SouPropertyPath);
-                propertyInfo?.SetValue(weather, convertedValue);
-            }
-
-            return weather;
         }
     }
 }

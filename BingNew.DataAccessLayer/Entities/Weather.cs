@@ -9,6 +9,6 @@
         public int? Humidity { get; set; }
         public DateTime? PubDate { get; set; }
         public string? Description { get; set; }
-        public List<WeatherInfo>? WeatherInfor { get; set; }
+        public List<WeatherInfor>? WeatherInfor { get; set; }
     }
 }

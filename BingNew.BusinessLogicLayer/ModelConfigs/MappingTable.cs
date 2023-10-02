@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace BingNew.BusinessLogicLayer.ModelConfig;
+﻿namespace BingNew.BusinessLogicLayer.ModelConfig;
 public class MappingTable
 {
     

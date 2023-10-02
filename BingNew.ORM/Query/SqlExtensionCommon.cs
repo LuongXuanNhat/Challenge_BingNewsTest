@@ -5,45 +5,26 @@ namespace BingNew.ORM.Query
 {
     public static class SqlExtensionCommon
     {
-        public static string? ExtractTypeNameFromSql(string? sql)
+        public static string ExtractTypeNameFromSql(string sql)
         {
-            if (sql != null)
-            {
-                var tableNameStartIndex = sql.IndexOf("FROM ", StringComparison.OrdinalIgnoreCase);
-                if (tableNameStartIndex >= 0)
-                {
-                    tableNameStartIndex += 5;
-                    var tableNameSubstring = sql.Substring(tableNameStartIndex);
-                    var tableNameEndIndex = tableNameSubstring.IndexOf(' ');
-                    if (tableNameEndIndex == -1)
-                    {
-                        return tableNameSubstring;
-                    }
-                    else
-                    {
-                        return tableNameSubstring.Substring(0, tableNameEndIndex);
-                    }
-                }
-            }
-            return null;
+            var tableNameStartIndex = sql.IndexOf("FROM ", StringComparison.OrdinalIgnoreCase);
+            return tableNameStartIndex >= 0
+                ? sql[(tableNameStartIndex + 5)..]
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .FirstOrDefault()!
+                : throw new Exception("Table name not found in SQL");
         }
-        public static Type? FindTypeByName(string? typeName)
+
+
+        public static Type FindTypeByName(string typeName)
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            if (typeName == null)
-            {
-                return null;
-            }
+            Type? type = null;
             foreach (var assembly in assemblies)
             {
-                var type = assembly.GetTypes().ToList().Find(x => x.Name.Equals(typeName));
-
-                if (type != null)
-                {
-                    return type;
-                }
+                type ??= assembly.GetTypes().ToList().Find(x => x.Name.Equals(typeName));
             }
-            return null;
+            return type ?? throw new NullReferenceException("Not found!");
         }
         public static T ConvertToObject<T>(IDataReader reader) where T : new()
         {

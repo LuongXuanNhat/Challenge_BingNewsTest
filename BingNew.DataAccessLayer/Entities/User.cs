@@ -5,22 +5,22 @@ using System.Collections.Generic;
 
 namespace BingNew.DataAccessLayer.Entities
 {
-    public partial class User
-    {
-        public User()
-        {
-            ChannelBlocked = new HashSet<ChannelBlocked>();
-            ChannelFollow = new HashSet<ChannelFollow>();
-            TopicFollow = new HashSet<TopicFollow>();
-        }
+    ////public partial class User
+    ////{
+    ////    public User()
+    ////    {
+    ////        ChannelBlocked = new HashSet<ChannelBlocked>();
+    ////        ChannelFollow = new HashSet<ChannelFollow>();
+    ////        TopicFollow = new HashSet<TopicFollow>();
+    ////    }
 
-        public string Id { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string RealName { get; set; }
+    ////    public string Id { get; set; }
+    ////    public string UserName { get; set; }
+    ////    public string Email { get; set; }
+    ////    public string RealName { get; set; }
 
-        public virtual ICollection<ChannelBlocked> ChannelBlocked { get; set; }
-        public virtual ICollection<ChannelFollow> ChannelFollow { get; set; }
-        public virtual ICollection<TopicFollow> TopicFollow { get; set; }
-    }
+    ////    public virtual ICollection<ChannelBlocked> ChannelBlocked { get; set; }
+    ////    public virtual ICollection<ChannelFollow> ChannelFollow { get; set; }
+    ////    public virtual ICollection<TopicFollow> TopicFollow { get; set; }
+    ////}
 }

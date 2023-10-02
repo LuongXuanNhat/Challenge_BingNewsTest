@@ -27,26 +27,22 @@ namespace BingNew.ORM.Query
 
         private static IEnumerable<dynamic?> ReadValue(string sql, SqlConnection sqlConnection, Type resultType)
         {
-            using (var command = new SqlCommand(sql, sqlConnection))
+            using var command = new SqlCommand(sql, sqlConnection);
+            using var reader = command.ExecuteReader();
+            var obj = Activator.CreateInstance(resultType);
+            while (reader.Read())
             {
-                using (var reader = command.ExecuteReader())
+                for (var i = 0; i < reader.FieldCount; i++)
                 {
-                    var obj = Activator.CreateInstance(resultType);
-                    while (reader.Read())
+                    var columnName = reader.GetName(i);
+                    var propertyInfo = resultType.GetProperty(columnName);
+                    if (propertyInfo != null && !reader.IsDBNull(i))
                     {
-                        for (var i = 0; i < reader.FieldCount; i++)
-                        {
-                            var columnName = reader.GetName(i);
-                            var propertyInfo = resultType.GetProperty(columnName);
-                            if (propertyInfo != null && !reader.IsDBNull(i))
-                            {
-                                var value = reader.GetValue(i);
-                                propertyInfo.SetValue(obj, value);
-                            }
-                        }
-                        yield return obj;
+                        var value = reader.GetValue(i);
+                        propertyInfo.SetValue(obj, value);
                     }
                 }
+                yield return obj;
             }
         }
 
@@ -72,28 +68,24 @@ namespace BingNew.ORM.Query
 
         private static async IAsyncEnumerable<dynamic?> ReadValueAsync(SqlConnection connection, string sql, Type? resultType)
         {
-            using (var command = new SqlCommand(sql, connection))
+            using var command = new SqlCommand(sql, connection);
+            using var reader = await command.ExecuteReaderAsync();
+            if (resultType != null)
             {
-                using (var reader = await command.ExecuteReaderAsync())
+                while (await reader.ReadAsync())
                 {
-                    if (resultType != null)
+                    var obj = Activator.CreateInstance(resultType);
+                    for (var i = 0; i < reader.FieldCount; i++)
                     {
-                        while (await reader.ReadAsync())
+                        var columnName = reader.GetName(i);
+                        var propertyInfo = resultType.GetProperty(columnName);
+                        if (propertyInfo != null && !reader.IsDBNull(i))
                         {
-                            var obj = Activator.CreateInstance(resultType);
-                            for (var i = 0; i < reader.FieldCount; i++)
-                            {
-                                var columnName = reader.GetName(i);
-                                var propertyInfo = resultType.GetProperty(columnName);
-                                if (propertyInfo != null && !reader.IsDBNull(i))
-                                {
-                                    var value = reader.GetValue(i);
-                                    propertyInfo.SetValue(obj, value);
-                                }
-                            }
-                            yield return obj;
+                            var value = reader.GetValue(i);
+                            propertyInfo.SetValue(obj, value);
                         }
                     }
+                    yield return obj;
                 }
             }
         }

@@ -7,7 +7,6 @@
         private int DisLikeNumber;
         private int CommentNumber ;
         private int ViewNumber ;
-       //// private double Score ;
         private string ImgUrl;
         private string TopicId;
 
