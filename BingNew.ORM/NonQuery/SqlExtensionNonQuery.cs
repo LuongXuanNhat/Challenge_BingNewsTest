@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using BingNew.ORM.Query;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Reflection;
@@ -11,11 +12,6 @@ namespace BingNew.ORM.NonQuery
         {
             try
             {
-                if (entity == null)
-                {
-                    throw new ArgumentNullException(nameof(entity));
-
-                }
                 var sql = GenerateInsertQuery(entity);
                 return QueryExcute<T>(connection, sql, entity);
             }
@@ -28,18 +24,16 @@ namespace BingNew.ORM.NonQuery
 
         private static bool QueryExcute<T>(SqlConnection connection, string sql, T entity)
         {
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            using (var command = new SqlCommand(sql, connection))
+            connection.OpenOrClose(connection.State);
+            using var command = new SqlCommand(sql, connection);
+            foreach (var property in typeof(T).GetProperties())
             {
-                foreach (var property in typeof(T).GetProperties())
-                {
-                    var paramName = "@" + property.Name;
-                    var value = property.GetValue(entity);
-                    command.Parameters.AddWithValue(paramName, value ?? DBNull.Value);
-                }
-
-                command.ExecuteNonQuery();
+                var paramName = "@" + property.Name;
+                var value = property.GetValue(entity);
+                command.Parameters.AddWithValue(paramName, value ?? DBNull.Value);
             }
+
+            command.ExecuteNonQuery();
             return true;
         }
 
@@ -63,10 +57,8 @@ namespace BingNew.ORM.NonQuery
         {
             try
             {
-                if (entity == null)
-                {
-                    throw new ArgumentNullException(nameof(entity));
-                }
+                connection.OpenOrClose(connection.State);
+
                 var sql = GenerateUpdateQuery(entity);
                 return QueryExcute<T>(connection, sql, entity);
             }
@@ -91,17 +83,13 @@ namespace BingNew.ORM.NonQuery
         {
             try
             {
-                if (connection.State == ConnectionState.Closed)
-                {
-                    connection.Open();
-                }
+                connection.OpenOrClose(connection.State);
+
                 string query = "DELETE "+ typeof(T).Name + " WHERE Id = @Id";
 
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@Id", entityId));
-                    command.ExecuteNonQuery();
-                }
+                using var command = new SqlCommand(query, connection);
+                command.Parameters.Add(new SqlParameter("@Id", entityId));
+                command.ExecuteNonQuery();
 
                 return true;
             }
@@ -117,32 +105,14 @@ namespace BingNew.ORM.NonQuery
         {
             try
             {
-                if (connection.State == ConnectionState.Closed)
-                {
-                    connection.Open();
-                }
+                connection.OpenOrClose(connection.State);
                 var sql = "SELECT * FROM "+ typeof(T).Name + " WHERE Id = @Id";
 
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@Id", entityId));
+                using var command = new SqlCommand(sql, connection);
+                command.Parameters.Add(new SqlParameter("@Id", entityId));
+                using var reader = command.ExecuteReader();
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            T entity = new T();
-                            foreach (var property in typeof(T).GetProperties())
-                            {
-                                var value = reader[property.Name];
-                                property.SetValue(entity, value == DBNull.Value ? null : value);
-                            }
-
-                            return entity;
-                        }
-                    }
-                }
-                return default;
+                return reader.Read() ? SqlExtensionCommon.ConvertToObject<T>(reader) : default;
             }
             catch (Exception ex)
             {

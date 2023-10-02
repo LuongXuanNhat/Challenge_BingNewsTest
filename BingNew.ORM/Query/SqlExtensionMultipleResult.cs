@@ -12,14 +12,11 @@ namespace BingNew.ORM.Query
             var sqlCommands = sql.Split(';');
             var resultList = new List<IAsyncEnumerable<dynamic?>>();
 
-            foreach (var sqlCommand in sqlCommands)
-            {
-                if (!string.IsNullOrWhiteSpace(sqlCommand))
-                {
-                    var queryResult = connection.QueryAsync(sqlCommand);
-                    resultList.Add(queryResult);
-                }
-            }
+            resultList = sqlCommands
+                 .Where(sqlCommand => !string.IsNullOrWhiteSpace(sqlCommand))
+                 .Select(sqlCommand => connection.QueryAsync(sqlCommand))
+                 .ToList();
+
             async IAsyncEnumerable<dynamic?> CombineResults()
             {
                 foreach (var result in resultList)
@@ -58,9 +55,11 @@ namespace BingNew.ORM.Query
         {
             await foreach (var queryResult in queryResults)
             {
-                if (queryResult is T typedResult)
+                switch (queryResult)
                 {
-                    yield return MapResult<T?>(typedResult);
+                    case T typedResult:
+                        yield return MapResult<T?>(typedResult);
+                        break;
                 }
             }
         }
@@ -69,19 +68,19 @@ namespace BingNew.ORM.Query
         {
             await foreach (var queryResult in queryResults)
             {
-                if (queryResult is T typedResult)
+                switch (queryResult)
                 {
-                    return MapResult<T?>(typedResult);
+                    case T typedResult:
+                        return MapResult<T?>(typedResult);
                 }
             }
             return default;
         }
 
-        #pragma warning disable S3011
         private static T MapResult<T>(dynamic? result) where T : new()
         {
             var mappedResult = new T();
-            var fields = typeof(T).GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+            var fields = typeof(T).GetProperties();
 
             foreach (var field in fields)
             {
