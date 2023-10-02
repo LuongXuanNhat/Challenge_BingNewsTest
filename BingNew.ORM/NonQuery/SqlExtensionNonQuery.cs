@@ -85,7 +85,7 @@ namespace BingNew.ORM.NonQuery
             {
                 connection.OpenOrClose(connection.State);
 
-                string query = "DELETE "+ typeof(T).Name + " WHERE Id = @Id";
+                string query = GenerateDeleteQuery<T>();
 
                 using var command = new SqlCommand(query, connection);
                 command.Parameters.Add(new SqlParameter("@Id", entityId));
@@ -101,12 +101,17 @@ namespace BingNew.ORM.NonQuery
 
         }
 
+        private static string GenerateDeleteQuery<T>() where T : class
+        {
+            return "DELETE " + typeof(T).Name + " WHERE Id = @Id";
+        }
+
         public static T? GetById<T>(this SqlConnection connection, Guid entityId) where T : new()
         {
             try
             {
                 connection.OpenOrClose(connection.State);
-                var sql = "SELECT * FROM "+ typeof(T).Name + " WHERE Id = @Id";
+                var sql = GenerateGetObjectQuery<T>();
 
                 using var command = new SqlCommand(sql, connection);
                 command.Parameters.Add(new SqlParameter("@Id", entityId));
@@ -121,5 +126,9 @@ namespace BingNew.ORM.NonQuery
             }
         }
 
+        private static string GenerateGetObjectQuery<T>() where T : new()
+        {
+            return "SELECT * FROM " + typeof(T).Name + " WHERE Id = @Id";
+        }
     }
 }

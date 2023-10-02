@@ -23,7 +23,7 @@ namespace NewsAggregationTest
         private static Config WeatherConfig()
         {
             var config = new Config();
-            config.Headers.RapidApiKey = "63e013be17mshfaa183691e3f9fap12264bjsn8690697c78c9";
+            config.Headers.RapidApiKey = DataSample.GetApiKeyOfWeather();
             config.Headers.RapidApiHost = "weatherapi-com.p.rapidapi.com";
             config.KeyWork = "q=" + "Ho Chi Minh";
             config.DayNumber = "&day=" + "3";
