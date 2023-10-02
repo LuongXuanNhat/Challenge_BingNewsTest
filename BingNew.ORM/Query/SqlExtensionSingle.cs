@@ -29,7 +29,7 @@ namespace BingNew.ORM.Query
             obj = (reader.Read() && resultType != null) ? MapObject(resultType, reader) : null;
 
             return reader.Read() ? throw new InvalidOperationException("Invalid return data: more than one element") 
-                : obj ?? throw new NullReferenceException("Invalid return data: zero element");
+                : obj ?? throw new InvalidOperationException("Invalid return data: zero element");
         }
 
         private static Type? GetResultType(string sql)

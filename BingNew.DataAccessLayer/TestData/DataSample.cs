@@ -42,10 +42,14 @@ namespace BingNew.DataAccessLayer.TestData
             string configFilePath = GetConfigFilePath("MappingDataSample_5.json");
             return File.ReadAllText(configFilePath);
         }
-
         public static string GetApiKeyOfNewsDataIo()
         {
             string configFilePath = GetConfigFilePath("ApiKeyOfNewsDataIo.txt");
+            return File.ReadAllText(configFilePath);
+        }
+        public static string GetApiKeyOfWeather()
+        {
+            string configFilePath = GetConfigFilePath("ApiKeyOfWeather.txt");
             return File.ReadAllText(configFilePath);
         }
     }

@@ -70,11 +70,9 @@ namespace BingNew.BusinessLogicLayer.Services.Common
                 }
             };
             var client = new HttpClient();
-            using (var response = client.SendAsync(request).Result)
-            {
-                response.EnsureSuccessStatusCode();
-                return response.Content.ReadAsStringAsync().Result;
-            }
+            using var response = client.SendAsync(request).Result;
+            response.EnsureSuccessStatusCode();
+            return response.Content.ReadAsStringAsync().Result;
         }
     }
 }
