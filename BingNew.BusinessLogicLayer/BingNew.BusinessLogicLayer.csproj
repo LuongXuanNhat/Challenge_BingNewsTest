@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BingNew.DataAccessLayer\BingNew.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\BingNew.ORM\BingNew.ORM.csproj" />
   </ItemGroup>
 
   <ItemGroup>

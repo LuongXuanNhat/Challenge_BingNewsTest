@@ -11,12 +11,12 @@ namespace BingNew.DataAccessLayer.Entities
         public string Title { get; set; }
         public string ImgUrl { get; set; }
         public string Description { get; set; }
-        public DateTime? PubDate { get; set; }
+        public DateTime PubDate { get; set; }
         public string Url { get; set; }
-        public int? LikeNumber { get; set; }
-        public int? DisLikeNumber { get; set; }
-        public int? ViewNumber { get; set; }
-        public int? CommentNumber { get; set; }
+        public int LikeNumber { get; set; }
+        public int DisLikeNumber { get; set; }
+        public int ViewNumber { get; set; }
+        public int CommentNumber { get; set; }
         public string ProviderId { get; set; }
         public string TopicId { get; set; }
     }

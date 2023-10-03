@@ -14,7 +14,7 @@ namespace BingNew.ORM.Query
 
             return ReadValue(sqlConnection, sql, resultType);
         }
-        public static IEnumerable<T?> Query<T>(this SqlConnection connection, string sql)
+        public static IEnumerable<T> Query<T>(this SqlConnection connection, string sql)
         {
             connection.OpenOrClose(connection.State);
             foreach (var item in ReadValue(connection, sql, typeof(T)))
@@ -23,7 +23,7 @@ namespace BingNew.ORM.Query
             }
         }
 
-        private static IEnumerable<dynamic?> ReadValue(SqlConnection sqlConnection, string sql, Type? resultType)
+        private static IEnumerable<dynamic> ReadValue(SqlConnection sqlConnection, string sql, Type resultType)
         {
             using var command = new SqlCommand(sql, sqlConnection);
             using var reader = command.ExecuteReader();
@@ -31,7 +31,7 @@ namespace BingNew.ORM.Query
             {
                 var obj = Activator.CreateInstance(resultType);
                 MapDataToObject(reader, resultType, obj);
-                yield return obj;
+                yield return obj ?? throw new InvalidOperationException("object is null");
             }
         }
 

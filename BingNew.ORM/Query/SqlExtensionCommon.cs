@@ -25,7 +25,7 @@ namespace BingNew.ORM.Query
                     .FirstOrDefault()!
                 : string.Empty;
         }
-        public static Type? FindTypeByName(string typeName)
+        public static Type FindTypeByName(string typeName)
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             Type? type = null;
@@ -33,7 +33,7 @@ namespace BingNew.ORM.Query
             {
                 type ??= assembly.GetTypes().ToList().Find(x => x.Name.Equals(typeName));
             }
-            return type;
+            return type ?? throw new InvalidOperationException("Type not found!");
         }
         public static T ConvertToObject<T>(IDataReader reader) where T : new()
         {
