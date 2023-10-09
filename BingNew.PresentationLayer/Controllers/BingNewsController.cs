@@ -1,4 +1,4 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
+﻿ using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 
