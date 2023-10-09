@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregationTest", "News
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{88E5D3C3-CAE4-416A-B959-711BB0CB824C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.ORM", "BingNew.ORM\BingNew.ORM.csproj", "{72581821-9DAB-47B5-B81A-7B91F5E5AE78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNew.ORM", "BingNew.ORM\BingNew.ORM.csproj", "{72581821-9DAB-47B5-B81A-7B91F5E5AE78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.DI", "BingNew.DI\BingNew.DI.csproj", "{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{72581821-9DAB-47B5-B81A-7B91F5E5AE78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72581821-9DAB-47B5-B81A-7B91F5E5AE78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72581821-9DAB-47B5-B81A-7B91F5E5AE78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
