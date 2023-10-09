@@ -1,7 +1,5 @@
 ﻿using BingNew.DataAccessLayer.Constants;
-using BingNew.DataAccessLayer.Entities;
 using BingNew.ORM.Query;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace BingNew.ORM.DbContext

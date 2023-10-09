@@ -2,7 +2,7 @@
 using BingNew.DataAccessLayer.Entities;
 using BingNew.ORM.DbContext;
 
-namespace NewsAggregationTest
+namespace BingNew.BusinessLogicLayer.Services
 {
     public class BingNewsService : IBingNewsService
     {
@@ -20,5 +20,7 @@ namespace NewsAggregationTest
 
             return articles;
         }
+
+       
     }
 }

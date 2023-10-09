@@ -1,5 +1,5 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
-using Microsoft.AspNetCore.Http;
+using BingNew.DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BingNew.PresentationLayer.Controllers
@@ -15,10 +15,11 @@ namespace BingNew.PresentationLayer.Controllers
         }
 
         [HttpGet]
-        public IActionResult BingNewsPanel()
+        public IEnumerable<Article> BingNewsPanel()
         {
-            var result = _bingNewsService.GetTrendingArticlesPanel(9);
-            return Ok(result);
+            return _bingNewsService.GetTrendingArticlesPanel(9);
         }
+
+
     }
 }

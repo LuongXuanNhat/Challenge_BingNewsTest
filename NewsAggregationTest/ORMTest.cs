@@ -163,48 +163,40 @@ namespace NewsAggregationTest
         [Fact]
         public void Get_Total_Article_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT COUNT(*) FROM Article";
-                var count = connection.ExecuteScalar(sql);
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT COUNT(*) FROM Article";
+            var count = connection.ExecuteScalar(sql);
 
-                Assert.NotNull(count);
-                Assert.True(count > 0);
-            }
+            Assert.NotNull(count);
+            Assert.True(count > 0);
         }
         [Fact]
         public async Task Get_Total_Article_Success_Using_ExecuteScalarAsync()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT COUNT(*) FROM Article";
-                var count = await connection.ExecuteScalarAsync(sql);
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT COUNT(*) FROM Article";
+            var count = await connection.ExecuteScalarAsync(sql);
 
-                Assert.NotNull(count);
-                Assert.True(count > 0);
-            }
+            Assert.NotNull(count);
+            Assert.True(count > 0);
         }
         [Fact]
         public void Get_Total_Article_SuccessT()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT COUNT(*) FROM Article";
-                var count = connection.ExecuteScalar<int>(sql);
+            using SqlConnection connection = new(_connecString);
+            var sql = "SELECT COUNT(*) FROM Article";
+            var count = connection.ExecuteScalar<int>(sql);
 
-                Assert.True(count > 0);
-            }
+            Assert.True(count > 0);
         }
         [Fact]
         public async Task Get_Total_Article_Success_Using_ExecuteScalarAsyncT()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT COUNT(*) FROM Article";
-                var count = await connection.ExecuteScalarAsync<int>(sql);
+            using SqlConnection connection = new(_connecString);
+            var sql = "SELECT COUNT(*) FROM Article";
+            var count = await connection.ExecuteScalarAsync<int>(sql);
 
-                Assert.True(count > 0);
-            }
+            Assert.True(count > 0);
         }
 
         #endregion
@@ -249,14 +241,12 @@ namespace NewsAggregationTest
         [Fact]
         public async Task Get_Articles_AsyncT_Success()
         {
-            using (var connection = new SqlConnection(_connecString))
-            {
-                var sql = "SELECT * FROM Article";
-                var result = await connection.QueryAsync<Article>(sql).ToListAsync();
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Article";
+            var result = await connection.QueryAsync<Article>(sql).ToListAsync();
 
-                Assert.NotEmpty(result);
-                Assert.IsType<Article>(result.FirstOrDefault());
-            }
+            Assert.NotEmpty(result);
+            Assert.IsType<Article>(result.FirstOrDefault());
         }
 
         #endregion
@@ -389,7 +379,7 @@ namespace NewsAggregationTest
         public void Object_GetById_Success()
         {
             using var connection = new SqlConnection(_connecString);
-            Guid articleId = new Guid("CAA91D5E-453B-45B2-857F-00E279711534");
+            Guid articleId = new("CAA91D5E-453B-45B2-857F-00E279711534");
             var article = connection.GetById<Article>(articleId);
 
             Assert.NotNull(article);
@@ -400,7 +390,7 @@ namespace NewsAggregationTest
         public void Object_Update_Success()
         {
             using var connection = new SqlConnection(_connecString);
-            Guid articleId = new Guid("CAA91D5E-453B-45B2-857F-00E279711534");
+            Guid articleId = new("CAA91D5E-453B-45B2-857F-00E279711534");
             var article = connection.GetById<Article>(articleId);
 
             Assert.NotNull(article);

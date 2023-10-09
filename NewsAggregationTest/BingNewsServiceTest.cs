@@ -1,4 +1,5 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
+using BingNew.BusinessLogicLayer.Services;
 using BingNew.DataAccessLayer.Entities;
 using BingNew.ORM.DbContext;
 using Moq;
@@ -51,7 +52,9 @@ namespace NewsAggregationTest
             var articleTrend = bingService.GetTrendingArticlesPanel(12);
             Assert.NotEmpty(articleTrend);
 
-        }               
+        }
+
+     
 
     }
 }

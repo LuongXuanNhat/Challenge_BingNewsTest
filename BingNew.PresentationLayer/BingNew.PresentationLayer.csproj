@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BingNew.BusinessLogicLayer\BingNew.BusinessLogicLayer.csproj" />
     <ProjectReference Include="..\BingNew.DataAccessLayer\BingNew.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\BingNew.DI\BingNew.DI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,8 @@
 using BingNew.BusinessLogicLayer.Interfaces.IService;
+using BingNew.BusinessLogicLayer.Services;
 using BingNew.BusinessLogicLayer.Services.Common;
+using BingNew.DI;
+using BingNew.ORM.DbContext;
 
 namespace BingNew.PresentationLayer
 {
@@ -7,6 +10,10 @@ namespace BingNew.PresentationLayer
     {
         public static void Main(string[] args)
         {
+            var container = new DIContainer();
+            container.Register<IApiDataSource, ApiDataSource>();
+
+
 
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
@@ -18,6 +25,11 @@ namespace BingNew.PresentationLayer
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<IRssDataSource, RssDataSource>();
             builder.Services.AddScoped<IApiDataSource, ApiDataSource>();
+            ////builder.Services.AddDbContext<DbBingNewsContext>(options =>
+            ////{
+            ////    options.UseSqlServer("your_connection_string_here");
+            ////});
+            builder.Services.AddScoped<IBingNewsService, BingNewsService>();
 
             var app = builder.Build();
 
