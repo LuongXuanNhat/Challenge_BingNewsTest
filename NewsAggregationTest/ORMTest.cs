@@ -90,7 +90,7 @@ namespace NewsAggregationTest
         public void Get_Article_First_SuccessT()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = 2";
+            var sql = "SELECT * FROM Article where ProviderId = '2'";
             var result = connection.QueryFirst<Article>(sql);
 
             Assert.NotNull(result);

@@ -8,7 +8,6 @@ public class DIContainer
     private readonly Dictionary<(Type, string?), object> _scopedInstances = new();
     private readonly Dictionary<(Type, string?), object> _transientInstances = new();
 
-
     public enum Lifetime
     {
         Transient,
@@ -28,22 +27,14 @@ public class DIContainer
         var key = (typeof(TInterface), nameObject) ;
         _dependencyMap[key] = typeof(TImplementation);
 
-        switch (lifetime)
+        _ = lifetime switch
         {
-            case Lifetime.Scoped:
-                var instanceScoped = CreateInstance(typeof(TImplementation));
-                _scopedInstances[key] = instanceScoped;
-                break;
-            case Lifetime.Singleton:
-                var instanceSingleton = CreateInstance(typeof(TImplementation));
-                _singletonInstances[key] = instanceSingleton;
-                break;
-            default:
-                var instanceTransient = CreateInstance(typeof(TImplementation));
-                _transientInstances[key] = instanceTransient;
-                break;
-        }
+            Lifetime.Scoped => GetScopedInstance(key, typeof(TImplementation)),
+            Lifetime.Singleton => GetScopedInstance(key, typeof(TImplementation)),
+            _ => GetTransientInstance(key, typeof(TImplementation)),
+        };
     }
+
 
     public TInterface Resolve<TInterface>()
     {
@@ -52,9 +43,14 @@ public class DIContainer
         {
             instanceName ??= (depen.Item1 == typeof(TInterface)) ? depen.Item2 : null ;
         }
-
-        return instanceName is not null ?  (TInterface)Resolve(typeof(TInterface), instanceName)
+        var instance = (instanceName is not null) ? (TInterface)Resolve(typeof(TInterface), instanceName) 
             : throw new InvalidOperationException($"Type {typeof(TInterface).Name} with not any Object is registered.");
+
+        var instanceType = instance.GetType();
+        var constructors = instanceType.GetConstructors().FirstOrDefault();
+
+        return constructors != null ? 
+            (TInterface)InjectProperties(constructors, instanceType, instance) : instance;
     }
 
     /// <summary>
@@ -103,12 +99,23 @@ public class DIContainer
 
     private object GetTransientInstance((Type type, string? name) key, Type implementationType)
     {
-        if (!_transientInstances.TryGetValue(key, out var instance))
+        _transientInstances.TryGetValue(key, out var instance);
+        var result = instance ?? CreateInstance(implementationType);
+        _transientInstances[key] = result;
+        return result;
+    }
+
+    private object InjectProperties(ConstructorInfo constructors, Type instanceType, object instance)
+    {
+        var parameters = constructors.GetParameters();
+        var args = new object[parameters.Length];
+
+        for (int i = 0; i < parameters.Length; i++)
         {
-            instance = CreateInstance(implementationType);
-            _transientInstances[key] = instance;
+            var instanceName = GetInstanceName(parameters[i].ParameterType);
+            args[i] ??= instanceName is not null ? Resolve(parameters[i].ParameterType, instanceName) : args[i];
         }
-        return instance;
+        return Activator.CreateInstance(instanceType, args) ?? instance;
     }
 
     private bool IsSingleton((Type, string?) key)
@@ -118,12 +125,10 @@ public class DIContainer
 
     private object GetSingletonInstance((Type, string?) key, Type implementationType)
     {
-        if (!_singletonInstances.TryGetValue(key, out var instance))
-        {
-            instance = CreateInstance(implementationType);
-            _singletonInstances[key] = instance;
-        }
-        return instance;
+        _singletonInstances.TryGetValue(key, out var instance);
+        var result = instance ?? CreateInstance(implementationType);
+        _singletonInstances[key] = result;
+        return result;
     }
 
     private bool IsScoped((Type, string?) key)
@@ -133,12 +138,10 @@ public class DIContainer
 
     private object GetScopedInstance((Type, string?) key, Type implementationType)
     {
-        if (!_scopedInstances.TryGetValue(key, out var instance))
-        {
-            instance = CreateInstance(implementationType);
-            _scopedInstances[key] = instance;
-        }
-        return instance;
+        _scopedInstances.TryGetValue(key, out var instance);
+        var result = instance ?? CreateInstance(implementationType);
+        _scopedInstances[key] = result;
+        return result;
     }
 
     private bool IsTransient((Type, string?) key)
@@ -149,27 +152,28 @@ public class DIContainer
     private object CreateInstance(Type type)
     {
         ConstructorInfo[] constructors = type.GetConstructors();
-        if (constructors.Length == 0)
-        {
-            return Activator.CreateInstance(type)
-                ?? throw new InvalidOperationException($"Failed to create an instance of type {type}.");
-        }
 
         var constructor = constructors[0];
         var parameters = constructor.GetParameters();
         var args = new object[parameters.Length];
 
-        //for (int i = 0; i < parameters.Length; i++)
-        //{
-        //    args[i] = Resolve(parameters[i].ParameterType, parameters[i].Name);
-        //}
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            var instanceName = GetInstanceName(parameters[i].ParameterType);
+            args[i] ??= instanceName is not null ? Resolve(parameters[i].ParameterType, instanceName) : args[i];
+        }
 
-        return Activator.CreateInstance(type, args)
-            ?? throw new InvalidOperationException($"Failed to create an instance of type {type}.");
+        return Activator.CreateInstance(type, args) ?? throw new InvalidOperationException($"Failed to create an instance of type {type}.");
     }
-}
 
-[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-sealed class InjectAttribute : Attribute
-{
+
+    private string? GetInstanceName(Type type)
+    {
+        string? instanceName = null;
+        foreach (var depen in _dependencyMap.Keys)
+        {
+            instanceName ??= (depen.Item1 == type) ? depen.Item2 : null;
+        }
+        return instanceName;
+    }
 }
