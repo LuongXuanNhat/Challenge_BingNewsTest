@@ -26,7 +26,8 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         public List<Article> ConvertDataToArticles(Config config, List<CustomConfig> mapping)
         {
             var articles = new List<Article>();
-            XDocument document = XDocument.Parse(config.Data);
+            XDocument document = (config.Data != null) ? XDocument.Parse(config.Data) 
+                : throw new InvalidOperationException("Could not get data");
             var items = document.Descendants(config.Item);
 
             foreach (var item in items)

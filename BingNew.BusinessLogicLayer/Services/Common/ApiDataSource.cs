@@ -1,9 +1,7 @@
 ﻿using BingNew.DataAccessLayer.Entities;
 using Newtonsoft.Json.Linq;
 using BingNew.BusinessLogicLayer.ModelConfig;
-using System.Globalization;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
-using System.Reflection;
 
 namespace BingNew.BusinessLogicLayer.Services.Common
 {
@@ -24,7 +22,8 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         public List<Article> ConvertDataToArticles(Config config, List<CustomConfig> mapping)
         {
             var articles = new List<Article>();
-            JObject jsonObject = JObject.Parse(config.Data);
+            JObject jsonObject = (config.Data != null) ? JObject.Parse(config.Data) 
+                : throw new InvalidOperationException("Could not get data");
 
             var newsArray = jsonObject[config.Item] as JArray;
 

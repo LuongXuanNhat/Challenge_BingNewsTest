@@ -54,9 +54,9 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             CultureInfo culture = CultureInfo.InvariantCulture;
             return DateTime.Parse(dateTimeValue, culture);
         }
-        public static CustomConfig CreateMapping(string jsonConfigMapping)
+        public static T CreateMapping<T>(string jsonConfigMapping) where T : new()
         {
-            return JsonConvert.DeserializeObject<CustomConfig>(jsonConfigMapping) ?? new CustomConfig();
+            return JsonConvert.DeserializeObject<T>(jsonConfigMapping) ?? new T();
         }
         private static List<WeatherInfor> SetValueWeatherInfor(List<CustomConfig>? mappings, string? souPropertyPath , JObject? jsonObjects)
         {

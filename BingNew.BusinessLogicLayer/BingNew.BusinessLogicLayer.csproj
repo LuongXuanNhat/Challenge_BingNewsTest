@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\IRepository\**" />
+    <Compile Remove="Repositories\**" />
+    <EmbeddedResource Remove="Interfaces\IRepository\**" />
+    <EmbeddedResource Remove="Repositories\**" />
+    <None Remove="Interfaces\IRepository\**" />
+    <None Remove="Repositories\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AsyncEnumerator" Version="4.0.2" />
     <PackageReference Include="Dapper" Version="2.0.151" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
@@ -20,9 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\IRepository\" />
     <Folder Include="Interfaces\IService\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>

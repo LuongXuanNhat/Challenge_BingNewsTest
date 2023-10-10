@@ -70,10 +70,12 @@ namespace NewsAggregationTest
             _config.Item = "item";
             _config.Channel = "Tuoi Tre News";
 
-            var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetRssTuoiTreNewsDataMappingConfiguration());
-            var listConfigMapping = new List<CustomConfig>();
-            listConfigMapping.Add(mappingConfig);
-            var result = _rssDataSource.ConvertDataToArticles(_config, listConfigMapping);
+            var mappingConfig = DataSourceFactory.CreateMapping<CustomConfig>(DataSample.GetRssTuoiTreNewsDataMappingConfiguration());
+            var maps = new List<CustomConfig>()
+            {
+                mappingConfig
+            };
+            var result = _rssDataSource.ConvertDataToArticles(_config, maps);
 
             Assert.NotNull(result);
         }
@@ -84,10 +86,12 @@ namespace NewsAggregationTest
             _config.Data = _rssDataSource.GetNews("https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN");
             _config.Item = "item";
 
-            var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetGgTrendsNewsDataMappingConfiguration());
-            var listConfigMapping = new List<CustomConfig>();
-            listConfigMapping.Add(mappingConfig);
-            var result = _rssDataSource.ConvertDataToArticles(_config, listConfigMapping);
+            var mappingConfig = DataSourceFactory.CreateMapping<CustomConfig>(DataSample.GetGgTrendsNewsDataMappingConfiguration());
+            var maps = new List<CustomConfig>()
+            {
+                mappingConfig
+            };
+            var result = _rssDataSource.ConvertDataToArticles(_config, maps);
 
             Assert.NotNull(result);
         }
@@ -102,12 +106,12 @@ namespace NewsAggregationTest
             _config.Data = _apiDataSource.GetNews(_config.Url);
             _config.Item = "results";
 
-            var mappingConfig = DataSourceFactory.CreateMapping(DataSample.GetNewsDataIoMappingConfiguration());
-            var listConfigMapping = new List<CustomConfig>
+            var mappingConfig = DataSourceFactory.CreateMapping<CustomConfig>(DataSample.GetNewsDataIoMappingConfiguration());
+            var maps = new List<CustomConfig>()
             {
                 mappingConfig
             };
-            var result = _apiDataSource.ConvertDataToArticles(_config, listConfigMapping);
+            var result = _apiDataSource.ConvertDataToArticles(_config, maps);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -126,8 +130,8 @@ namespace NewsAggregationTest
         {
             var config = WeatherConfig();
             var listConfigMapping = new List<CustomConfig>();
-            var weatherMappingConfig = DataSourceFactory.CreateMapping(DataSample.GetWeatherMappingConfiguration());
-            var weatherInforMappingConfig = DataSourceFactory.CreateMapping(DataSample.GetWeatherInforMappingConfiguration());
+            var weatherMappingConfig = DataSourceFactory.CreateMapping<CustomConfig>(DataSample.GetWeatherMappingConfiguration());
+            var weatherInforMappingConfig = DataSourceFactory.CreateMapping<CustomConfig>(DataSample.GetWeatherInforMappingConfiguration());
             listConfigMapping.Add(weatherMappingConfig);
             listConfigMapping.Add(weatherInforMappingConfig);
             var data = _apiDataSource.GetWeatherInfor(config);

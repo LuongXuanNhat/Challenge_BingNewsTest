@@ -13,7 +13,7 @@ namespace BingNew.PresentationLayer
             var container = new DIContainer();
             container.Register<DbBingNewsContext, DbBingNewsContext>();
             container.Register<IApiDataSource, ApiDataSource>();
-            container.Register<IApiDataSource, RssDataSource>();
+            container.Register<IRssDataSource, RssDataSource>();
             container.Register<IBingNewsService, BingNewsService>();
             
 
