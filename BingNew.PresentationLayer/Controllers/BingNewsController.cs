@@ -9,17 +9,17 @@ namespace BingNew.PresentationLayer.Controllers
     [ApiController]
     public class BingNewsController : ControllerBase
     {
-        private readonly DIContainer container = new DIContainer();
-        private readonly IBingNewsService _bingNewsService;
+        private readonly DIContainer _bingNewsService;
 
-        public BingNewsController() {
-            _bingNewsService = container.Resolve<IBingNewsService>();
+        public BingNewsController(DIContainer container) {
+            _bingNewsService = container;
         }
 
         [HttpGet]
         public IEnumerable<Article> BingNewsPanel()
         {
-            return _bingNewsService.GetTrendingArticlesPanel(9);
+            var bingService = _bingNewsService.Resolve<IBingNewsService>();
+            return bingService.GetTrendingArticlesPanel(9);
         }
 
 

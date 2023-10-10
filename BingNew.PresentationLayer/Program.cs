@@ -1,4 +1,4 @@
-using BingNew.BusinessLogicLayer.Interfaces.IService;
+﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DI;
@@ -11,9 +11,11 @@ namespace BingNew.PresentationLayer
         public static void Main(string[] args)
         {
             var container = new DIContainer();
+            container.Register<DbBingNewsContext, DbBingNewsContext>();
             container.Register<IApiDataSource, ApiDataSource>();
             container.Register<IApiDataSource, RssDataSource>();
             container.Register<IBingNewsService, BingNewsService>();
+            
 
 
             var builder = WebApplication.CreateBuilder(args);
@@ -26,13 +28,15 @@ namespace BingNew.PresentationLayer
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            //builder.Services.AddScoped<IRssDataSource, RssDataSource>();
-            //builder.Services.AddScoped<IApiDataSource, ApiDataSource>();
-            //builder.Services.AddDbContext<DbBingNewsContext>(options =>
-            //{
-            //    options.UseSqlServer("your_connection_string_here");
-            //});
-          //  builder.Services.AddScoped<IBingNewsService, BingNewsService>();
+            ////builder.Services.AddScoped<IRssDataSource, RssDataSource>();
+            ////builder.Services.AddScoped<IApiDataSource, ApiDataSource>();
+            ////builder.Services.AddDbContext<DbBingNewsContext>(options =>
+            ////{
+            ////    options.UseSqlServer("your_connection_string_here");
+            ////});
+            ////  builder.Services.AddScoped<IBingNewsService, BingNewsService>();
+
+
 
             var app = builder.Build();
 
@@ -42,6 +46,9 @@ namespace BingNew.PresentationLayer
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            //// Lấy DIContainer từ ServiceProvider và sử dụng nó để giải quyết phụ thuộc
+            ////var serviceProvider = builder.Services.BuildServiceProvider();
+            ////var resolvedContainer = serviceProvider.GetRequiredService<DIContainer>();
 
             app.UseHttpsRedirection();
 
