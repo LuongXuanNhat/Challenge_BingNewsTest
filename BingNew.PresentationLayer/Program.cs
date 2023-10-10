@@ -12,24 +12,27 @@ namespace BingNew.PresentationLayer
         {
             var container = new DIContainer();
             container.Register<IApiDataSource, ApiDataSource>();
-
+            container.Register<IApiDataSource, RssDataSource>();
+            container.Register<IBingNewsService, BingNewsService>();
 
 
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
+            builder.Services.AddSingleton(container);
             builder.Services.AddSingleton(builder.Configuration);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddScoped<IRssDataSource, RssDataSource>();
-            builder.Services.AddScoped<IApiDataSource, ApiDataSource>();
-            ////builder.Services.AddDbContext<DbBingNewsContext>(options =>
-            ////{
-            ////    options.UseSqlServer("your_connection_string_here");
-            ////});
-            builder.Services.AddScoped<IBingNewsService, BingNewsService>();
+
+            //builder.Services.AddScoped<IRssDataSource, RssDataSource>();
+            //builder.Services.AddScoped<IApiDataSource, ApiDataSource>();
+            //builder.Services.AddDbContext<DbBingNewsContext>(options =>
+            //{
+            //    options.UseSqlServer("your_connection_string_here");
+            //});
+          //  builder.Services.AddScoped<IBingNewsService, BingNewsService>();
 
             var app = builder.Build();
 

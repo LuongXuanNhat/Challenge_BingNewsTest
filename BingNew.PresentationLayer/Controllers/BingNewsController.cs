@@ -1,5 +1,6 @@
 ﻿ using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.DataAccessLayer.Entities;
+using BingNew.DI;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BingNew.PresentationLayer.Controllers
@@ -8,10 +9,11 @@ namespace BingNew.PresentationLayer.Controllers
     [ApiController]
     public class BingNewsController : ControllerBase
     {
+        private readonly DIContainer container = new DIContainer();
         private readonly IBingNewsService _bingNewsService;
 
-        public BingNewsController(IBingNewsService bingNewsService) {
-            _bingNewsService = bingNewsService;
+        public BingNewsController() {
+            _bingNewsService = container.Resolve<IBingNewsService>();
         }
 
         [HttpGet]

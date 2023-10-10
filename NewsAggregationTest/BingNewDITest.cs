@@ -122,6 +122,8 @@ namespace NewsAggregationTest
             Assert.NotNull(result2);
             Assert.NotNull(result3);
         }
+
+
     }
 
     public class OutlookService : IEmailService
@@ -198,7 +200,7 @@ namespace NewsAggregationTest
 
         public string SendMail()
         {
-            return $"Yahoo was founded in 1994";
+            return $"Yahoo was founded in 1994 - ";
         }
     }
     public interface IEmailService
