@@ -13,9 +13,8 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public List<Article> GetTopNews(int quantity)
         {
-            var a = _dataContext.GetAll<Article>().OrderBy(x=>x.PubDate).ToList();
             var articles = _dataContext.GetAll<Article>()
-                            .Where(x => x.PubDate == DateTime.Now)
+                            .Where(x => x.PubDate.Date == DateTime.Now.Date)
                             .OrderBy(x => x.LikeNumber + x.ViewNumber + x.CommentNumber*2 + x.DisLikeNumber)
                             .Take(quantity)
                             .ToList();

@@ -1,10 +1,13 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
+﻿using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IService;
+using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Entities;
 using BingNew.DataAccessLayer.TestData;
 using BingNew.DI;
 using BingNew.ORM.DbContext;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace NewsAggregationTest
@@ -13,11 +16,12 @@ namespace NewsAggregationTest
     {
         private readonly Mock<IBingNewsService> _bingNewsService = new();
         private readonly DbBingNewsContext _dataContext = new();
-        private readonly DIContainer _container = new DIContainer();
+        private readonly DIContainer _container = new();
 
         private readonly IBingNewsService _bingService;
         private readonly IApiDataSource _apiDataSource;
         private readonly IRssDataSource _rssDataSource;
+        private readonly IMappingService _mappingService;
 
         public BingNewsApiTest()
         {
@@ -25,10 +29,12 @@ namespace NewsAggregationTest
             _container.Register<IApiDataSource, ApiDataSource>();
             _container.Register<IRssDataSource, RssDataSource>();
             _container.Register<IBingNewsService, BingNewsService>();
+            _container.Register<IMappingService, MappingService>();
 
             _bingService = _container.Resolve<IBingNewsService>();
             _apiDataSource = _container.Resolve<IApiDataSource>();
             _rssDataSource = _container.Resolve<IRssDataSource>();
+            _mappingService = _container.Resolve<IMappingService>();
         }
 
         [Fact]
@@ -80,7 +86,7 @@ namespace NewsAggregationTest
             foreach (var item in mappingCustom)
             {
                 item.Config.Data = _apiDataSource.GetNews(item.Config.Url);
-                var result = _apiDataSource.ConvertDataToArticles(item.Config, mappingCustom);
+                var result = _apiDataSource.ConvertDataToArticles<Article>(item.Config, mappingCustom);
                 Assert.NotEmpty(result);
             }
         }
@@ -92,11 +98,30 @@ namespace NewsAggregationTest
             foreach (var item in mappingCustom)
             {
                 item.Config.Data = _rssDataSource.GetNews(item.Config.Url);
-                var result = _rssDataSource.ConvertDataToArticles(item.Config, mappingCustom);
+                var result = _rssDataSource.ConvertDataToArticles<Article>(item.Config, mappingCustom);
                 Assert.NotEmpty(result);
             }
         }
+        [Fact]
+        public void Crawl_News_Json_Return_True()
+        {
+            var configData = DataSample.GetDataMockupNewsDataIo();
+            var customConfigs = DataSourceFactory.CreateMapping<List<CustomConfig>>(configData);
 
+            var result = _mappingService.CrawlNewsJson(customConfigs);
+
+            Assert.True(result.Item1);
+        }
+        [Fact]
+        public void Crawl_News_Xml_Return_True()
+        {
+            var configData = DataSample.GetDataMockupGgTrend();
+            var customConfigs = DataSourceFactory.CreateMapping<List<CustomConfig>>(configData);
+
+            var result = _mappingService.CrawlNewsXml(customConfigs);
+
+            Assert.True(result.Item1);
+        }
         [Fact]
         public void Get_Top_News()
         {
@@ -104,5 +129,25 @@ namespace NewsAggregationTest
             Assert.NotEmpty(result);
         }
 
+        [Fact]
+        public void Crawl_Weather_Data_Successful()
+        {
+            var dataConfig = DataSample.GetWeatherConfiguration();
+            var weatherMappingConfig = DataSourceFactory.CreateMapping<List<CustomConfig>>(dataConfig);
+            try
+            {
+                Config config = weatherMappingConfig[0].Config;
+                var data = _apiDataSource.GetWeatherInfor(config);
+                var weather = _apiDataSource.ConvertDataToType<WeatherVm>(data, weatherMappingConfig);
+
+                _dataContext.Add(weather);
+
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.False(true, ex.Message);
+            }
+        }
     }
 }

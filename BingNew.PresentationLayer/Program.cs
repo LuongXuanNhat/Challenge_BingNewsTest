@@ -1,4 +1,5 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
+﻿using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DI;
@@ -15,7 +16,7 @@ namespace BingNew.PresentationLayer
             container.Register<IApiDataSource, ApiDataSource>();
             container.Register<IRssDataSource, RssDataSource>();
             container.Register<IBingNewsService, BingNewsService>();
-            
+            container.Register<IMappingService, MappingService>();
 
 
             var builder = WebApplication.CreateBuilder(args);

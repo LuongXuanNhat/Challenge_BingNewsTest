@@ -16,12 +16,12 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         }
         private static string DownloadJson(string Url)
         {
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new();
             return client.GetStringAsync(Url).Result;
         }
-        public List<Article> ConvertDataToArticles(Config config, List<CustomConfig> mapping)
+        public List<T> ConvertDataToArticles<T>(Config config, List<CustomConfig> mapping) where T : new()
         {
-            var articles = new List<Article>();
+            var articles = new List<T>();
             JObject jsonObject = (config.Data != null) ? JObject.Parse(config.Data) 
                 : throw new InvalidOperationException("Could not get data");
 
@@ -29,7 +29,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
 
             foreach (JObject newsItem in newsArray?.OfType<JObject>() ?? Enumerable.Empty<JObject>())
             {
-                var article = ConvertDataToType<Article>(newsItem.ToString(), mapping);
+                var article = ConvertDataToType<T>(newsItem.ToString(), mapping);
                 articles.Add(article);
             }
 
@@ -38,7 +38,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
 
         public T ConvertDataToType<T>(string data, List<CustomConfig> mapping) where T : new()
         {
-            var obj = new T();
+            T obj = new();
             JObject jsonObject = JObject.Parse(data);
             var mappingConfig = mapping.First(x => x.TableName.Equals(typeof(T).Name));
             mapping = mapping.Where(x => x != mappingConfig).ToList();

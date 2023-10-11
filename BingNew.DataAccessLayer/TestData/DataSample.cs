@@ -64,5 +64,11 @@ namespace BingNew.DataAccessLayer.TestData
             string configFilePath = GetConfigFilePath("MappingData_2.json");
             return File.ReadAllText(configFilePath);
         }
+
+        public static string GetWeatherConfiguration()
+        {
+            string configFilePath = GetConfigFilePath("MappingData_4.json");
+            return File.ReadAllText(configFilePath);
+        }
     }
 }

@@ -52,10 +52,12 @@ namespace NewsAggregationTest
         [Fact]
         public void GetNewsFromApiNewsDataIoNotNull()
         {
-            var config = new Config();
-            config.Key = "apikey=" + DataSample.GetApiKeyOfNewsDataIo();
-            config.Language = "&language=" + "vi";
-            config.Item = "results";
+            Config config = new()
+            {
+                Key = "apikey=" + DataSample.GetApiKeyOfNewsDataIo(),
+                Language = "&language=" + "vi",
+                Item = "results"
+            };
             config.Url = "https://newsdata.io/api/1/news?" + config.Key + config.Language;
 
             var result = _apiDataSource.GetNews(config.Url);
@@ -75,7 +77,7 @@ namespace NewsAggregationTest
             {
                 mappingConfig
             };
-            var result = _rssDataSource.ConvertDataToArticles(_config, maps);
+            var result = _rssDataSource.ConvertDataToArticles<Article>(_config, maps);
 
             Assert.NotNull(result);
         }
@@ -91,7 +93,7 @@ namespace NewsAggregationTest
             {
                 mappingConfig
             };
-            var result = _rssDataSource.ConvertDataToArticles(_config, maps);
+            var result = _rssDataSource.ConvertDataToArticles<Article>(_config, maps);
 
             Assert.NotNull(result);
         }
@@ -111,7 +113,7 @@ namespace NewsAggregationTest
             {
                 mappingConfig
             };
-            var result = _apiDataSource.ConvertDataToArticles(_config, maps);
+            var result = _apiDataSource.ConvertDataToArticles<Article>(_config, maps);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -135,7 +137,7 @@ namespace NewsAggregationTest
             listConfigMapping.Add(weatherMappingConfig);
             listConfigMapping.Add(weatherInforMappingConfig);
             var data = _apiDataSource.GetWeatherInfor(config);
-            var result = _apiDataSource.ConvertDataToType<Weather>(data, listConfigMapping);
+            var result = _apiDataSource.ConvertDataToType<WeatherVm>(data, listConfigMapping);
 
             Assert.NotNull(result);
         }
