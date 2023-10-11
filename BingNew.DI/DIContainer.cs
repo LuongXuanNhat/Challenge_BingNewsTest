@@ -30,7 +30,7 @@ public class DIContainer
         _ = lifetime switch
         {
             Lifetime.Scoped => GetScopedInstance(key, typeof(TImplementation)),
-            Lifetime.Singleton => GetScopedInstance(key, typeof(TImplementation)),
+            Lifetime.Singleton => GetSingletonInstance(key, typeof(TImplementation)),
             _ => GetTransientInstance(key, typeof(TImplementation)),
         };
     }

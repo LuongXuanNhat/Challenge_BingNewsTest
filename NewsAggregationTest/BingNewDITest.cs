@@ -21,7 +21,7 @@ namespace NewsAggregationTest
         [Fact]
         public void DI_Register_Success_Of_Case_Not_Contructor()
         {
-            _container.Register<IEmailService, OutlookService>();
+            _container.Register<IEmailService, OutlookService>(DIContainer.Lifetime.Singleton);
             var service = _container.Resolve<IEmailService>();
             Assert.NotNull(service);
 
@@ -122,6 +122,8 @@ namespace NewsAggregationTest
             Assert.NotNull(result2);
             Assert.NotNull(result3);
         }
+
+
     }
 
     public class OutlookService : IEmailService
@@ -198,7 +200,7 @@ namespace NewsAggregationTest
 
         public string SendMail()
         {
-            return $"Yahoo was founded in 1994";
+            return $"Yahoo was founded in 1994 - ";
         }
     }
     public interface IEmailService

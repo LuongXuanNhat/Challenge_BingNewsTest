@@ -52,5 +52,23 @@ namespace BingNew.DataAccessLayer.TestData
             string configFilePath = GetConfigFilePath("ApiKeyOfWeather.txt");
             return File.ReadAllText(configFilePath);
         }
+
+        public static string GetDataMockupNewsDataIo()
+        {
+            string configFilePath = GetConfigFilePath("MappingData_1.json");
+            return File.ReadAllText(configFilePath);
+        }
+
+        public static string GetDataMockupGgTrend()
+        {
+            string configFilePath = GetConfigFilePath("MappingData_2.json");
+            return File.ReadAllText(configFilePath);
+        }
+
+        public static string GetWeatherConfiguration()
+        {
+            string configFilePath = GetConfigFilePath("MappingData_4.json");
+            return File.ReadAllText(configFilePath);
+        }
     }
 }

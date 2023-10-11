@@ -17,21 +17,20 @@ namespace BingNew.BusinessLogicLayer.Services.Common
 
         public string GetNews(string Url)
         {
-            using (HttpClient client = new HttpClient())
-            {
-                return client.GetStringAsync(Url).Result;
-            }
+            using HttpClient client = new();
+            return client.GetStringAsync(Url).Result;
         }
 
-        public List<Article> ConvertDataToArticles(Config config, List<CustomConfig> mapping)
+        public List<T> ConvertDataToArticles<T>(Config config, List<CustomConfig> mapping) where T : new()
         {
-            var articles = new List<Article>();
-            XDocument document = XDocument.Parse(config.Data);
+            var articles = new List<T>();
+            XDocument document = (config.Data != null) ? XDocument.Parse(config.Data) 
+                : throw new InvalidOperationException("Could not get data");
             var items = document.Descendants(config.Item);
 
             foreach (var item in items)
             {
-                var article = ConvertDataToType<Article>(item.ToString(), mapping);
+                var article = ConvertDataToType<T>(item.ToString(), mapping);
                 articles.Add(article);
             }
             return articles;

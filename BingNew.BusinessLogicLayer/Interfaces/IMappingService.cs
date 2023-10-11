@@ -1,10 +1,10 @@
-﻿namespace BingNew.BusinessLogicLayer.Interfaces
+﻿using BingNew.BusinessLogicLayer.Services.Common;
+
+namespace BingNew.BusinessLogicLayer.Interfaces
 {
     public interface IMappingService
     {
-        TDestination Map<TSource, TDestination>(TSource source);
-        Task<TDestination> MapAsync<TSource, TDestination>(TSource source);
-
-
+        Tuple<bool, string> CrawlNewsXml(List<CustomConfig> customs);
+        Tuple<bool, string> CrawlNewsJson(List<CustomConfig> customs);
     }
 }
