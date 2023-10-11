@@ -31,6 +31,7 @@ namespace BingNew.ORM.DbContext
             return new SqlConnection(_constant.connectString);
         }
 
+
         public List<T> GetAll<T>() where T : class
         {
             using var connection = CreateConnection();

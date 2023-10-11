@@ -7,5 +7,7 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
     {
         List<Article> GetTopNews(int quantity);
         List<Article> GetTrendingArticlesPanel(int quantity);
+        Weather GetWeatherInDay(DateTime date);
+        List<WeatherInfo> GetWeatherInforInDay(DateTime date, Guid weatherId);
     }
 }

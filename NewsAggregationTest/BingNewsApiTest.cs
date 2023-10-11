@@ -138,9 +138,24 @@ namespace NewsAggregationTest
             {
                 Config config = weatherMappingConfig[0].Config;
                 var data = _apiDataSource.GetWeatherInfor(config);
-                var weather = _apiDataSource.ConvertDataToType<WeatherVm>(data, weatherMappingConfig);
-
+                var weatherVm = _apiDataSource.ConvertDataToType<WeatherVm>(data, weatherMappingConfig);
+                
+                Weather weather = new()
+                {
+                    Temperature = weatherVm.Temperature,
+                    Description = weatherVm.Description,
+                    Humidity = weatherVm.Humidity,
+                    Icon = weatherVm.Icon,
+                    Id = weatherVm.Id,
+                    Place = weatherVm.Place,
+                    PubDate = weatherVm.PubDate
+                };
+                foreach (var item in weatherVm.WeatherInfor)
+                {
+                    item.WeatherId = weather.Id;
+                }
                 _dataContext.Add(weather);
+                _dataContext.AddRanger(weatherVm.WeatherInfor);
 
                 Assert.True(true);
             }
@@ -148,6 +163,17 @@ namespace NewsAggregationTest
             {
                 Assert.False(true, ex.Message);
             }
+        }
+
+        [Fact]
+        public void Get_Weather_Forecast_Successful()
+        {
+            var weather = _bingService.GetWeatherInDay(DateTime.Now);
+            var weatherInfor = _bingService.GetWeatherInforInDay(DateTime.Now, weather.Id);
+
+            WeatherVm result = new(weather, weatherInfor);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result.WeatherInfor);
         }
     }
 }

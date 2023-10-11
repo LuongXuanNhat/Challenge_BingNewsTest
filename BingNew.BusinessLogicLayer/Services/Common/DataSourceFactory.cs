@@ -58,12 +58,12 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         {
             return JsonConvert.DeserializeObject<T>(jsonConfigMapping) ?? new T();
         }
-        private static List<WeatherInfor> SetValueWeatherInfor(List<CustomConfig>? mappings, string? souPropertyPath , JObject? jsonObjects)
+        private static List<WeatherInfo> SetValueWeatherInfor(List<CustomConfig>? mappings, string? souPropertyPath , JObject? jsonObjects)
         {
             mappings ??= new List<CustomConfig>();
             jsonObjects ??= new JObject();
             souPropertyPath ??= "";
-            var mapping = mappings.First(x => x.TableName.Equals(typeof(WeatherInfor).Name));
+            var mapping = mappings.First(x => x.TableName.Equals(typeof(WeatherInfo).Name));
             var hourlyWeatherList = jsonObjects.SelectToken(souPropertyPath) as JArray ?? new JArray();
 
             return hourlyWeatherList
@@ -71,14 +71,14 @@ namespace BingNew.BusinessLogicLayer.Services.Common
             .Select(item => ConvertJsonToWeatherInfo(item, mapping))
             .ToList();
         }
-        private static WeatherInfor ConvertJsonToWeatherInfo(JObject jsonObject, CustomConfig weatherInfoMappingConfig)
+        private static WeatherInfo ConvertJsonToWeatherInfo(JObject jsonObject, CustomConfig weatherInfoMappingConfig)
         {
-            var weatherInHour = new WeatherInfor();
+            var weatherInHour = new WeatherInfo();
             foreach (var obj in weatherInfoMappingConfig.MappingTables)
             {
                 obj.SouValue = Convert.ToString(jsonObject.SelectToken(obj.SouPropertyPath)) ?? string.Empty;
 
-                var propertyInfo = typeof(WeatherInfor).GetProperty(obj.DesProperty);
+                var propertyInfo = typeof(WeatherInfo).GetProperty(obj.DesProperty);
                 var getType = ParseDatatype(obj.DesDatatype);
                 var convertedValue = GetValueHandler(getType, obj.SouValue);
                 propertyInfo?.SetValue(weatherInHour, convertedValue);

@@ -226,6 +226,17 @@ namespace NewsAggregationTest
             Assert.NotEmpty(result);
             Assert.IsType<Article>(first);
         }
+        [Fact]
+        public void Get_Articles_SuccessT2()
+        {
+            using var connection = new SqlConnection(_connecString);
+            var sql = "SELECT * FROM Weather";
+            var result = connection.Query<Weather>(sql).ToList();
+            var first = result.FirstOrDefault();
+
+            Assert.NotEmpty(result);
+            Assert.IsType<Weather>(first);
+        }
 
         [Fact]
         public async Task Get_Articles_Async_Success()

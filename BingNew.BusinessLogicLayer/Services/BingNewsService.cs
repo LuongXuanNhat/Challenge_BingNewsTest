@@ -31,6 +31,17 @@ namespace BingNew.BusinessLogicLayer.Services
             return articles;
         }
 
-       
+        public Weather GetWeatherInDay(DateTime date)
+        {
+            return _dataContext.GetAll<Weather>()
+                    .First(x => x.PubDate.Date == date.Date);
+        }
+
+        public List<WeatherInfo> GetWeatherInforInDay(DateTime date, Guid weatherId)
+        {
+            return _dataContext.GetAll<WeatherInfo>()
+                .Where(x => x.WeatherId == weatherId)
+                .ToList();
+        }
     }
 }

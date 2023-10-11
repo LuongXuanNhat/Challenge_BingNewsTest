@@ -21,7 +21,7 @@ namespace NewsAggregationTest
         [Fact]
         public void DI_Register_Success_Of_Case_Not_Contructor()
         {
-            _container.Register<IEmailService, OutlookService>();
+            _container.Register<IEmailService, OutlookService>(DIContainer.Lifetime.Singleton);
             var service = _container.Resolve<IEmailService>();
             Assert.NotNull(service);
 
