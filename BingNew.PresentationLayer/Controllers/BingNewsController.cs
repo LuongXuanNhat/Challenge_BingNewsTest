@@ -9,19 +9,26 @@ namespace BingNew.PresentationLayer.Controllers
     [ApiController]
     public class BingNewsController : ControllerBase
     {
-        private readonly DIContainer _bingNewsService;
+        private readonly IBingNewsService _bingNewsService;
 
         public BingNewsController(DIContainer container) {
-            _bingNewsService = container;
+            DIContainer _container = container;
+            _bingNewsService = _container.Resolve<IBingNewsService>();
         }
 
-        [HttpGet]
-        public IEnumerable<Article> BingNewsPanel()
+        [HttpGet("GetNews")]
+        public IActionResult BingNewsPanel(int quantity = 9)
         {
-            var bingService = _bingNewsService.Resolve<IBingNewsService>();
-            return bingService.GetTrendingArticlesPanel(9);
+            var result = _bingNewsService.GetTrendingArticlesPanel(quantity);
+            return result.Item1 ? Ok(result) : BadRequest(result);
         }
 
-
+        [HttpGet("GetWeatherForecast")]
+        public IActionResult WeatherForecast(DateTime? dateTime = null)
+        {
+            DateTime date = dateTime ?? DateTime.Now;
+            var result = _bingNewsService.GetWeatherForecast(date);
+            return result.Item1 ? Ok(result) : BadRequest(result);
+        }
     }
 }

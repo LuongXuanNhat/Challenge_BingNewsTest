@@ -1,5 +1,6 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
+using BingNew.BusinessLogicLayer.ModelConfig;
 using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Entities;
 using BingNew.DI;
@@ -63,6 +64,39 @@ namespace BingNew.BusinessLogicLayer.Services
                     _dataContext.AddRanger(result);
                 }
                 return new Tuple<bool, string>( true, "Crawl news data successfully!");
+            }
+            catch (Exception ex)
+            {
+                return new Tuple<bool, string>(false, "Error: " + ex.Message);
+            }
+        }
+
+        public Tuple<bool, string> CrawlWeatherForecast(List<CustomConfig> customs)
+        {
+            try
+            {
+                Config config = customs[0].Config;
+                var data = _apiDataSource.GetWeatherInfor(config);
+                var weatherVm = _apiDataSource.ConvertDataToType<WeatherVm>(data, customs);
+
+                Weather weather = new()
+                {
+                    Temperature = weatherVm.Temperature,
+                    Description = weatherVm.Description,
+                    Humidity = weatherVm.Humidity,
+                    Icon = weatherVm.Icon,
+                    Id = weatherVm.Id,
+                    Place = weatherVm.Place,
+                    PubDate = weatherVm.PubDate
+                };
+                foreach (var item in weatherVm.WeatherInfor)
+                {
+                    item.WeatherId = weather.Id;
+                }
+                _dataContext.Add(weather);
+                _dataContext.AddRanger(weatherVm.WeatherInfor);
+
+                return new Tuple<bool, string>(true, "Crawl weatehr forecast data successfully!");
             }
             catch (Exception ex)
             {
