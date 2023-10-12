@@ -31,6 +31,11 @@ namespace BingNew.PresentationLayer.Controllers
             return result.Item1 ? Ok(result.Item2) : BadRequest(result.Item2);
         }
 
-
+        [HttpPost("GetCrawlWeatherForecast")]
+        public IActionResult GetWeatherForecast([FromBody] List<CustomConfig> customs)
+        {
+            var result = _mappingService.CrawlWeatherForecast(customs);
+            return result.Item1 ? Ok(result.Item2) : BadRequest(result.Item2);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.DataAccessLayer.Entities;
+using BingNew.DataAccessLayer.Models;
 using BingNew.ORM.DbContext;
 
 namespace BingNew.BusinessLogicLayer.Services
@@ -11,24 +12,64 @@ namespace BingNew.BusinessLogicLayer.Services
             _dataContext = context;
         }
 
-        public List<Article> GetTopNews(int quantity)
+        public Tuple<bool, string, List<Article>> GetTopNews(int quantity)
         {
-            var articles = _dataContext.GetAll<Article>()
+            try
+            {
+                var articles = _dataContext.GetAll<Article>()
                             .Where(x => x.PubDate.Date == DateTime.Now.Date)
-                            .OrderBy(x => x.LikeNumber + x.ViewNumber + x.CommentNumber*2 + x.DisLikeNumber)
+                            .OrderBy(x => x.LikeNumber + x.ViewNumber + x.CommentNumber * 2 + x.DisLikeNumber)
                             .Take(quantity)
                             .ToList();
-            return articles;
+
+                return new Tuple<bool, string, List<Article>>(true, "", articles);
+            }
+            catch (Exception ex)
+            {
+                return new Tuple<bool, string, List<Article>>(true, "Error: " + ex.Message, new());
+            }
+
         }
 
-        public List<Article> GetTrendingArticlesPanel(int quantity)
+        public Tuple<bool, string, List<Article>> GetTrendingArticlesPanel(int quantity)
         {
-            var articles = _dataContext.GetAll<Article>()
+            try
+            {
+                var articles = _dataContext.GetAll<Article>()
                             .Where(x => x.PubDate >= DateTime.Now.AddDays(-3))
                             .Take(quantity)
                             .ToList();
 
-            return articles;
+                return new Tuple<bool, string, List<Article>>(true, "", articles);
+            }
+            catch (Exception ex)
+            {
+                return new Tuple<bool, string, List<Article>>(true, "Error: " + ex.Message, new());
+            }
+        }
+        public Tuple<bool, string, WeatherVm> GetWeatherForecast(DateTime now)
+        {
+            try
+            {
+                var weather = GetWeatherInDay(now);
+                var weatherInfor = GetWeatherInforInDay(now, weather.Id);
+                var weatherVm = new WeatherVm()
+                {
+                    Id = weather.Id,
+                    Icon = weather.Icon,
+                    Description = weather.Description,
+                    Humidity = weather.Humidity,
+                    Place = weather.Place,
+                    PubDate = weather.PubDate,
+                    Temperature = weather.Temperature,
+                    WeatherInfor = weatherInfor,
+                };
+                return new Tuple<bool, string, WeatherVm>(true, "", weatherVm);
+            }
+            catch (Exception ex)
+            {
+                return new Tuple<bool, string, WeatherVm>(true, "Error: " + ex.Message, new());
+            }            
         }
 
         public Weather GetWeatherInDay(DateTime date)

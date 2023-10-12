@@ -7,14 +7,12 @@ using BingNew.DataAccessLayer.Entities;
 using BingNew.DataAccessLayer.TestData;
 using BingNew.DI;
 using BingNew.ORM.DbContext;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace NewsAggregationTest
 {
     public class BingNewsApiTest
     {
-        private readonly Mock<IBingNewsService> _bingNewsService = new();
         private readonly DbBingNewsContext _dataContext = new();
         private readonly DIContainer _container = new();
 
@@ -51,31 +49,10 @@ namespace NewsAggregationTest
             Assert.Equal(5, result.ToList().Count);
         }
         [Fact]
-        public void Get_All_Article_By_Quantity_By_Mock()
-        {
-            // Arrange
-            var articles = new List<Article>
-            {
-                new Article { Id = Guid.NewGuid(), Title = "Article 1" },
-                new Article { Id = Guid.NewGuid(), Title = "Article 2" },
-                new Article { Id = Guid.NewGuid(), Title = "Article 3" },
-                new Article { Id = Guid.NewGuid(), Title = "Article 4" },
-                new Article { Id = Guid.NewGuid(), Title = "Article 5" }
-            };
-            _bingNewsService.Setup(bingNews => bingNews.GetTrendingArticlesPanel(5)).Returns(articles);
-
-            // Act
-            var result = _bingNewsService.Object.GetTrendingArticlesPanel(5);
-            
-            Assert.NotEmpty(result);
-            Assert.Equal(5, result.Count);
-        }
-        [Fact]
         public void Get_Trending_Articles_Panel()
         {
-            var bingService = new BingNewsService(_dataContext);
-            var articleTrend = bingService.GetTrendingArticlesPanel(12);
-            Assert.NotEmpty(articleTrend);
+            var articleTrend = _bingService.GetTrendingArticlesPanel(12);
+            Assert.NotEmpty(articleTrend.Item3);
 
         }
         [Fact]
@@ -113,6 +90,16 @@ namespace NewsAggregationTest
             Assert.True(result.Item1);
         }
         [Fact]
+        public void Crawl_News_Json_Return_False()
+        {
+            var configData = DataSample.GetDataMockupNewsDataIo();
+            var customConfigs = DataSourceFactory.CreateMapping<List<CustomConfig>>(configData);
+            customConfigs[0].Config = new();
+            var result = _mappingService.CrawlNewsJson(customConfigs);
+
+            Assert.False(result.Item1);
+        }
+        [Fact]
         public void Crawl_News_Xml_Return_True()
         {
             var configData = DataSample.GetDataMockupGgTrend();
@@ -123,10 +110,20 @@ namespace NewsAggregationTest
             Assert.True(result.Item1);
         }
         [Fact]
-        public void Get_Top_News()
+        public void Crawl_News_Xml_Return_False()
+        {
+            var configData = DataSample.GetDataMockupGgTrend();
+            var customConfigs = DataSourceFactory.CreateMapping<List<CustomConfig>>(configData);
+            customConfigs[0].Config = new();
+            var result = _mappingService.CrawlNewsXml(customConfigs);
+
+            Assert.False(result.Item1);
+        }
+        [Fact]
+        public void Get_Top_News_Successful()
         {
             var result = _bingService.GetTopNews(9);
-            Assert.NotEmpty(result);
+            Assert.NotEmpty(result.Item3);
         }
 
         [Fact]
@@ -175,5 +172,29 @@ namespace NewsAggregationTest
             Assert.NotNull(result);
             Assert.NotEmpty(result.WeatherInfor);
         }
+        [Fact]
+        public void Test_Crawl_Mapping_Return_True()
+        {
+            var dataConfig = DataSample.GetWeatherConfiguration();
+            var weatherMappingConfig = DataSourceFactory.CreateMapping<List<CustomConfig>>(dataConfig);
+            var result = _mappingService.CrawlWeatherForecast(weatherMappingConfig);
+            Assert.True(result.Item1);
+        }
+        [Fact]
+        public void Test_Crawl_Mapping_Return_False()
+        {
+            var dataConfig = DataSample.GetWeatherConfiguration();
+            var weatherMappingConfig = DataSourceFactory.CreateMapping<List<CustomConfig>>(dataConfig);
+            weatherMappingConfig[0].Config = new();
+            var result = _mappingService.CrawlWeatherForecast(weatherMappingConfig);
+            Assert.False(result.Item1);
+        }
+        [Fact] 
+        public void Get_Weather_Forecast_Api_Successful()
+        {
+            var result = _bingService.GetWeatherForecast(DateTime.Now);
+            Assert.True(result.Item1);
+        }
+
     }
 }
