@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BingNew.BusinessLogicLayer.ModelConfig;
+namespace BingNew.Mapping;
 public class MappingTable
 {
     [Display(Name = "Đường dẫn dữ liệu nguồn thuộc tính")]

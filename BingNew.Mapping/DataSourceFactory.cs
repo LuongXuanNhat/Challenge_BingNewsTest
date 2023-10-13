@@ -1,11 +1,9 @@
-﻿using BingNew.BusinessLogicLayer.ModelConfig;
-using BingNew.DataAccessLayer.Entities;
+﻿using BingNew.DataAccessLayer.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
-using System.Text.Json.Nodes;
 
-namespace BingNew.BusinessLogicLayer.Services.Common
+namespace BingNew.Mapping
 {
     // Factory Method Design Pattern
     public static class DataSourceFactory
@@ -25,6 +23,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
                 ? result
                 : throw new ArgumentException("Invalue Datatypes", nameof(input));
         }
+
         // Pattern Matching(C# version >= 7)
         public static object GetValueHandler(DataTypes dataType, string value, List<CustomConfig>? mapping = null, JObject? jsonObject = null, string? souPropertyPath = null)
         {

@@ -1,8 +1,4 @@
-﻿using BingNew.BusinessLogicLayer.ModelConfig;
-using BingNew.BusinessLogicLayer.Services.Common;
-using BingNew.DataAccessLayer.Entities;
-
-namespace BingNew.BusinessLogicLayer.Interfaces;
+﻿namespace BingNew.Mapping.Interface;
 public interface IDataSource
 {
     public List<T> ConvertDataToArticles<T>(Config config, List<CustomConfig> mapping) where T : new();

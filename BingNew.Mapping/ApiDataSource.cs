@@ -1,9 +1,7 @@
-﻿using BingNew.DataAccessLayer.Entities;
+﻿using BingNew.Mapping.Interface;
 using Newtonsoft.Json.Linq;
-using BingNew.BusinessLogicLayer.ModelConfig;
-using BingNew.BusinessLogicLayer.Interfaces.IService;
 
-namespace BingNew.BusinessLogicLayer.Services.Common
+namespace BingNew.Mapping
 {
     public class ApiDataSource : IApiDataSource
     {
@@ -22,7 +20,7 @@ namespace BingNew.BusinessLogicLayer.Services.Common
         public List<T> ConvertDataToArticles<T>(Config config, List<CustomConfig> mapping) where T : new()
         {
             var articles = new List<T>();
-            JObject jsonObject = (config.Data != null) ? JObject.Parse(config.Data) 
+            JObject jsonObject = config.Data != null ? JObject.Parse(config.Data)
                 : throw new InvalidOperationException("Could not get data");
 
             var newsArray = jsonObject[config.Item] as JArray;

@@ -15,7 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNew.ORM", "BingNew.ORM\BingNew.ORM.csproj", "{72581821-9DAB-47B5-B81A-7B91F5E5AE78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.DI", "BingNew.DI\BingNew.DI.csproj", "{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNew.DI", "BingNew.DI\BingNew.DI.csproj", "{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNew.Mapping", "BingNew.Mapping\BingNew.Mapping.csproj", "{D0543204-1E57-439F-989E-58D7095FBD34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24CCBBC1-58E2-4F87-95AD-C720BBCBED93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0543204-1E57-439F-989E-58D7095FBD34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0543204-1E57-439F-989E-58D7095FBD34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0543204-1E57-439F-989E-58D7095FBD34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0543204-1E57-439F-989E-58D7095FBD34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

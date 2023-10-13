@@ -1,7 +1,6 @@
-﻿using BingNew.BusinessLogicLayer.ModelConfig;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BingNew.BusinessLogicLayer.Services.Common
+namespace BingNew.Mapping
 {
     public class CustomConfig
     {

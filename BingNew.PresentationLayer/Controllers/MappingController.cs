@@ -1,6 +1,6 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces;
-using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DI;
+using BingNew.Mapping;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BingNew.PresentationLayer.Controllers

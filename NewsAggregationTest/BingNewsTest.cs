@@ -1,9 +1,7 @@
-﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
-using BingNew.BusinessLogicLayer.ModelConfig;
-using BingNew.BusinessLogicLayer.Services.Common;
-using BingNew.DataAccessLayer.Entities;
+﻿using BingNew.DataAccessLayer.Entities;
 using BingNew.DataAccessLayer.TestData;
-using Newtonsoft.Json;
+using BingNew.Mapping;
+using BingNew.Mapping.Interface;
 
 namespace NewsAggregationTest
 {

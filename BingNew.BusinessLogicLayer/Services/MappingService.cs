@@ -1,15 +1,8 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces;
-using BingNew.BusinessLogicLayer.Interfaces.IService;
-using BingNew.BusinessLogicLayer.ModelConfig;
-using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Entities;
-using BingNew.DI;
+using BingNew.Mapping;
+using BingNew.Mapping.Interface;
 using BingNew.ORM.DbContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BingNew.BusinessLogicLayer.Services
 {

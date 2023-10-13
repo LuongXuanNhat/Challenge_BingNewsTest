@@ -1,4 +1,4 @@
-﻿namespace BingNew.BusinessLogicLayer.ModelConfig;
+﻿namespace BingNew.Mapping;
 public class RequestHeaders
 {
     public string? RapidApiKey { get; set; }

@@ -1,8 +1,9 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces;
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.Services;
-using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DI;
+using BingNew.Mapping;
+using BingNew.Mapping.Interface;
 using BingNew.ORM.DbContext;
 
 namespace BingNew.PresentationLayer
