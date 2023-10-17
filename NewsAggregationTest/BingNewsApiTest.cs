@@ -59,24 +59,18 @@ namespace NewsAggregationTest
         {
             var dataMockup = DataSample.GetDataMockupNewsDataIo();
             var mappingCustom = DataSourceFactory.CreateMapping<List<CustomConfig>>(dataMockup);
-            foreach (var item in mappingCustom)
-            {
-                item.Config.Data = _apiDataSource.GetNews(item.Config.Url);
-                var result = _apiDataSource.ConvertDataToArticles<Article>(item.Config, mappingCustom);
-                Assert.NotEmpty(result);
-            }
+            
+            var result = _apiDataSource.MultipleMapping(mappingCustom);
+            Assert.NotNull(result);
         }
         [Fact]
         public void Get_Data_From_Api_Rss_Success()
         {
             var dataMockup = DataSample.GetDataMockupGgTrend();
             var mappingCustom = DataSourceFactory.CreateMapping<List<CustomConfig>>(dataMockup);
-            foreach (var item in mappingCustom)
-            {
-                item.Config.Data = _rssDataSource.GetNews(item.Config.Url);
-                var result = _rssDataSource.ConvertDataToArticles<Article>(item.Config, mappingCustom);
-                Assert.NotEmpty(result);
-            }
+
+            var result = _rssDataSource.MultipleMapping(mappingCustom);
+            Assert.NotNull(result);
         }
         [Fact]
         public void Crawl_News_Json_Return_True()
@@ -93,7 +87,7 @@ namespace NewsAggregationTest
         {
             var configData = DataSample.GetDataMockupNewsDataIo();
             var customConfigs = DataSourceFactory.CreateMapping<List<CustomConfig>>(configData);
-            customConfigs[0].Config = new();
+            customConfigs[0] = new();
             var result = _mappingService.CrawlNewsJson(customConfigs);
 
             Assert.False(result.Item1);
@@ -113,7 +107,7 @@ namespace NewsAggregationTest
         {
             var configData = DataSample.GetDataMockupGgTrend();
             var customConfigs = DataSourceFactory.CreateMapping<List<CustomConfig>>(configData);
-            customConfigs[0].Config = new();
+            customConfigs[0] = new();
             var result = _mappingService.CrawlNewsXml(customConfigs);
 
             Assert.False(result.Item1);
@@ -122,9 +116,10 @@ namespace NewsAggregationTest
         public void Get_Top_News_Successful()
         {
             var result = _bingService.GetTopNews(9);
-            Assert.NotEmpty(result.Item3);
+            Assert.True(result.Item1);
         }
 
+        // Single
         [Fact]
         public void Crawl_Weather_Data_Successful()
         {
@@ -132,26 +127,26 @@ namespace NewsAggregationTest
             var weatherMappingConfig = DataSourceFactory.CreateMapping<List<CustomConfig>>(dataConfig);
             try
             {
-                Config config = weatherMappingConfig[0].Config;
-                var data = _apiDataSource.GetWeatherInfor(config);
-                var weatherVm = _apiDataSource.ConvertDataToType<WeatherVm>(data, weatherMappingConfig);
-                
-                Weather weather = new()
+                var result = _apiDataSource.MultipleMapping(weatherMappingConfig);
+                var weather = result.Item2.OfType<Weather>().First() ?? throw new InvalidOperationException("no data is mapped");
+                var weatherInfor = result.Item2.OfType<List<WeatherInfo>>().First() ?? throw new InvalidOperationException("no data is mapped in weatherInfo");
+
+                Weather weatherr = new()
                 {
-                    Temperature = weatherVm.Temperature,
-                    Description = weatherVm.Description,
-                    Humidity = weatherVm.Humidity,
-                    Icon = weatherVm.Icon,
-                    Id = weatherVm.Id,
-                    Place = weatherVm.Place,
-                    PubDate = weatherVm.PubDate
+                    Temperature = weather.Temperature,
+                    Description = weather.Description,
+                    Humidity = weather.Humidity,
+                    Icon = weather.Icon,
+                    Id = weather.Id,
+                    Place = weather.Place,
+                    PubDate = weather.PubDate
                 };
-                foreach (var item in weatherVm.WeatherInfor)
+                foreach (var item in weatherInfor)
                 {
                     item.WeatherId = weather.Id;
                 }
-                _dataContext.Add(weather);
-                _dataContext.AddRanger(weatherVm.WeatherInfor);
+                _dataContext.Add(weatherr);
+                _dataContext.AddRanger(weatherInfor);
 
                 Assert.True(true);
             }

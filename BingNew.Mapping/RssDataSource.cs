@@ -1,8 +1,10 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 using BingNew.Mapping.Interface;
 
 namespace BingNew.Mapping
 {
+    //// Strategy Pattern 
     public class RssDataSource : IRssDataSource
     {
 
@@ -11,54 +13,37 @@ namespace BingNew.Mapping
         {
 
         }
+        private readonly Dictionary<SingleOrList, IChooseMapping> ChooseType = new()
+        {
+            { SingleOrList.Single, new SingleMapDataXml() },
+            { SingleOrList.List, new ListMapDataXml() }
+        };
 
-        public string GetNews(string Url)
+        public string GetData(Config config)
         {
             using HttpClient client = new();
-            return client.GetStringAsync(Url).Result;
+            return client.GetStringAsync(config.Url).Result;
         }
 
-        public List<T> ConvertDataToArticles<T>(Config config, List<CustomConfig> mapping) where T : new()
+        public Tuple<bool, IEnumerable<object>, string> MultipleMapping(List<CustomConfig> customConfigs)
         {
-            var articles = new List<T>();
-            XDocument document = config.Data != null ? XDocument.Parse(config.Data)
-                : throw new InvalidOperationException("Could not get data");
-            var items = document.Descendants(config.Item);
-
-            foreach (var item in items)
-            {
-                var article = ConvertDataToType<T>(item.ToString(), mapping);
-                articles.Add(article);
-            }
-            return articles;
+            ////try
+            ////{
+                List<object> list = new();
+                foreach (var item in customConfigs)
+                {
+                    var data = GetData(item.Config);
+                    ChooseType.TryGetValue(item.SingleMappingOrListMapping, out var handler);
+                    var obj = handler is not null ? handler.HandleData(item, data)
+                                        : throw new NotSupportedException("Datatype not supported");
+                    list.Add(obj);
+                }
+                return Tuple.Create(true, (IEnumerable<object>)list, " ");
+            ////}
+            ////catch (Exception ex)
+            ////{
+            ////    return Tuple.Create(false, (IEnumerable<object>)new List<object>(), "Lỗi: " + ex.Message);
+            ////}
         }
-        public T ConvertDataToType<T>(string data, List<CustomConfig> mapping) where T : new()
-        {
-            var obj = new T();
-
-            var articleMapping = mapping.First(x => x.TableName.Equals(typeof(T).Name));
-            mapping = mapping.Where(x => x != articleMapping).ToList();
-            foreach (var config in articleMapping.MappingTables)
-            {
-                config.SouValue = GetSourceValue(XElement.Parse(data), config);
-                var propertyInfo = typeof(T).GetProperty(config.DesProperty);
-                var getType = DataSourceFactory.ParseDatatype(config.DesDatatype);
-                var convertedValue = DataSourceFactory.GetValueHandler(getType, config.SouValue, mapping);
-                propertyInfo?.SetValue(obj, convertedValue);
-            }
-            return obj;
-        }
-        private static string GetSourceValue(XElement item, MappingTable obj)
-        {
-            XNamespace ns = XNamespace.Get(obj.Namespace);
-            var sourceElement = ns != null ? item.Element(ns + obj.SouPropertyPath) : item.Element(obj.SouPropertyPath);
-            return sourceElement?.Value ?? string.Empty;
-        }
-        public string GetWeatherInfor(Config config)
-        {
-            throw new NotImplementedException();
-        }
-
-
     }
 }

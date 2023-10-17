@@ -1,58 +1,42 @@
 ﻿using BingNew.Mapping.Interface;
 using Newtonsoft.Json.Linq;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Nodes;
 
 namespace BingNew.Mapping
 {
+    //// Strategy Pattern 
     public class ApiDataSource : IApiDataSource
     {
         public ApiDataSource()
         {
         }
-        public string GetNews(string Url)
+        private readonly Dictionary<SingleOrList, IChooseMapping> ChooseType = new()
         {
-            return DownloadJson(Url);
-        }
-        private static string DownloadJson(string Url)
+            { SingleOrList.Single, new SingleMapData() },
+            { SingleOrList.List, new ListMapData() }
+        };
+        public Tuple<bool, IEnumerable<object>, string> MultipleMapping(List<CustomConfig> customConfigs)
         {
-            using HttpClient client = new();
-            return client.GetStringAsync(Url).Result;
+            ////try {
+                List<object> list = new();
+                foreach (var item in customConfigs)
+                {
+                    var data = GetData(item.Config);
+                    ChooseType.TryGetValue(item.SingleMappingOrListMapping, out var handler);
+                    var obj = handler is not null ? handler.HandleData(item, data)
+                                        : throw new NotSupportedException("Datatype not supported");
+                    list.Add(obj);
+                }
+                return Tuple.Create(true, (IEnumerable<object>)list, " ");
+            ////}
+            ////catch (Exception ex)
+            ////{
+            ////    return Tuple.Create(false, (IEnumerable<object>) new List<object>(), "Lỗi: " + ex.Message);
+            ////}
         }
-        public List<T> ConvertDataToArticles<T>(Config config, List<CustomConfig> mapping) where T : new()
-        {
-            var articles = new List<T>();
-            JObject jsonObject = config.Data != null ? JObject.Parse(config.Data)
-                : throw new InvalidOperationException("Could not get data");
-
-            var newsArray = jsonObject[config.Item] as JArray;
-
-            foreach (JObject newsItem in newsArray?.OfType<JObject>() ?? Enumerable.Empty<JObject>())
-            {
-                var article = ConvertDataToType<T>(newsItem.ToString(), mapping);
-                articles.Add(article);
-            }
-
-            return articles;
-        }
-
-        public T ConvertDataToType<T>(string data, List<CustomConfig> mapping) where T : new()
-        {
-            T obj = new();
-            JObject jsonObject = JObject.Parse(data);
-            var mappingConfig = mapping.First(x => x.TableName.Equals(typeof(T).Name));
-            mapping = mapping.Where(x => x != mappingConfig).ToList();
-            foreach (var config in mappingConfig.MappingTables)
-            {
-                config.SouValue = Convert.ToString(jsonObject.SelectToken(config.SouPropertyPath)) ?? string.Empty;
-
-                var propertyInfo = typeof(T).GetProperty(config.DesProperty);
-                var getType = DataSourceFactory.ParseDatatype(config.DesDatatype);
-                var convertedValue = DataSourceFactory.GetValueHandler(getType, config.SouValue, mapping, jsonObject, config.SouPropertyPath);
-                propertyInfo?.SetValue(obj, convertedValue);
-            }
-
-            return obj;
-        }
-        public string GetWeatherInfor(Config config)
+      
+        public string GetData(Config config)
         {
             var request = new HttpRequestMessage
             {

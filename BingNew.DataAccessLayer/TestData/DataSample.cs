@@ -27,21 +27,6 @@ namespace BingNew.DataAccessLayer.TestData
             string configFilePath = GetConfigFilePath("MappingDataSample_3.json");
             return File.ReadAllText(configFilePath);
         }
-        public static string GetWeatherMappingConfiguration()
-        {
-            string configFilePath = GetConfigFilePath("MappingDataSample_4.json");
-            return File.ReadAllText(configFilePath);
-        }
-        public static string GetNewWeatherMappingConfiguration()
-        {
-            string configFilePath = GetConfigFilePath("MappingDataSample_4 - New.json");
-            return File.ReadAllText(configFilePath);
-        }
-        public static string GetWeatherInforMappingConfiguration()
-        {
-            string configFilePath = GetConfigFilePath("MappingDataSample_5.json");
-            return File.ReadAllText(configFilePath);
-        }
         public static string GetApiKeyOfNewsDataIo()
         {
             string configFilePath = GetConfigFilePath("ApiKeyOfNewsDataIo.txt");
