@@ -74,7 +74,7 @@ namespace BingNew.Mapping.Interface
 
                 var propertyInfo = objectType.GetProperty(config.DesProperty);
                 var getType = DataSourceFactory.ParseDatatype(config.DesDatatype);
-                var convertedValue = DataSourceFactory.GetValueHandler2(getType, config.SouValue, null, jsonObject, config.SouPropertyPath);
+                var convertedValue = DataSourceFactory.GetValueHandler(getType, config.SouValue, null, jsonObject, config.SouPropertyPath);
                 propertyInfo?.SetValue(obj, convertedValue);
             }
 
@@ -95,7 +95,7 @@ namespace BingNew.Mapping.Interface
 
                 var propertyInfo = objectType.GetProperty(config.DesProperty);
                 var getType = DataSourceFactory.ParseDatatype(config.DesDatatype);
-                var convertedValue = DataSourceFactory.GetValueHandler2(getType, config.SouValue, null, null, config.SouPropertyPath);
+                var convertedValue = DataSourceFactory.GetValueHandler(getType, config.SouValue, null, null, config.SouPropertyPath);
                 propertyInfo?.SetValue(obj, convertedValue);
             }
 

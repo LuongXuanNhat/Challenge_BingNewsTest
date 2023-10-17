@@ -42,7 +42,7 @@ namespace BingNew.Mapping
             return JsonConvert.DeserializeObject<T>(jsonConfigMapping) ?? new T();
         }
 
-        public static object GetValueHandler2(DataTypes dataType, string value, List<CustomConfig>? mapping = null, JObject? jsonObject = null, string? souPropertyPath = null)
+        public static object GetValueHandler(DataTypes dataType, string value, List<CustomConfig>? mapping = null, JObject? jsonObject = null, string? souPropertyPath = null)
         {
             DataTypeHandlers.TryGetValue(dataType, out var handler);
             return handler is not null ? handler.Handle(value, mapping, jsonObject, souPropertyPath)
