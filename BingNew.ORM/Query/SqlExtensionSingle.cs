@@ -1,6 +1,5 @@
 ﻿using System.Data.SqlClient;
 using System.Data;
-using System.Reflection;
 
 namespace BingNew.ORM.Query
 {
