@@ -26,11 +26,13 @@
   <ItemGroup>
     <ProjectReference Include="..\BingNew.DataAccessLayer\BingNew.DataAccessLayer.csproj" />
     <ProjectReference Include="..\BingNew.DI\BingNew.DI.csproj" />
+    <ProjectReference Include="..\BingNew.Mapping\BingNew.Mapping.csproj" />
     <ProjectReference Include="..\BingNew.ORM\BingNew.ORM.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Interfaces\IService\" />
+    <Folder Include="Services\Common\" />
   </ItemGroup>
 
 </Project>

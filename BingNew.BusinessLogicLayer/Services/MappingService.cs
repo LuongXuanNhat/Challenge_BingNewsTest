@@ -1,15 +1,9 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces;
-using BingNew.BusinessLogicLayer.Interfaces.IService;
-using BingNew.BusinessLogicLayer.ModelConfig;
-using BingNew.BusinessLogicLayer.Services.Common;
 using BingNew.DataAccessLayer.Entities;
-using BingNew.DI;
+using BingNew.DataAccessLayer.Models;
+using BingNew.Mapping;
+using BingNew.Mapping.Interface;
 using BingNew.ORM.DbContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BingNew.BusinessLogicLayer.Services
 {
@@ -31,16 +25,10 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             try
             {
-                var configs = customs.Select(item => item.Config).ToList();
+                var result = _apiDataSource.MultipleMapping(customs);
+                var list = result.Item2.OfType<List<Article>>().ToList();
+                _dataContext.AddRanger(list); 
 
-                foreach (var config in configs)
-                {
-                    var data = _apiDataSource.GetNews(config.Url);
-                    config.Data = data;
-
-                    var result = _apiDataSource.ConvertDataToArticles<Article>(config, customs);
-                    _dataContext.AddRanger(result);
-                }
                 return new Tuple<bool, string>(true, "Crawl news data successfully!");
             }
             catch (Exception ex)
@@ -53,16 +41,10 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             try
             {
-                var configs = customs.Select(item => item.Config).ToList();
+                var result = _rssDataSource.MultipleMapping(customs);
+                var list = result.Item2.OfType<List<Article>>().ToList();
+                _dataContext.AddRanger(list);
 
-                foreach (var config in configs)
-                {
-                    var data = _rssDataSource.GetNews(config.Url);
-                    config.Data = data;
-
-                    var result = _rssDataSource.ConvertDataToArticles<Article>(config, customs);
-                    _dataContext.AddRanger(result);
-                }
                 return new Tuple<bool, string>( true, "Crawl news data successfully!");
             }
             catch (Exception ex)
@@ -71,30 +53,31 @@ namespace BingNew.BusinessLogicLayer.Services
             }
         }
 
+        // Single
         public Tuple<bool, string> CrawlWeatherForecast(List<CustomConfig> customs)
         {
             try
             {
-                Config config = customs[0].Config;
-                var data = _apiDataSource.GetWeatherInfor(config);
-                var weatherVm = _apiDataSource.ConvertDataToType<WeatherVm>(data, customs);
+                var result = _apiDataSource.MultipleMapping(customs);
+                var weather = result.Item2.OfType<Weather>().First() ?? throw new InvalidOperationException("no data is mapped");
+                var weatherInfor = result.Item2.OfType<List<WeatherInfo>>().First() ?? throw new InvalidOperationException("no data is mapped in weatherInfo");
 
-                Weather weather = new()
+                Weather weatherr = new()
                 {
-                    Temperature = weatherVm.Temperature,
-                    Description = weatherVm.Description,
-                    Humidity = weatherVm.Humidity,
-                    Icon = weatherVm.Icon,
-                    Id = weatherVm.Id,
-                    Place = weatherVm.Place,
-                    PubDate = weatherVm.PubDate
+                    Temperature = weather.Temperature,
+                    Description = weather.Description,
+                    Humidity = weather.Humidity,
+                    Icon = weather.Icon,
+                    Id = weather.Id,
+                    Place = weather.Place,
+                    PubDate = weather.PubDate
                 };
-                foreach (var item in weatherVm.WeatherInfor)
+                foreach (var item in weatherInfor)
                 {
                     item.WeatherId = weather.Id;
                 }
-                _dataContext.Add(weather);
-                _dataContext.AddRanger(weatherVm.WeatherInfor);
+                _dataContext.Add(weatherr);
+                _dataContext.AddRanger(weatherInfor);
 
                 return new Tuple<bool, string>(true, "Crawl weatehr forecast data successfully!");
             }

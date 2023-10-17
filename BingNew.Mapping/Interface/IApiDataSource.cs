@@ -1,4 +1,4 @@
-﻿namespace BingNew.BusinessLogicLayer.Interfaces.IService
+﻿namespace BingNew.Mapping.Interface
 {
     public interface IApiDataSource : IDataSource
     {

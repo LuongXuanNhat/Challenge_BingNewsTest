@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
-namespace BingNew.BusinessLogicLayer.ModelConfig
+namespace BingNew.Mapping
 {
     public class Config
     {
