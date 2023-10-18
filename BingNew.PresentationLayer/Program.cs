@@ -14,8 +14,8 @@ namespace BingNew.PresentationLayer
         {
             var container = new DIContainer();
             container.Register<DbBingNewsContext, DbBingNewsContext>();
-            container.Register<IApiDataSource, ApiDataSource>();
-            container.Register<IRssDataSource, RssDataSource>();
+            container.Register<IJsonDataSource, JsonDataSource>();
+            container.Register<IXmlDataSource, XmlDataSource>();
             container.Register<IBingNewsService, BingNewsService>();
             container.Register<IMappingService, MappingService>();
 
@@ -30,8 +30,8 @@ namespace BingNew.PresentationLayer
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            ////builder.Services.AddScoped<IRssDataSource, RssDataSource>();
-            ////builder.Services.AddScoped<IApiDataSource, ApiDataSource>();
+            ////builder.Services.AddScoped<IXmlDataSource, XmlDataSource>();
+            ////builder.Services.AddScoped<IJsonDataSource, JsonDataSource>();
             ////builder.Services.AddDbContext<DbBingNewsContext>(options =>
             ////{
             ////    options.UseSqlServer("your_connection_string_here");

@@ -10,11 +10,11 @@ namespace BingNew.BusinessLogicLayer.Services
     public class MappingService : IMappingService
     {
 
-        private readonly IApiDataSource _apiDataSource;
-        private readonly IRssDataSource _rssDataSource;
+        private readonly IJsonDataSource _apiDataSource;
+        private readonly IXmlDataSource _rssDataSource;
         private readonly DbBingNewsContext _dataContext;
 
-        public MappingService(IApiDataSource apiDataSource, IRssDataSource rssDataSource, DbBingNewsContext dataContext)
+        public MappingService(IJsonDataSource apiDataSource, IXmlDataSource rssDataSource, DbBingNewsContext dataContext)
         {
             _apiDataSource = apiDataSource;
             _rssDataSource = rssDataSource;
@@ -25,7 +25,7 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             try
             {
-                var result = _apiDataSource.MultipleMapping(customs);
+                var result = _apiDataSource.MapMultipleObjects(customs);
                 var list = result.Item2.OfType<List<Article>>().ToList();
                 _dataContext.AddRanger(list); 
 
@@ -41,7 +41,7 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             try
             {
-                var result = _rssDataSource.MultipleMapping(customs);
+                var result = _rssDataSource.MapMultipleObjects(customs);
                 var list = result.Item2.OfType<List<Article>>().ToList();
                 _dataContext.AddRanger(list);
 
@@ -58,7 +58,7 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             try
             {
-                var result = _apiDataSource.MultipleMapping(customs);
+                var result = _apiDataSource.MapMultipleObjects(customs);
                 var weather = result.Item2.OfType<Weather>().First() ?? throw new InvalidOperationException("no data is mapped");
                 var weatherInfor = result.Item2.OfType<List<WeatherInfo>>().First() ?? throw new InvalidOperationException("no data is mapped in weatherInfo");
 

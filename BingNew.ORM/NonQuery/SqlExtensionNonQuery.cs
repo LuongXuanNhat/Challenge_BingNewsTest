@@ -10,16 +10,8 @@ namespace BingNew.ORM.NonQuery
     {
         public static bool Insert<T>(this SqlConnection connection,T entity)
         {
-            try
-            {
                 var sql = GenerateInsertQuery(entity);
                 return QueryExcute<T>(connection, sql, entity);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("-------------------------------------------   XUẤT HIỆN LỖI KHÔNG MONG MUỐN: " + ex.Message.ToString());
-                return false;
-            }
         }
 
         private static bool QueryExcute<T>(SqlConnection connection, string sql, T entity)
