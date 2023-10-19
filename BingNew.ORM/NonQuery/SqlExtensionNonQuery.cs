@@ -10,21 +10,13 @@ namespace BingNew.ORM.NonQuery
     {
         public static bool Insert<T>(this SqlConnection connection,T entity)
         {
-            try
-            {
-                var sql = GenerateInsertQuery(entity);
+                var sql = GenerateInsertQuery<T>();
                 return QueryExcute<T>(connection, sql, entity);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("-------------------------------------------   XUẤT HIỆN LỖI KHÔNG MONG MUỐN: " + ex.Message.ToString());
-                return false;
-            }
         }
 
         private static bool QueryExcute<T>(SqlConnection connection, string sql, T entity)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = new SqlCommand(sql, connection);
             foreach (var property in typeof(T).GetProperties())
             {
@@ -37,7 +29,7 @@ namespace BingNew.ORM.NonQuery
             return true;
         }
 
-        public static string GenerateInsertQuery<T>(T entity)
+        public static string GenerateInsertQuery<T>()
         {
             string tableName = typeof(T).Name;
             PropertyInfo[] properties = typeof(T).GetProperties();
@@ -55,21 +47,13 @@ namespace BingNew.ORM.NonQuery
         /// <returns> Trả về true nếu cập nhập thành công và ngược lại </returns>
         public static bool Update<T>(this SqlConnection connection, T entity)
         {
-            try
-            {
-                connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
 
-                var sql = GenerateUpdateQuery(entity);
-                return QueryExcute<T>(connection, sql, entity);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("XUẤT HIỆN LỖI KHÔNG MONG MUỐN: " + ex.Message.ToString());
-                return false;
-            }
+            var sql = GenerateUpdateQuery<T>();
+            return QueryExcute<T>(connection, sql, entity);
         }
 
-        public static string GenerateUpdateQuery<T>(T entity)
+        public static string GenerateUpdateQuery<T>()
         {
             string tableName = typeof(T).Name;
             PropertyInfo[] properties = typeof(T).GetProperties();
@@ -81,24 +65,15 @@ namespace BingNew.ORM.NonQuery
 
         public static bool Delete<T>(this SqlConnection connection, Guid entityId) where T : class
         {
-            try
-            {
-                connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
 
-                string query = GenerateDeleteQuery<T>();
+            string query = GenerateDeleteQuery<T>();
 
-                using var command = new SqlCommand(query, connection);
-                command.Parameters.Add(new SqlParameter("@Id", entityId));
-                command.ExecuteNonQuery();
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.Add(new SqlParameter("@Id", entityId));
+            command.ExecuteNonQuery();
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("XUẤT HIỆN LỖI KHÔNG MONG MUỐN: " + ex.Message.ToString());
-                return false;
-            }
-
+            return true;
         }
 
         private static string GenerateDeleteQuery<T>() where T : class
@@ -108,22 +83,14 @@ namespace BingNew.ORM.NonQuery
 
         public static T? GetById<T>(this SqlConnection connection, Guid entityId) where T : new()
         {
-            try
-            {
-                connection.OpenOrClose(connection.State);
-                var sql = GenerateGetObjectQuery<T>();
+            connection.SqlConnectionManager(connection.State);
+            var sql = GenerateGetObjectQuery<T>();
 
-                using var command = new SqlCommand(sql, connection);
-                command.Parameters.Add(new SqlParameter("@Id", entityId));
-                using var reader = command.ExecuteReader();
+            using var command = new SqlCommand(sql, connection);
+            command.Parameters.Add(new SqlParameter("@Id", entityId));
+            using var reader = command.ExecuteReader();
 
-                return reader.Read() ? SqlExtensionCommon.ConvertToObject<T>(reader) : default;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("XUẤT HIỆN LỖI KHÔNG MONG MUỐN: " + ex.Message.ToString());
-                throw new NotImplementedException();
-            }
+            return reader.Read() ? SqlExtensionCommon.ConvertToObject<T>(reader) : default;
         }
 
         private static string GenerateGetObjectQuery<T>() where T : new()

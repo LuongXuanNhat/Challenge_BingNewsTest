@@ -8,14 +8,14 @@ namespace NewsAggregationTest
     public class BingNewsTest
     {
         private readonly Config _config;
-        private readonly IApiDataSource _apiDataSource;
-        private readonly IRssDataSource _rssDataSource;
+        private readonly IJsonDataSource _apiDataSource;
+        private readonly IXmlDataSource _rssDataSource;
 
         public BingNewsTest()
         {
             _config = new Config();
-            _apiDataSource = new ApiDataSource();
-            _rssDataSource = new RssDataSource();
+            _apiDataSource = new JsonDataSource();
+            _rssDataSource = new XmlDataSource();
         }
 
         private static Config WeatherConfig()
@@ -34,29 +34,29 @@ namespace NewsAggregationTest
         #region BingNews
 
         [Fact]
-        public void GetNewsFromRssTuoiTreNotNull()
+        public void Get_News_From_Rss_TuoiTre_Not_Null()
         {
             Config config = new()
             {
                 Url = "https://tuoitre.vn/rss/tin-moi-nhat.rss"
             };
-            var result = _rssDataSource.GetData(config);
+            var result = _rssDataSource.FetchData(config);
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void GetNewsFromRssGoogleTrendNotNull()
+        public void Get_News_From_Rss_Google_Trend_Not_Null()
         {
             Config config = new()
             {
                 Url = "https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN"
             };
-            var result = _rssDataSource.GetData(config);
+            var result = _rssDataSource.FetchData(config);
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void GetNewsFromApiNewsDataIoNotNull()
+        public void Get_News_From_Api_News_DataIo_Not_Null()
         {
             Config config = new()
             {
@@ -66,49 +66,49 @@ namespace NewsAggregationTest
             };
             config.Url = "https://newsdata.io/api/1/news?" + config.Key + config.Language;
 
-            var result = _apiDataSource.GetData(config);
+            var result = _apiDataSource.FetchData(config);
 
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void ConvertDataFromTuoiTreNewsToArticlesNotNull()
+        public void Convert_Data_From_TuoiTreNews_To_Articles_Not_Null()
         {
             Config config = new()
             {
                 Url = "https://tuoitre.vn/rss/tin-moi-nhat.rss"
             };
-            _config.Data = _rssDataSource.GetData(config);
+            _config.Data = _rssDataSource.FetchData(config);
             _config.Item = "item";
             _config.Channel = "Tuoi Tre News";
 
-            var mappingConfig = DataSourceFactory.CreateMapping<List<CustomConfig>>(DataSample.GetRssTuoiTreNewsDataMappingConfiguration());
+            var mappingConfig = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(DataSample.GetRssTuoiTreNewsDataMappingConfiguration());
 
-            var result = _rssDataSource.MultipleMapping(mappingConfig);
+            var result = _rssDataSource.MapMultipleObjects(mappingConfig);
 
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void ConvertDataFromGgTrendsToArticlesNotNull()
+        public void Convert_Data_From_GgTrends_To_Articles_Not_Null()
         {
             Config config = new()
             {
                 Url = "https://trends.google.com.vn/trends/trendingsearches/daily/rss?geo=VN"
             };
-            _config.Data = _rssDataSource.GetData(config);
+            _config.Data = _rssDataSource.FetchData(config);
             _config.Item = "item";
 
-            var mappingConfig = DataSourceFactory.CreateMapping<List<CustomConfig>>(DataSample.GetGgTrendsNewsDataMappingConfiguration());
+            var mappingConfig = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(DataSample.GetGgTrendsNewsDataMappingConfiguration());
             
-            var result = _rssDataSource.MultipleMapping(mappingConfig);
+            var result = _rssDataSource.MapMultipleObjects(mappingConfig);
 
             Assert.NotNull(result);
-            Assert.True(result.Item1, result.Item3);
+            Assert.NotEmpty(result);
         }
 
         [Fact]
-        public void ConvertDataFromNewsDataToArticlesNotNull()
+        public void Convert_Data_From_NewsData_To_Articles_Not_Null()
         {
             _config.Key = "apikey=" + DataSample.GetApiKeyOfNewsDataIo();
             _config.Language = "&language=" + "vi";
@@ -116,27 +116,27 @@ namespace NewsAggregationTest
             _config.Url = "https://newsdata.io/api/1/news?" + _config.Key + _config.Language + _config.Category;
             _config.Item = "results";
 
-            var mappingConfig = DataSourceFactory.CreateMapping<List<CustomConfig>>(DataSample.GetNewsDataIoMappingConfiguration());
-            var result = _apiDataSource.MultipleMapping(mappingConfig);
+            var mappingConfig = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(DataSample.GetNewsDataIoMappingConfiguration());
+            var result = _apiDataSource.MapMultipleObjects(mappingConfig);
 
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void GetWeatherInforNotNull()
+        public void Get_Weather_Infor_Not_Null()
         {
             var config = WeatherConfig();
-            var result = _apiDataSource.GetData(config);
+            var result = _apiDataSource.FetchData(config);
             Assert.NotNull(result);
         }
 
         // Single
         [Fact]
-        public void ConvertDataToWeatherNotNull()
+        public void Convert_Data_To_Weather_Not_Null()
         {
-            var weatherMappingConfig = DataSourceFactory.CreateMapping<List<CustomConfig>>(DataSample.GetWeatherConfiguration());
+            var weatherMappingConfig = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(DataSample.GetWeatherConfiguration());
 
-            var result = _apiDataSource.MultipleMapping(weatherMappingConfig);
+            var result = _apiDataSource.MapMultipleObjects(weatherMappingConfig);
 
             Assert.NotNull(result);
         }

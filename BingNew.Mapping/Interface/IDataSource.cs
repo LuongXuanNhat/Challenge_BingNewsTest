@@ -1,6 +1,14 @@
 ﻿namespace BingNew.Mapping.Interface;
 public interface IDataSource
 {
-    public Tuple<bool, IEnumerable<object>, string> MultipleMapping(List<CustomConfig> customConfigs);
-    public string GetData(Config config);
+    public IEnumerable<object> MapMultipleObjects(List<CustomConfig> customConfigs);
+    public string FetchData(Config config);
+}
+public interface IJsonDataSource : IDataSource
+{
+
+}
+public interface IXmlDataSource : IDataSource
+{
+
 }

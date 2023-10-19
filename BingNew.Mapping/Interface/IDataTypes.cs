@@ -24,6 +24,4 @@ namespace BingNew.Mapping.Interface
     {
         public override string DataType => "int";
     }
-   
-
 }

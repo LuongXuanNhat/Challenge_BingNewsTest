@@ -6,7 +6,7 @@ namespace BingNew.ORM.Query
     {
         public static IEnumerable<dynamic?> Query(this SqlConnection sqlConnection, string sql)
         {
-            sqlConnection.OpenOrClose(sqlConnection.State);
+            sqlConnection.SqlConnectionManager(sqlConnection.State);
 
             var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
             var resultType = SqlExtensionCommon.FindTypeByName(typeName);
@@ -15,7 +15,7 @@ namespace BingNew.ORM.Query
         }
         public static IEnumerable<T> Query<T>(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             foreach (var item in ReadValue(connection, sql, typeof(T)))
             {
                 yield return item;
@@ -36,7 +36,7 @@ namespace BingNew.ORM.Query
 
         public static async IAsyncEnumerable<dynamic?> QueryAsync(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
             var resultType = SqlExtensionCommon.FindTypeByName(typeName);
             await foreach (var item in ReadValueAsync(connection, sql, resultType))
@@ -47,7 +47,7 @@ namespace BingNew.ORM.Query
 
         public static async IAsyncEnumerable<T?> QueryAsync<T>(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             await foreach (var item in ReadValueAsync(connection, sql, typeof(T)))
             {
                 yield return item;
