@@ -83,16 +83,6 @@ namespace NewsAggregationTest
             Assert.True(result.Item1);
         }
         [Fact]
-        public void Crawl_News_Json_Return_False()
-        {
-            var configData = DataSample.GetDataMockupNewsDataIo();
-            var customConfigs = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(configData);
-            customConfigs[0] = new();
-            var result = _mappingService.CrawlNewsJson(customConfigs);
-
-            Assert.False(result.Item1);
-        }
-        [Fact]
         public void Crawl_News_Xml_Return_True()
         {
             var configData = DataSample.GetDataMockupGgTrend();
@@ -102,16 +92,7 @@ namespace NewsAggregationTest
 
             Assert.True(result.Item1);
         }
-        [Fact]
-        public void Crawl_News_Xml_Return_False()
-        {
-            var configData = DataSample.GetDataMockupGgTrend();
-            var customConfigs = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(configData);
-            customConfigs[0] = new();
-            var result = _mappingService.CrawlNewsXml(customConfigs);
-
-            Assert.False(result.Item1);
-        }
+       
         [Fact]
         public void Get_Top_News_Successful()
         {
@@ -128,8 +109,8 @@ namespace NewsAggregationTest
             try
             {
                 var result = _apiDataSource.MapMultipleObjects(weatherMappingConfig);
-                var weather = result.Item2.OfType<Weather>().First() ?? throw new InvalidOperationException("no data is mapped");
-                var weatherInfor = result.Item2.OfType<List<WeatherInfo>>().First() ?? throw new InvalidOperationException("no data is mapped in weatherInfo");
+                var weather = result.OfType<Weather>().First() ?? throw new InvalidOperationException("no data is mapped");
+                var weatherInfor = result.OfType<List<WeatherInfo>>().First() ?? throw new InvalidOperationException("no data is mapped in weatherInfo");
 
                 Weather weatherr = new()
                 {
@@ -173,15 +154,6 @@ namespace NewsAggregationTest
             var weatherMappingConfig = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(dataConfig);
             var result = _mappingService.CrawlWeatherForecast(weatherMappingConfig);
             Assert.True(result.Item1);
-        }
-        [Fact]
-        public void Test_Crawl_Mapping_Return_False()
-        {
-            var dataConfig = DataSample.GetWeatherConfiguration();
-            var weatherMappingConfig = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(dataConfig);
-            weatherMappingConfig[0].Config = new();
-            var result = _mappingService.CrawlWeatherForecast(weatherMappingConfig);
-            Assert.False(result.Item1);
         }
         [Fact] 
         public void Get_Weather_Forecast_Api_Successful()

@@ -1,20 +1,19 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using System.Reflection;
 
 namespace BingNew.ORM.Query
 {
     public static class SqlExtensionCommon
     {
-        public static void OpenOrClose(this SqlConnection sqlConnection, ConnectionState state)
+        public static readonly SqlConnection sqlConnection = new();
+        private static readonly Dictionary<ConnectionState, Action<SqlConnection>> stateActions = new()
         {
-            switch (state)
-            {
-                case ConnectionState.Closed:
-                    sqlConnection.Open();
-                    break;
-
-            }
+            [ConnectionState.Closed] = conn => conn.Open(),
+            [ConnectionState.Open] = conn => { }
+        };
+        public static void SqlConnectionManager(this SqlConnection sqlConnection, ConnectionState state)
+        {
+            stateActions[state](sqlConnection);
         }
         public static string ExtractTypeNameFromSql(string sql)
         {

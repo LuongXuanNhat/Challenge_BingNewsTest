@@ -13,7 +13,7 @@ namespace BingNew.Mapping
             { MappingType.Single, new SingleMapDataJson() },
             { MappingType.List, new ListMapDataJson() }
         };
-        public Tuple<bool, IEnumerable<object>, string> MapMultipleObjects(List<CustomConfig> customConfigs)
+        public IEnumerable<object> MapMultipleObjects(List<CustomConfig> customConfigs)
         {
             List<object> list = new();
             foreach (var item in customConfigs)
@@ -23,7 +23,7 @@ namespace BingNew.Mapping
                 var obj =  handler?.MapData(item, data) ?? "undefined type";
                 list.Add(obj);
             }
-            return Tuple.Create(true, (IEnumerable<object>)list, " ");
+            return list;
         }
       
         public string FetchData(Config config)

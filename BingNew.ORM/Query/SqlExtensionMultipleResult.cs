@@ -43,41 +43,48 @@ namespace BingNew.ORM.Query
 
         public static IEnumerable<T?> Read<T>(this IEnumerable<dynamic?> queryResults) where T : new()
         {
-            return queryResults.OfType<T?>().Select(result => MapResult<T>(result));
+            return queryResults.OfType<T?>().Select(result => MapDynamicToType<T>(result));
         }
 
         public static T? ReadFirst<T>(this IEnumerable<dynamic?> queryResults) where T : new()
         {
-            return queryResults.OfType<T?>().Select(result => MapResult<T>(result)).FirstOrDefault();
+            return queryResults.OfType<T>().Select(result => MapDynamicToType<T>(result)).FirstOrDefault();
         }
 
         public static async IAsyncEnumerable<T?> ReadAsync<T>(this IAsyncEnumerable<dynamic?> queryResults) where T : new()
         {
+            var typeMapping = new Dictionary<Type, Func<dynamic, T>>()
+            {
+                { typeof(T), queryResult => MapDynamicToType<T>(queryResult) },
+
+            };
+
             await foreach (var queryResult in queryResults)
             {
-                switch (queryResult)
-                {
-                    case T typedResult:
-                        yield return MapResult<T?>(typedResult);
-                        break;
-                }
+                Type queryResultType = queryResult != null ? queryResult.GetType() : throw new InvalidOperationException("Type is null!") ;
+                typeMapping.TryGetValue(queryResultType, out var mapper);
+                yield return ( mapper != null) ? mapper(queryResult) : default ;
             }
         }
 
         public static async Task<T?> ReadFirstAsync<T>(this IAsyncEnumerable<dynamic?> queryResults) where T : new()
         {
-            await foreach (var queryResult in queryResults)
+            var resultList = new List<dynamic?>();
+
+            await foreach (var result in queryResults)
             {
-                switch (queryResult)
-                {
-                    case T typedResult:
-                        return MapResult<T?>(typedResult);
-                }
+                resultList.Add(result);
             }
-            return default;
+
+            var mappedResult = resultList
+                .OfType<T>()
+                .Select(queryResult => MapDynamicToType<T?>(queryResult))
+                .FirstOrDefault();
+
+            return mappedResult;
         }
 
-        private static T MapResult<T>(dynamic? result) where T : new()
+        private static T MapDynamicToType<T>(dynamic? result) where T : new()
         {
             var mappedResult = new T();
             var fields = typeof(T).GetProperties();
@@ -91,4 +98,6 @@ namespace BingNew.ORM.Query
             return mappedResult;
         }
     }
+
+    
 }

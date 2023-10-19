@@ -8,7 +8,7 @@ namespace BingNew.ORM.Query
         public static T QuerySingle<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = connection.CreateCommand();
             command.Connection = connection;
             command.CommandText = sql;
@@ -19,7 +19,7 @@ namespace BingNew.ORM.Query
         }
         public static dynamic QuerySingle(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = new SqlCommand(sql, connection);
             using var reader = command.ExecuteReader();
             var obj = default(dynamic);
@@ -52,7 +52,7 @@ namespace BingNew.ORM.Query
         }
         public static dynamic? QuerySingleOrDefault(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             var typeName = SqlExtensionCommon.ExtractTypeNameFromSql(sql);
             var resultType = SqlExtensionCommon.FindTypeByName(typeName) ;
             using var command = new SqlCommand(sql, connection);
@@ -66,7 +66,7 @@ namespace BingNew.ORM.Query
         public static T? QuerySingleOrDefault<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = connection.CreateCommand();
             command.CommandText = sql;
 
@@ -80,13 +80,13 @@ namespace BingNew.ORM.Query
         }
         public static dynamic QueryFirst(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             return QueryExcute(connection, sql) ?? throw new InvalidOperationException("Invalid return data: zero");
         }
         public static T QueryFirst<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = connection.CreateCommand();
             command.Connection = connection;
             command.CommandText = sql;
@@ -100,7 +100,7 @@ namespace BingNew.ORM.Query
         public static T? QueryFirstOrDefault<T>(this SqlConnection connection, string sql, int? commandTimeout = null, SqlParameter[]? sqlParameters = null, IDbTransaction? transaction = null)
             where T : class, new()
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = connection.CreateCommand();
             command.Connection = connection;
             command.CommandText = sql;
@@ -112,7 +112,7 @@ namespace BingNew.ORM.Query
         }
         public static dynamic? QueryFirstOrDefault(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             return QueryExcute(connection, sql);
         }
         private static dynamic? QueryExcute(SqlConnection connection, string sql)

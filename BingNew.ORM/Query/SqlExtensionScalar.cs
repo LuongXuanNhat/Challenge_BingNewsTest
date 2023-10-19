@@ -8,7 +8,7 @@ namespace BingNew.ORM.Query
 
         public static dynamic? ExecuteScalar(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = new SqlCommand(sql, connection);
             var result = command.ExecuteScalar();
             return result != DBNull.Value ? (dynamic)result : null;
@@ -16,7 +16,7 @@ namespace BingNew.ORM.Query
 
         public static T? ExecuteScalar<T>(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = new SqlCommand(sql, connection);
             var result = command.ExecuteScalar();
             return result != DBNull.Value ? (T)result : default;
@@ -24,7 +24,7 @@ namespace BingNew.ORM.Query
 
         public static async Task<dynamic?> ExecuteScalarAsync(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = new SqlCommand(sql, connection);
             var result = await command.ExecuteScalarAsync();
             return result != DBNull.Value ? result : null;
@@ -32,7 +32,7 @@ namespace BingNew.ORM.Query
 
         public static async Task<T?> ExecuteScalarAsync<T>(this SqlConnection connection, string sql)
         {
-            connection.OpenOrClose(connection.State);
+            connection.SqlConnectionManager(connection.State);
             using var command = new SqlCommand(sql, connection);
             var result = await command.ExecuteScalarAsync();
             return result != DBNull.Value ? (T?)result : default;

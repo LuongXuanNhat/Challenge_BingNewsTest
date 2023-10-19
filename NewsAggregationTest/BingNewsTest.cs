@@ -34,7 +34,7 @@ namespace NewsAggregationTest
         #region BingNews
 
         [Fact]
-        public void GetNewsFromRssTuoiTreNotNull()
+        public void Get_News_From_Rss_TuoiTre_Not_Null()
         {
             Config config = new()
             {
@@ -45,7 +45,7 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public void GetNewsFromRssGoogleTrendNotNull()
+        public void Get_News_From_Rss_Google_Trend_Not_Null()
         {
             Config config = new()
             {
@@ -56,7 +56,7 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public void GetNewsFromApiNewsDataIoNotNull()
+        public void Get_News_From_Api_News_DataIo_Not_Null()
         {
             Config config = new()
             {
@@ -72,7 +72,7 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public void ConvertDataFromTuoiTreNewsToArticlesNotNull()
+        public void Convert_Data_From_TuoiTreNews_To_Articles_Not_Null()
         {
             Config config = new()
             {
@@ -90,7 +90,7 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public void ConvertDataFromGgTrendsToArticlesNotNull()
+        public void Convert_Data_From_GgTrends_To_Articles_Not_Null()
         {
             Config config = new()
             {
@@ -104,11 +104,11 @@ namespace NewsAggregationTest
             var result = _rssDataSource.MapMultipleObjects(mappingConfig);
 
             Assert.NotNull(result);
-            Assert.True(result.Item1, result.Item3);
+            Assert.NotEmpty(result);
         }
 
         [Fact]
-        public void ConvertDataFromNewsDataToArticlesNotNull()
+        public void Convert_Data_From_NewsData_To_Articles_Not_Null()
         {
             _config.Key = "apikey=" + DataSample.GetApiKeyOfNewsDataIo();
             _config.Language = "&language=" + "vi";
@@ -123,7 +123,7 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public void GetWeatherInforNotNull()
+        public void Get_Weather_Infor_Not_Null()
         {
             var config = WeatherConfig();
             var result = _apiDataSource.FetchData(config);
@@ -132,7 +132,7 @@ namespace NewsAggregationTest
 
         // Single
         [Fact]
-        public void ConvertDataToWeatherNotNull()
+        public void Convert_Data_To_Weather_Not_Null()
         {
             var weatherMappingConfig = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(DataSample.GetWeatherConfiguration());
 

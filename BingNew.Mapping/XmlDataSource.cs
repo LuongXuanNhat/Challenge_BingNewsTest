@@ -23,7 +23,7 @@ namespace BingNew.Mapping
             return client.GetStringAsync(config.Url).Result;
         }
 
-        public Tuple<bool, IEnumerable<object>, string> MapMultipleObjects(List<CustomConfig> customConfigs)
+        public IEnumerable<object> MapMultipleObjects(List<CustomConfig> customConfigs)
         {
             List<object> mappedDataList = new();
             foreach (var customConfig in customConfigs)
@@ -34,7 +34,7 @@ namespace BingNew.Mapping
                                     : throw new NotSupportedException("Datatype not supported");
                 mappedDataList.Add(obj);
             }
-            return Tuple.Create(true, (IEnumerable<object>)mappedDataList, "");
+            return mappedDataList;
         }
     }
 }

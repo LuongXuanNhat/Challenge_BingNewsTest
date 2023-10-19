@@ -417,14 +417,28 @@ namespace NewsAggregationTest
         [Fact]
         public void Object_Delete_Success()
         {
-            var article = new BingNew.DataAccessLayer.Models.ArticleVm(10, 5, 8, 100, "https://example.com/image.jpg", "",
-                "12345", DateTime.Now, "https://example.com/article/123", "Sample Article", "This is a sample article.");
+            var article = new Article()
+            {
+                CommentNumber = 1,
+                Description = "Test",
+                 DisLikeNumber = 2,
+                ImgUrl = null,
+                Id = Guid.NewGuid(),
+                LikeNumber = 3,
+                ProviderId = "",
+                PubDate = DateTime.Now,
+                Title = "Test",
+                Url = null,
+                ViewNumber = 1,
+                TopicId = ""
+            };
+
             using var connection = new SqlConnection(_connecString);
             connection.Insert(article);
-            bool result = connection.Delete<Article>(article.GetId());
+            bool result = connection.Delete<Article>(article.Id);
             Assert.True(result);
 
-            var deletedArticle = connection.GetById<Article>(article.GetId());
+            var deletedArticle = connection.GetById<Article>(article.Id);
             Assert.Null(deletedArticle);
         }
         #endregion
