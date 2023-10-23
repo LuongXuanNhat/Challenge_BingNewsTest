@@ -20,7 +20,7 @@ namespace BingNew.BusinessLogicLayer.Services
             _dataContext = dataContext;
         }
 
-        public Tuple<bool, string> CrawlNewsJson(List<CustomConfig> customs)
+        public bool CrawlNewsJson(List<CustomConfig> customs)
         {
             var result = _jsonDataSource.MapMultipleObjects(customs);
             foreach (var article in result)
@@ -28,10 +28,10 @@ namespace BingNew.BusinessLogicLayer.Services
                 _dataContext.AddRanger((List<Article>)article);
             }
 
-            return new Tuple<bool, string>(true, "Crawl news data successfully!");
+            return true;
         }
 
-        public Tuple<bool, string> CrawlNewsXml(List<CustomConfig> customs)
+        public bool CrawlNewsXml(List<CustomConfig> customs)
         {
             var result = _xmlDataSource.MapMultipleObjects(customs).ToList();
             foreach (var article in result)
@@ -39,11 +39,11 @@ namespace BingNew.BusinessLogicLayer.Services
                 _dataContext.AddRanger((List<Article>)article);
             }
 
-            return new Tuple<bool, string>( true, "Crawl news data successfully!");
+            return true;
         }
 
         // Single
-        public Tuple<bool, string> CrawlWeatherForecast(List<CustomConfig> customs)
+        public bool CrawlWeatherForecast(List<CustomConfig> customs)
         {
             var result = _jsonDataSource.MapMultipleObjects(customs);
             var weather = result.OfType<Weather>().First() ?? throw new InvalidOperationException("no data is mapped");
@@ -66,7 +66,7 @@ namespace BingNew.BusinessLogicLayer.Services
             _dataContext.Add(weatherr);
             _dataContext.AddRanger(weatherInfor);
 
-            return new Tuple<bool, string>(true, "Crawl weatehr forecast data successfully!");
+            return true;
         }
     }
 }
