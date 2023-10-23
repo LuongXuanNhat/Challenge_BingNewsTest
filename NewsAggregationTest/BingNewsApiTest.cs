@@ -51,8 +51,7 @@ namespace NewsAggregationTest
         public void Get_Trending_Articles_Panel()
         {
             var articleTrend = _bingService.GetTrendingArticlesPanel(12);
-            Assert.NotEmpty(articleTrend.Item3);
-
+            Assert.NotEmpty(articleTrend);
         }
         [Fact]
         public void Get_Data_From_Api_Json_Success()
@@ -80,7 +79,7 @@ namespace NewsAggregationTest
 
             var result = _mappingService.CrawlNewsJson(customConfigs);
 
-            Assert.True(result.Item1);
+            Assert.True(result);
         }
         [Fact]
         public void Crawl_News_Xml_Return_True()
@@ -90,14 +89,15 @@ namespace NewsAggregationTest
 
             var result = _mappingService.CrawlNewsXml(customConfigs);
 
-            Assert.True(result.Item1);
+            Assert.True(result);
         }
        
         [Fact]
         public void Get_Top_News_Successful()
         {
             var result = _bingService.GetTopNews(9);
-            Assert.True(result.Item1);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
         }
 
         // Single
@@ -153,13 +153,14 @@ namespace NewsAggregationTest
             var dataConfig = DataSample.GetWeatherConfiguration();
             var weatherMappingConfig = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(dataConfig);
             var result = _mappingService.CrawlWeatherForecast(weatherMappingConfig);
-            Assert.True(result.Item1);
+            Assert.True(result);
         }
+
         [Fact] 
         public void Get_Weather_Forecast_Api_Successful()
         {
             var result = _bingService.GetWeatherForecast(DateTime.Now);
-            Assert.True(result.Item1);
+            Assert.NotNull(result);
         }
 
     }

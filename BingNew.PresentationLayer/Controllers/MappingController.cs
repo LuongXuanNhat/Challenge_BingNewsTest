@@ -18,24 +18,24 @@ namespace BingNew.PresentationLayer.Controllers
         }
 
         [HttpPost("GetNews_Xml")]
-        public IActionResult GetNewsFromApiWithTypeXml([FromBody] List<CustomConfig> customs )
+        public bool GetNewsFromApiWithTypeXml([FromBody] List<CustomConfig> customs )
         {
             var result = _mappingService.CrawlNewsXml(customs);   
-            return result.Item1 ? Ok(result.Item2) : BadRequest(result.Item2);
+            return result;
         }
 
         [HttpPost("GetNews_Json")]
-        public IActionResult GetNewsFromApiWithTypeJson([FromBody] List<CustomConfig> customs)
+        public bool GetNewsFromApiWithTypeJson([FromBody] List<CustomConfig> customs)
         {
             var result = _mappingService.CrawlNewsJson(customs);
-            return result.Item1 ? Ok(result.Item2) : BadRequest(result.Item2);
+            return result;
         }
 
         [HttpPost("GetCrawlWeatherForecast")]
-        public IActionResult GetWeatherForecast([FromBody] List<CustomConfig> customs)
+        public bool GetWeatherForecast([FromBody] List<CustomConfig> customs)
         {
             var result = _mappingService.CrawlWeatherForecast(customs);
-            return result.Item1 ? Ok(result.Item2) : BadRequest(result.Item2);
+            return result;
         }
     }
 }

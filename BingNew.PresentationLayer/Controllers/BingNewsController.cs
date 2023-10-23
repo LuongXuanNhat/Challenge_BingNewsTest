@@ -17,18 +17,18 @@ namespace BingNew.PresentationLayer.Controllers
         }
 
         [HttpGet("GetNews")]
-        public IActionResult BingNewsPanel(int quantity = 9)
+        public List<Article> BingNewsPanel(int quantity = 9)
         {
             var result = _bingNewsService.GetTrendingArticlesPanel(quantity);
-            return result.Item1 ? Ok(result) : BadRequest(result);
+            return result;
         }
 
         [HttpGet("GetWeatherForecast")]
-        public IActionResult WeatherForecast(DateTime? dateTime = null)
+        public WeatherVm WeatherForecast(DateTime? dateTime = null)
         {
             DateTime date = dateTime ?? DateTime.Now;
             var result = _bingNewsService.GetWeatherForecast(date);
-            return result.Item1 ? Ok(result) : BadRequest(result);
+            return result;
         }
     }
 }

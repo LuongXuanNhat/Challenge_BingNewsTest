@@ -11,7 +11,7 @@ namespace BingNew.BusinessLogicLayer.Services
             _dataContext = context;
         }
 
-        public Tuple<bool, string, List<Article>> GetTopNews(int quantity)
+        public List<Article> GetTopNews(int quantity)
         {
             var articles = _dataContext.GetAll<Article>()
                         .Where(x => x.PubDate.Date == DateTime.Now.Date)
@@ -19,19 +19,19 @@ namespace BingNew.BusinessLogicLayer.Services
                         .Take(quantity)
                         .ToList();
 
-            return new Tuple<bool, string, List<Article>>(true, "", articles);
+            return articles;
         }
 
-        public Tuple<bool, string, List<Article>> GetTrendingArticlesPanel(int quantity)
+        public List<Article> GetTrendingArticlesPanel(int quantity)
         {
             var articles = _dataContext.GetAll<Article>()
                         .Where(x => x.PubDate >= DateTime.Now.AddDays(-3))
                         .Take(quantity)
                         .ToList();
 
-            return new Tuple<bool, string, List<Article>>(true, "", articles);
+            return articles;
         }
-        public Tuple<bool, string, WeatherVm> GetWeatherForecast(DateTime now)
+        public WeatherVm GetWeatherForecast(DateTime now)
         {
             var weather = GetWeatherInDay(now);
             var weatherInfor = GetWeatherInforInDay(now, weather.Id);
@@ -46,7 +46,7 @@ namespace BingNew.BusinessLogicLayer.Services
                 Temperature = weather.Temperature,
                 WeatherInfor = weatherInfor,
             };
-            return new Tuple<bool, string, WeatherVm>(true, "", weatherVm);
+            return weatherVm;
          
         }
 
