@@ -26,6 +26,7 @@ namespace BingNew.ORM.NonQuery
             }
 
             command.ExecuteNonQuery();
+            connection.StoredProcedure();
             return true;
         }
 

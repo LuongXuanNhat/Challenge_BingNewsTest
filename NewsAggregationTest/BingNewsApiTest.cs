@@ -166,7 +166,7 @@ namespace NewsAggregationTest
         [Fact]
         public void Search_Data_Successful()
         {
-            var result = _bingService.Search("Quán quân");
+            var result = _bingService.Search("cơ hội");
             Assert.NotNull(result);
         }
 

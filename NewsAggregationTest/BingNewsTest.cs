@@ -1,21 +1,32 @@
-﻿using BingNew.DataAccessLayer.Entities;
+﻿using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Services;
+using BingNew.DataAccessLayer.Entities;
 using BingNew.DataAccessLayer.TestData;
+using BingNew.DI;
 using BingNew.Mapping;
 using BingNew.Mapping.Interface;
+using BingNew.ORM.DbContext;
 
 namespace NewsAggregationTest
 {
     public class BingNewsTest
     {
         private readonly Config _config;
+        private readonly DIContainer _container = new();
         private readonly IJsonDataSource _apiDataSource;
         private readonly IXmlDataSource _rssDataSource;
-
+        private readonly IMappingService _mappingService;
         public BingNewsTest()
         {
             _config = new Config();
             _apiDataSource = new JsonDataSource();
             _rssDataSource = new XmlDataSource();
+
+            _container.Register<IXmlDataSource, XmlDataSource>();
+            _container.Register<DbBingNewsContext, DbBingNewsContext>();
+
+            _container.Register<IMappingService, MappingService>();
+            _mappingService = _container.Resolve<IMappingService>();
         }
 
         private static Config WeatherConfig()
@@ -120,6 +131,17 @@ namespace NewsAggregationTest
             var result = _apiDataSource.MapMultipleObjects(mappingConfig);
 
             Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void Crawl_Data_From_Google_News()
+        {
+            var configData = DataSample.GetDataMockupGgNew();
+            var customConfigs = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(configData);
+
+            var result = _mappingService.CrawlNewsXml(customConfigs);
+
+            Assert.True(result);
         }
 
         [Fact]

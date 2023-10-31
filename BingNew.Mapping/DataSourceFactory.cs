@@ -12,8 +12,9 @@ namespace BingNew.Mapping
             _string,
             _int,
             _float,
-            _DateTime,
             _double,
+            _DateTime,
+            _DateTimeGMT,
             _DateTimeHour
         }
 
@@ -24,6 +25,7 @@ namespace BingNew.Mapping
             { DataTypes._float, new FloatHandler() },
             { DataTypes._double, new DoubleHandler() },
             { DataTypes._DateTime, new DateTimeHandler() },
+            ////{ DataTypes._DateTimeGMT, new DateTimeGMTHandler() },
             { DataTypes._DateTimeHour, new DateTimeHourHandler() },
         };
 

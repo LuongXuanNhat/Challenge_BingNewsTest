@@ -55,5 +55,11 @@ namespace BingNew.DataAccessLayer.TestData
             string configFilePath = GetConfigFilePath("MappingData_4.json");
             return File.ReadAllText(configFilePath);
         }
+
+        public static string GetDataMockupGgNew()
+        {
+            string configFilePath = GetConfigFilePath("MappingData_GGNews.json");
+            return File.ReadAllText(configFilePath);
+        }
     }
 }

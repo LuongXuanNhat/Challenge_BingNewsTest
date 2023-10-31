@@ -58,5 +58,12 @@ namespace BingNew.ORM.Query
             }
             return check == 1;
         }
+
+        public static void StoredProcedure(this SqlConnection connection)
+        {
+            using var spCommand = new SqlCommand("RemoveDuplicateArticles", connection);
+            spCommand.CommandType = CommandType.StoredProcedure;
+            spCommand.ExecuteNonQuery();
+        }
     }
 }
