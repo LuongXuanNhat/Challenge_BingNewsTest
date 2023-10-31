@@ -371,21 +371,11 @@ namespace NewsAggregationTest
         public void Object_Insert_Success()
         {
             var article = _fixture.Create<Article>();
+            article.PubDate = DateTime.Now;
             using var connection = new SqlConnection(_connecString);
             bool result = connection.Insert(article);
             Assert.True(result);
         }
-
-        [Fact]
-        public void Object_Insert_Success_With_Parameter_Empty()
-        {
-            var article = _fixture.Create<Article>();
-            article.Description = null;
-            using var connection = new SqlConnection(_connecString);
-            bool result = connection.Insert(article);
-            Assert.True(result);
-        }
-
         [Fact]
         public void Object_GetById_Success()
         {

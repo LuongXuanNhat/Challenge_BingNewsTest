@@ -62,5 +62,13 @@ namespace BingNew.BusinessLogicLayer.Services
                 .Where(x => x.WeatherId == weatherId)
                 .ToList();
         }
+
+        public List<Article> Search(string keyWord)
+        {
+            keyWord = keyWord.ToLower();
+            return _dataContext.GetAll<Article>()
+                .Where(x => x.Title.ToLower().Contains(keyWord) || x.Description.ToLower().Contains(keyWord))
+                .ToList();
+        }
     }
 }

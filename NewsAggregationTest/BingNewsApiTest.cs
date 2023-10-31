@@ -163,5 +163,12 @@ namespace NewsAggregationTest
             Assert.NotNull(result);
         }
 
+        [Fact]
+        public void Search_Data_Successful()
+        {
+            var result = _bingService.Search("Quán quân");
+            Assert.NotNull(result);
+        }
+
     }
 }

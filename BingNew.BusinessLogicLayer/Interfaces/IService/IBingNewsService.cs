@@ -8,5 +8,6 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
         WeatherVm GetWeatherForecast(DateTime now);
         Weather GetWeatherInDay(DateTime date);
         List<WeatherInfo> GetWeatherInforInDay(DateTime date, Guid weatherId);
+        List<Article> Search(string keyWord);
     }
 }
