@@ -58,12 +58,35 @@ namespace BingNew.ORM.Query
             }
             return check == 1;
         }
+    }
+    public interface IStoredProcedure
+    {
+        void StoredProcedure(SqlConnection connection);
+    }
 
-        public static void StoredProcedure(this SqlConnection connection)
+    public class ArticleStoredProcedure : IStoredProcedure
+    {
+        public void StoredProcedure(SqlConnection connection)
         {
-            using var spCommand = new SqlCommand("RemoveDuplicateArticles", connection);
+            using var spCommand = new SqlCommand(StoredProcedures.articleStoredProcedures, connection);
             spCommand.CommandType = CommandType.StoredProcedure;
             spCommand.ExecuteNonQuery();
         }
+    }
+
+    public class ProviderStoredProcedure : IStoredProcedure
+    {
+        public void StoredProcedure(SqlConnection connection)
+        {
+            using var spCommand = new SqlCommand(StoredProcedures.providerStoredProcedures, connection);
+            spCommand.CommandType = CommandType.StoredProcedure;
+            spCommand.ExecuteNonQuery();
+        }
+    }
+    public static class StoredProcedures
+    {
+        public const string articleStoredProcedures = "RemoveDuplicateArticles";
+        public const string providerStoredProcedures = "RemoveDuplicateProvider";
+        public const string providerStoredProcedures2 = "InsertProviderIfNotExists";
     }
 }

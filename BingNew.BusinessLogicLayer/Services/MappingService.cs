@@ -3,6 +3,8 @@ using BingNew.DataAccessLayer.Entities;
 using BingNew.Mapping;
 using BingNew.Mapping.Interface;
 using BingNew.ORM.DbContext;
+using BingNew.ORM.Query;
+using System.Reflection;
 
 namespace BingNew.BusinessLogicLayer.Services
 {
@@ -22,10 +24,19 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public bool CrawlNewsJson(List<CustomConfig> customs)
         {
-            var result = _jsonDataSource.MapMultipleObjects(customs);
-            foreach (var article in result)
+            var result = _jsonDataSource.MapMultipleObjects(customs).ToList();
+            var listObj = new List<string>();
+            customs.ForEach(customs => { listObj.Add(customs.TableName); });
+
+            for (int i = 0; i < result.Count; i++)
             {
-                _dataContext.AddRanger((List<Article>)article);
+                var type = SqlExtensionCommon.FindTypeByName(listObj[i]);
+
+                MethodInfo addRangerMethod = typeof(DbBingNewsContext).GetMethod("AddRanger") ?? throw new InvalidOperationException("Add function is inactive");
+
+                MethodInfo genericAddRanger = addRangerMethod.MakeGenericMethod(type);
+
+                genericAddRanger.Invoke(_dataContext, new object[] { result[i] });
             }
 
             return true;
@@ -34,9 +45,18 @@ namespace BingNew.BusinessLogicLayer.Services
         public bool CrawlNewsXml(List<CustomConfig> customs)
         {
             var result = _xmlDataSource.MapMultipleObjects(customs).ToList();
-            foreach (var article in result)
+            var listObj = new List<string>();
+            customs.ForEach(customs => { listObj.Add(customs.TableName); });
+
+            for (int i = 0; i < result.Count; i++)
             {
-                _dataContext.AddRanger((List<Article>)article);
+                var type = SqlExtensionCommon.FindTypeByName(listObj[i]);
+
+                MethodInfo addRangerMethod = typeof(DbBingNewsContext).GetMethod("AddRanger") ?? throw new InvalidOperationException("Add function is inactive");
+
+                MethodInfo genericAddRanger = addRangerMethod.MakeGenericMethod(type);
+
+                genericAddRanger.Invoke(_dataContext, new object[] { result[i] });
             }
 
             return true;

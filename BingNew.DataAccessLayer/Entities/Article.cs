@@ -17,7 +17,7 @@ namespace BingNew.DataAccessLayer.Entities
         public int DisLikeNumber { get; set; }
         public int ViewNumber { get; set; }
         public int CommentNumber { get; set; }
-        public string ProviderId { get; set; }
+        public string ChannelName { get; set; }
         public string TopicId { get; set; }
     }
 }

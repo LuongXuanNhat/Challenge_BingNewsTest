@@ -3,6 +3,8 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
 {
     public interface IBingNewsService
     {
+        bool AddAdvertisement(AdArticle ad);
+        List<Article> FullTextSearch(string keyWord);
         List<Article> GetTopNews(int quantity);
         List<Article> GetTrendingArticlesPanel(int quantity);
         WeatherVm GetWeatherForecast(DateTime now);

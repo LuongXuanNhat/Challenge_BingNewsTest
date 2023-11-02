@@ -1,14 +1,25 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.DataAccessLayer.Entities;
 using BingNew.ORM.DbContext;
+using BingNew.ORM.NonQuery;
+using BingNew.ORM.Query;
+using System.Data.SqlClient;
 
 namespace BingNew.BusinessLogicLayer.Services
 {
     public class BingNewsService : IBingNewsService
     {
         private readonly DbBingNewsContext _dataContext;
+        private readonly SqlConnection connection;
         public BingNewsService(DbBingNewsContext context) {
             _dataContext = context;
+            connection = context.CreateConnection();
+        }
+
+        public bool AddAdvertisement(AdArticle ad)
+        {
+            connection.Insert(ad);
+            return true;
         }
 
         public List<Article> GetTopNews(int quantity)
@@ -65,10 +76,55 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public List<Article> Search(string keyWord)
         {
-            keyWord = keyWord.ToLower();
-            return _dataContext.GetAll<Article>()
-                .Where(x => x.Title.ToLower().Contains(keyWord) || x.Description.ToLower().Contains(keyWord))
-                .ToList();
+            string[] searchKeywords = keyWord.ToLower().Split(' ');
+            var sql = "SELECT * FROM " + typeof(Article).Name;
+            var query = from article in connection.Query<Article>(sql)
+                        let titleWords = article.Title.Split(' ')
+                        let descriptionWords = article.Description.Split(' ')
+                        let searchPhrases = GenerateSearchPhrases(searchKeywords)
+                        let matchingPhrases = searchPhrases
+                            .Where(phrase => titleWords.Contains(phrase) || descriptionWords.Contains(phrase))
+                        where matchingPhrases.Any()
+                        let matchCount = matchingPhrases.Count()
+                        orderby matchCount descending
+                        select new Article()
+                        {
+                            CommentNumber = article.CommentNumber,
+                            Title = article.Title,
+                            Description = article.Description,
+                            DisLikeNumber = article.DisLikeNumber,
+                            Id = article.Id,
+                            ImgUrl = article.ImgUrl,
+                            LikeNumber = article.LikeNumber,
+                            ChannelName = article.ChannelName,
+                            PubDate = article.PubDate,
+                            TopicId = article.TopicId,
+                            Url = article.Url,
+                            ViewNumber = article.ViewNumber,
+                        };
+            var searchResults = query.ToList();
+            return searchResults;
         }
+        public List<Article> FullTextSearch(string keyWord)
+        {
+            var sql = "SELECT * FROM Article WHERE FREETEXT((Title, Description),"+"'" + keyWord + "')";
+            List<Article> result = connection.Query<Article>(sql).ToList();
+            return result;
+        }
+        private static IEnumerable<string> GenerateSearchPhrases(string[] searchKeywords)
+        {
+            List<string> searchPhrases = new();
+            for (int i = searchKeywords.Length; i >= 1; i--)
+            {
+                for (int j = 0; j <= searchKeywords.Length - i; j++)
+                {
+                    string phrase = string.Join(" ", searchKeywords.Skip(j).Take(i));
+                    searchPhrases.Add(phrase);
+                }
+            }
+            return searchPhrases;
+        }
+
+        
     }
 }

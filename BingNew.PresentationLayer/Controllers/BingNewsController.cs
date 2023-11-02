@@ -27,8 +27,20 @@ namespace BingNew.PresentationLayer.Controllers
         public WeatherVm WeatherForecast(DateTime? dateTime = null)
         {
             DateTime date = dateTime ?? DateTime.Now;
-            var result = _bingNewsService.GetWeatherForecast(date);
-            return result;
+            return _bingNewsService.GetWeatherForecast(date);
+        }
+
+        [HttpGet("Search")]
+        public List<Article> SearchNews(string keyWord)
+        {
+            return _bingNewsService.Search(keyWord);
+        }
+        
+        [HttpPost("Advertisement")]
+        public IActionResult AddAdvertisement(AdArticle ad)
+        {
+            _bingNewsService.AddAdvertisement(ad);
+            return Ok();
         }
     }
 }

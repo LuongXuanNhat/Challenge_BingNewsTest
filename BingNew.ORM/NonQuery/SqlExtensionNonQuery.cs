@@ -1,4 +1,6 @@
-﻿using BingNew.ORM.Query;
+﻿using BingNew.DataAccessLayer.Entities;
+using BingNew.ORM.Query;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -8,12 +10,16 @@ namespace BingNew.ORM.NonQuery
 {
     public static class SqlExtensionNonQuery
     {
+        private static readonly Dictionary<string, IStoredProcedure> storedProcedureHandlers = new()
+        {
+            { typeof(Provider).Name, new ArticleStoredProcedure() },
+            { typeof(Article).Name, new ProviderStoredProcedure() }
+        };
         public static bool Insert<T>(this SqlConnection connection,T entity)
         {
                 var sql = GenerateInsertQuery<T>();
                 return QueryExcute<T>(connection, sql, entity);
         }
-
         private static bool QueryExcute<T>(SqlConnection connection, string sql, T entity)
         {
             connection.SqlConnectionManager(connection.State);
@@ -26,7 +32,8 @@ namespace BingNew.ORM.NonQuery
             }
 
             command.ExecuteNonQuery();
-            connection.StoredProcedure();
+            storedProcedureHandlers.TryGetValue(typeof(T).Name, out var handler);
+            handler?.StoredProcedure(connection);
             return true;
         }
 

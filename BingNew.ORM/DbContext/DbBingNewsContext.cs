@@ -40,6 +40,15 @@ namespace BingNew.ORM.DbContext
             return connection.Query<T>(sql).ToList();
         }
 
+        public IEnumerable<T> Query<T>() where T : class
+        {
+            using var connection = CreateConnection();
+            var tableName = typeof(T).Name;
+            var sql = "SELECT * FROM " + tableName;
+            var result = connection.Query<T>(sql);
+            return result;
+        }
+
 
     }
 }

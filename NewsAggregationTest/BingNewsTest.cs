@@ -134,7 +134,7 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public void Crawl_Data_From_Google_News()
+        public void Crawl_Data_From_Google_News() 
         {
             var configData = DataSample.GetDataMockupGgNew();
             var customConfigs = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(configData);

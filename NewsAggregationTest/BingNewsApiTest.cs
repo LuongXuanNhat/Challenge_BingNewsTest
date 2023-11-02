@@ -166,9 +166,55 @@ namespace NewsAggregationTest
         [Fact]
         public void Search_Data_Successful()
         {
-            var result = _bingService.Search("cơ hội");
+            var result = _bingService.Search("chiến thắng");
             Assert.NotNull(result);
         }
+
+        [Fact]
+        public void Search_Data_Successful2()
+        {
+            var result = _bingService.Search("nông sản việt");
+            Assert.NotNull(result);
+        }
+
+
+        [Fact]
+        public void Search_Data_Successful3()
+        {
+            var result = _bingService.Search("vụ thảm sát đẫm máu");
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void Full_Text_Search()
+        {
+            var result = _bingService.FullTextSearch("vụ thảm sát đẫm máu");
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void Add_Advertisement()
+        {
+            var ad = new AdArticle()
+            {
+                Id = Guid.NewGuid(),
+                Description = "description",
+                Link = "link",
+                MediaLink = "link",
+                PubDate = DateTime.Now,
+                Title = "title"
+            };
+            var result = _bingService.AddAdvertisement(ad);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Get_Advertisement()
+        {
+            var result = _dataContext.GetAll<AdArticle>();
+            Assert.NotNull(result);
+        }
+
 
     }
 }
