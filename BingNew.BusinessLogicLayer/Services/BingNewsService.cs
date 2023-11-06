@@ -145,6 +145,10 @@ namespace BingNew.BusinessLogicLayer.Services
             return true;
         }
 
-        
+        public bool DeleteUserInteraction(UserInteraction userInteraction)
+        {
+            connection.Delete<UserInteraction>(userInteraction.GetId());
+            return true;
+        }
     }
 }

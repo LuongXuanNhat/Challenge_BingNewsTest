@@ -187,7 +187,8 @@ namespace NewsAggregationTest
             {
                 Id = Guid.NewGuid(),
                 Email = Guid.NewGuid().ToString().Substring(0, 8) + "@gmail.com",
-                UserName = "User "+ DateTime.Now.Millisecond.ToString(),
+                UserName = string.Concat("User ", DateTime.Now.Millisecond.ToString())
+
             };
             var result = _bingServece.RegisterUser(users);
             Assert.True(result);
@@ -248,6 +249,20 @@ namespace NewsAggregationTest
                 Likes = 1
             };
             var result = _bingServece.AddUserInteraction(userInteraction);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Remove_Like()
+        {
+            var userInteraction = new UserInteraction()
+            {   
+                ArticleId = Guid.Parse("4A1D5DC5-C562-4F4E-840F-8D18BF150006"),
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Likes = 1
+            };
+            userInteraction.SetId(100);
+            var result = _bingServece.DeleteUserInteraction(userInteraction);
             Assert.True(result);
         }
         #endregion

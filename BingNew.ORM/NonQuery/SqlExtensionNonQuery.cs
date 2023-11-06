@@ -70,6 +70,16 @@ namespace BingNew.ORM.NonQuery
 
             return query;
         }
+        public static bool Delete<T>(this SqlConnection connectionsql, int Id) where T : class
+        {
+            connectionsql.SqlConnectionManager(connectionsql.State);
+            string sql = GenerateDeleteQuery<T>();
+            using var commandSql = new SqlCommand(sql, connectionsql);
+            commandSql.Parameters.Add(new SqlParameter("@Id", Id));
+            commandSql.ExecuteNonQuery();
+
+            return true;
+        }
 
         public static bool Delete<T>(this SqlConnection connection, Guid entityId) where T : class
         {

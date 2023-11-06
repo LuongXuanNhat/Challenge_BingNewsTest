@@ -1,7 +1,9 @@
 ﻿using BingNew.DataAccessLayer.Constants;
+using BingNew.DataAccessLayer.Entities;
 using BingNew.ORM.NonQuery;
 using BingNew.ORM.Query;
 using System.Data.SqlClient;
+using static Dapper.SqlMapper;
 
 namespace BingNew.ORM.DbContext
 {
@@ -48,7 +50,5 @@ namespace BingNew.ORM.DbContext
             var result = connection.Query<T>(sql);
             return result;
         }
-
-
     }
 }

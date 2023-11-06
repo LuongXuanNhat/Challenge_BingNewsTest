@@ -5,6 +5,7 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
     {
         bool AddAdvertisement(AdArticle ad);
         bool AddUserInteraction(UserInteraction userInteraction);
+        bool DeleteUserInteraction(UserInteraction userInteraction);
         List<Article> FullTextSearch(string keyWord);
         List<Article> GetTopNews(int quantity);
         List<Article> GetTrendingArticlesPanel(int quantity); 
