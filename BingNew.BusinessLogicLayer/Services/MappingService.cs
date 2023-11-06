@@ -45,20 +45,15 @@ namespace BingNew.BusinessLogicLayer.Services
         public bool CrawlNewsXml(List<CustomConfig> customs)
         {
             var result = _xmlDataSource.MapMultipleObjects(customs).ToList();
-            var listObj = new List<string>();
+            List<string> listObj = new();
             customs.ForEach(customs => { listObj.Add(customs.TableName); });
-
-            for (int i = 0; i < result.Count; i++)
+            for (int index = 0; index < result.Count; index++)
             {
-                var type = SqlExtensionCommon.FindTypeByName(listObj[i]);
-
-                MethodInfo addRangerMethod = typeof(DbBingNewsContext).GetMethod("AddRanger") ?? throw new InvalidOperationException("Add function is inactive");
-
-                MethodInfo genericAddRanger = addRangerMethod.MakeGenericMethod(type);
-
-                genericAddRanger.Invoke(_dataContext, new object[] { result[i] });
+                Type type = SqlExtensionCommon.FindTypeByName(listObj[index]);
+                MethodInfo addRanger = typeof(DbBingNewsContext).GetMethod("AddRanger") ?? throw new InvalidOperationException("Add Function is Inactive");
+                MethodInfo genericAddRanger = addRanger.MakeGenericMethod(type);
+                genericAddRanger.Invoke(_dataContext, new object[] { result[index] });
             }
-
             return true;
         }
 

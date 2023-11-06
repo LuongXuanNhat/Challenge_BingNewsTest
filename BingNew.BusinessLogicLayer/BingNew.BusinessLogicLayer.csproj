@@ -9,10 +9,13 @@
   <ItemGroup>
     <Compile Remove="Interfaces\IRepository\**" />
     <Compile Remove="Repositories\**" />
+    <Compile Remove="Services\Common\**" />
     <EmbeddedResource Remove="Interfaces\IRepository\**" />
     <EmbeddedResource Remove="Repositories\**" />
+    <EmbeddedResource Remove="Services\Common\**" />
     <None Remove="Interfaces\IRepository\**" />
     <None Remove="Repositories\**" />
+    <None Remove="Services\Common\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,7 +35,6 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\IService\" />
-    <Folder Include="Services\Common\" />
   </ItemGroup>
 
 </Project>

@@ -371,6 +371,7 @@ namespace NewsAggregationTest
         public void Object_Insert_Success()
         {
             var article = _fixture.Create<Article>();
+            article.CommentNumber = article.ViewNumber = article.LikeNumber = article.DisLikeNumber = 0;
             article.PubDate = DateTime.Now;
             using var connection = new SqlConnection(_connecString);
             bool result = connection.Insert(article);

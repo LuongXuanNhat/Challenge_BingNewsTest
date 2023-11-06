@@ -1,11 +1,14 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.DataAccessLayer.Entities;
+using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.TestData;
 using BingNew.DI;
 using BingNew.Mapping;
 using BingNew.Mapping.Interface;
 using BingNew.ORM.DbContext;
+using Microsoft.VisualBasic;
 
 namespace NewsAggregationTest
 {
@@ -16,17 +19,21 @@ namespace NewsAggregationTest
         private readonly IJsonDataSource _apiDataSource;
         private readonly IXmlDataSource _rssDataSource;
         private readonly IMappingService _mappingService;
+        private readonly IBingNewsService _bingServece;
         public BingNewsTest()
         {
             _config = new Config();
             _apiDataSource = new JsonDataSource();
             _rssDataSource = new XmlDataSource();
 
-            _container.Register<IXmlDataSource, XmlDataSource>();
             _container.Register<DbBingNewsContext, DbBingNewsContext>();
+            _container.Register<IBingNewsService, BingNewsService>();
+            _container.Register<IXmlDataSource, XmlDataSource>();
+            
 
             _container.Register<IMappingService, MappingService>();
             _mappingService = _container.Resolve<IMappingService>();
+            _bingServece = _container.Resolve<IBingNewsService>();
         }
 
         private static Config WeatherConfig()
@@ -161,6 +168,87 @@ namespace NewsAggregationTest
             var result = _apiDataSource.MapMultipleObjects(weatherMappingConfig);
 
             Assert.NotNull(result);
+        }
+        #endregion
+
+        #region Recommendation 
+
+        [Fact]
+        public void Simple_recommendation()
+        {
+            var getTredingNews = _bingServece.GetTopNews(50);
+            Assert.NotNull(getTredingNews);
+        }
+
+        [Fact]
+        public void Add_User_Success()
+        {
+            Users users = new()
+            {
+                Id = Guid.NewGuid(),
+                Email = Guid.NewGuid().ToString().Substring(0, 8) + "@gmail.com",
+                UserName = "User "+ DateTime.Now.Millisecond.ToString(),
+            };
+            var result = _bingServece.RegisterUser(users);
+            Assert.True(result);
+        }
+
+        // User Id 7a0443d6-0704-4524-8218-178e705228ba
+        [Fact]
+        public void Add_Interactive_Data1()
+        {
+            var articles = _bingServece.GetTrendingArticlesPanel(100, 10);
+            var article = new Random().Next(0, articles.Count);
+            var userInteraction = new UserInteraction()
+            {
+                ArticleId = articles[article].Id,
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Likes = 1
+            };
+            var result = _bingServece.AddUserInteraction(userInteraction);
+            Assert.True(result);
+
+        }
+
+        [Fact]
+        public void Add_Interactive_Data2()
+        {
+            var articles = _bingServece.GetTrendingArticlesPanel(100, 10);
+            var article = new Random().Next(0, articles.Count);
+            var userInteraction = new UserInteraction()
+            {
+                ArticleId = articles[article].Id,
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Dislike = 1
+            };
+            var result = _bingServece.AddUserInteraction(userInteraction);
+            Assert.True(result);
+        }
+
+        [Fact] 
+        public void Form_Like_To_DisLike()
+        {
+            var userInteraction = new UserInteraction()
+            {
+                ArticleId = Guid.Parse("4A1D5DC5-C562-4F4E-840F-8D18BF150006"),
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Dislike = 1
+            };
+            var result = _bingServece.AddUserInteraction(userInteraction);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Form_DisLike_To_Like()
+        {
+            var userInteraction = new UserInteraction()
+            {
+                ArticleId = Guid.Parse("4A1D5DC5-C562-4F4E-840F-8D18BF150006"),
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Likes = 1
+            };
+            var result = _bingServece.AddUserInteraction(userInteraction);
+            Assert.True(result);
         }
         #endregion
     }

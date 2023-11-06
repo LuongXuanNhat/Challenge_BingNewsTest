@@ -37,10 +37,18 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             var articles = _dataContext.GetAll<Article>()
                         .Where(x => x.PubDate >= DateTime.Now.AddDays(-3))
+                        .OrderBy(x => x.LikeNumber + x.ViewNumber + x.CommentNumber * 2 + x.DisLikeNumber)
                         .Take(quantity)
                         .ToList();
 
             return articles;
+        }
+        public List<Article> GetTrendingArticlesPanel(int quantity, int numberBackDay)
+        {
+            return _dataContext.GetAll<Article>().Where(x => x.PubDate >= DateTime.Now.AddDays(-numberBackDay))
+                        .OrderBy(x => x.LikeNumber + x.ViewNumber + x.CommentNumber * 2 + x.DisLikeNumber)
+                        .Take(quantity).ToList();
+
         }
         public WeatherVm GetWeatherForecast(DateTime now)
         {
@@ -123,6 +131,18 @@ namespace BingNew.BusinessLogicLayer.Services
                 }
             }
             return searchPhrases;
+        }
+
+        public bool RegisterUser(Users users)
+        {
+            _dataContext.Add(users);
+            return true;
+        }
+
+        public bool AddUserInteraction(UserInteraction userInteraction)
+        {
+            _dataContext.Add(userInteraction);
+            return true;
         }
 
         

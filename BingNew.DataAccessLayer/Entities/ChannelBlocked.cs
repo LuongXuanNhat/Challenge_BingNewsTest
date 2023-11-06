@@ -8,10 +8,10 @@ namespace BingNew.DataAccessLayer.Entities
     public partial class ChannelBlocked
     {
         public string Id { get; set; }
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         public string ProviderId { get; set; }
 
         public virtual Provider Provider { get; set; }
-      //  public virtual User User { get; set; }
+      //  public virtual Users Users { get; set; }
     }
 }

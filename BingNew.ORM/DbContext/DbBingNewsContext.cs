@@ -13,9 +13,9 @@ namespace BingNew.ORM.DbContext
             _constant = new ConstantCommon();
         }
 
-        public void Add<T>(T weather)
+        public void Add<T>(T entity)
         {
-            SqlExtensionNonQuery.Insert<T>(CreateConnection() ,weather);
+            SqlExtensionNonQuery.Insert<T>(CreateConnection() ,entity);
         }
 
         public void AddRanger<T>(List<T> result)

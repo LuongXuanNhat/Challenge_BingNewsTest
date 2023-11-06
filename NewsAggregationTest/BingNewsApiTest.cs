@@ -50,7 +50,7 @@ namespace NewsAggregationTest
         [Fact]
         public void Get_Trending_Articles_Panel()
         {
-            var articleTrend = _bingService.GetTrendingArticlesPanel(12);
+            var articleTrend = _bingService.GetTrendingArticlesPanel(20);
             Assert.NotEmpty(articleTrend);
         }
         [Fact]
