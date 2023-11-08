@@ -2,7 +2,6 @@
 using BingNew.BusinessLogicLayer.Interfaces.IService;
 using BingNew.BusinessLogicLayer.Services;
 using BingNew.DataAccessLayer.Entities;
-using BingNew.DataAccessLayer.Models;
 using BingNew.DataAccessLayer.TestData;
 using BingNew.DI;
 using BingNew.Mapping;
@@ -265,6 +264,32 @@ namespace NewsAggregationTest
             var result = _bingServece.DeleteUserInteraction(userInteraction);
             Assert.True(result);
         }
+        [Fact]
+        public void Add_User_CLick_Data()
+        {
+            var articles = _bingServece.GetTrendingArticlesPanel(1, 2);
+            var userId = Guid.Parse("557b6016-e833-4ebb-8fb8-c1e7fa2f0543");
+            foreach (var item in articles)
+            {
+                var userClick = new UserClickEvent()
+                {
+                    ArticleId = item.Id,
+                    UserId = userId,
+                    Id = Guid.NewGuid()
+                };
+
+                var result = _bingServece.AddUserClick(userClick);
+                Assert.True(result);
+            }
+        }
+        [Fact]
+        public void Get_Number_Click_Article_Of_User()
+        {
+            var userId = Guid.Parse("a17e20c0-c84a-447b-a468-9253cc2cfe4c");
+            var result = _bingServece.Recommendation(userId);
+            Assert.NotEmpty(result);
+        }
+        
         #endregion
     }
 }

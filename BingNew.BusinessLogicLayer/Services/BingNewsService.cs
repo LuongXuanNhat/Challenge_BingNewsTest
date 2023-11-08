@@ -150,5 +150,33 @@ namespace BingNew.BusinessLogicLayer.Services
             connection.Delete<UserInteraction>(userInteraction.GetId());
             return true;
         }
+
+        public bool AddUserClick(UserClickEvent userClick)
+        {
+            _dataContext.Add(userClick);
+            return true;
+        }
+
+        public List<Article> Recommendation(Guid userId)
+        {
+            var sql = @"WITH TopChannels AS (
+                    SELECT TOP 10 A.ChannelName, COUNT(UCE.ArticleId) AS Number_Click
+                    FROM Article AS A
+                    LEFT JOIN UserClickEvent AS UCE
+                    ON A.Id = UCE.ArticleId AND UCE.UserId = '" + userId + @"' AND UCE.Date > DATEADD(DAY, -7, GETDATE())
+                    GROUP BY A.ChannelName
+                    ORDER BY Number_Click DESC
+                )
+                SELECT A.[Id], A.[Title], A.[ImgUrl], A.[Description], A.[PubDate]
+                      , A.[Url], A.[LikeNumber], A.[DisLikeNumber], A.[ViewNumber]
+                      , A.[CommentNumber], A.[ChannelName], A.[TopicId]
+                FROM Article AS A
+                INNER JOIN TopChannels AS TC
+                ON A.ChannelName = TC.ChannelName
+                AND CONVERT(DATE, A.PubDate) = CONVERT(DATE, GETDATE())";
+
+            var articles = connection.Query<Article>(sql).ToList();
+            return articles;
+        }
     }
 }

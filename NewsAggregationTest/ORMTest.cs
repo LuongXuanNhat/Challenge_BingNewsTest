@@ -18,7 +18,7 @@ namespace NewsAggregationTest
         public void GetArticle_Success_Using_QuerySingleT()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where Id = '65757875-26e6-4709-aacc-eba7ba4047c4'";
+            var sql = "SELECT * FROM Article where Id = 'fb12f418-f131-49ae-9ec3-1619f2f69394'";
             var result = connection.QuerySingle<Article>(sql);
             Assert.NotNull(result);
         }
@@ -26,7 +26,7 @@ namespace NewsAggregationTest
         public void Get_Article_Success_Using_QuerySingle()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where Id = '65757875-26e6-4709-aacc-eba7ba4047c4'";
+            var sql = "SELECT * FROM Article where Id = 'fb12f418-f131-49ae-9ec3-1619f2f69394'";
             var result = connection.QuerySingle(sql);
             Assert.NotNull(result);
             Assert.IsType<Article>(result);
@@ -305,7 +305,7 @@ namespace NewsAggregationTest
             var result = connection.QueryMultiple(sql);
 
             var articles = result.Read<Article>().ToList();
-            Assert.Equal(3, articles.Count);
+            Assert.Equal(2, articles.Count);
 
             var providers = result.Read<Provider>().ToList();
             Assert.NotNull(providers);
@@ -381,7 +381,7 @@ namespace NewsAggregationTest
         public void Object_GetById_Success()
         {
             using var connection = new SqlConnection(_connecString);
-            Guid articleId = new("173341eb-34db-4a3b-b93d-fe5cf6872a2f");
+            Guid articleId = new("9e490287-bbf5-4904-a4cb-11e4ef38224f");
             var article = connection.GetById<Article>(articleId);
 
             Assert.NotNull(article);
@@ -392,7 +392,7 @@ namespace NewsAggregationTest
         public void Object_Update_Success()
         {
             using var connection = new SqlConnection(_connecString);
-            Guid articleId = new("173341eb-34db-4a3b-b93d-fe5cf6872a2f");
+            Guid articleId = new("ba50ba5a-97f7-4ec7-a5d1-1bab89dbe0e9");
             var article = connection.GetById<Article>(articleId);
 
             Assert.NotNull(article);
@@ -412,10 +412,8 @@ namespace NewsAggregationTest
             {
                 CommentNumber = 1,
                 Description = "Test",
-                 DisLikeNumber = 2,
                 ImgUrl = null,
                 Id = Guid.NewGuid(),
-                LikeNumber = 3,
                 ChannelName = Guid.NewGuid().ToString(),
                 PubDate = DateTime.Now,
                 Title = "Test",

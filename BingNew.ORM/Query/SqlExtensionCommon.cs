@@ -43,8 +43,8 @@ namespace BingNew.ORM.Query
             foreach (var property in properties)
             {
                 var columnName = property.Name;
-                var propertyValue = reader[columnName];
-                property.SetValue(obj, propertyValue);
+                var propertyValue = reader[columnName] == DBNull.Value ? "" : reader[columnName];
+                property.SetValue(obj, propertyValue );
             }
 
             return obj;

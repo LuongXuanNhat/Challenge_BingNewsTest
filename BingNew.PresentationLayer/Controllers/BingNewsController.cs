@@ -42,5 +42,40 @@ namespace BingNew.PresentationLayer.Controllers
             _bingNewsService.AddAdvertisement(ad);
             return Ok();
         }
+
+        [HttpPost("Like")]
+        public IActionResult LikeArticle(UserInteraction userInteraction)
+        {
+            _bingNewsService.AddUserInteraction(userInteraction);
+            return Ok();
+        }
+
+        [HttpPost("Dislike")]
+        public IActionResult DislikeArticle(UserInteraction interaction)
+        {
+            _bingNewsService.AddUserInteraction(interaction);
+            return Ok();
+        }
+
+        [HttpGet("Search")]
+        public IActionResult SearchArticle(string keyWord)
+        {
+            var result = _bingNewsService.Search(keyWord);
+            return Ok(result);
+        }
+
+        [HttpGet("FullTextSearch")]
+        public IActionResult AdvancedSearch(string keyWord)
+        {
+            var result = _bingNewsService.FullTextSearch(keyWord);
+            return Ok(result);
+        }
+
+        [HttpGet("Discover")]
+        public IActionResult AdvancedSearch(Guid id)
+        {
+            var result = _bingNewsService.Recommendation(id);
+            return Ok(result);
+        }
     }
 }

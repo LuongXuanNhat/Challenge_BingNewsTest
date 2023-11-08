@@ -17,19 +17,65 @@ ALTER TABLE BingNews.dbo.Provider
 ALTER COLUMN ChannelName nvarchar(255);
 
 select * from Article order by PubDate desc;
-SELECT * FROM Article WHERE CAST(PubDate AS DATE) = CAST(GETDATE() AS DATE) order by PubDate desc;
+SELECT * FROM 
+delete Article WHERE CAST(PubDate AS DATE) = CAST(GETDATE() AS DATE) order by PubDate desc;
 Go
 CREATE PROCEDURE RemoveDuplicateArticles
 AS
 BEGIN
     ;WITH CTE AS (
-        SELECT Title, PubDate,
-               ROW_NUMBER() OVER(PARTITION BY Title, PubDate ORDER BY (SELECT 0)) AS RowNumber
+        SELECT Title, PubDate, ChannelName,
+               ROW_NUMBER() OVER(PARTITION BY Title, PubDate, ChannelName ORDER BY (SELECT 0)) AS RowNumber
         FROM Article
     )
     DELETE FROM CTE WHERE RowNumber > 1;
 END
 Go
+CREATE TRIGGER CheckDuplicateArticle
+ON Article
+INSTEAD OF INSERT
+AS
+BEGIN
+    IF not EXISTS (
+        SELECT 1
+        FROM inserted AS I
+        JOIN Article AS A
+        ON I.Title = A.Title
+        AND I.PubDate = A.PubDate
+        AND I.ChannelName = A.ChannelName
+    )
+    BEGIN
+        INSERT INTO Article ([Id]
+      ,[Title]
+      ,[ImgUrl]
+      ,[Description]
+      ,[PubDate]
+      ,[Url]
+      ,[LikeNumber]
+      ,[DisLikeNumber]
+      ,[ViewNumber]
+      ,[CommentNumber]
+      ,[ChannelName]
+      ,[TopicId])
+        SELECT [Id]
+      ,[Title]
+      ,[ImgUrl]
+      ,[Description]
+      ,[PubDate]
+      ,[Url]
+      ,[LikeNumber]
+      ,[DisLikeNumber]
+      ,[ViewNumber]
+      ,[CommentNumber]
+      ,[ChannelName]
+      ,[TopicId]
+        FROM inserted;
+    END
+END;
+
+go
+EXEC RemoveDuplicateArticles;
+go
 CREATE PROCEDURE RemoveDuplicateProvider
 AS
 BEGIN
@@ -350,4 +396,140 @@ BEGIN
     SET DislikeNumber = @DislikeCount
     WHERE Id = @DeletedArticleId;
 END;
+
+ALTER TABLE UserInteraction
+ADD CONSTRAINT FK_Article_UserInteraction
+FOREIGN KEY (ArticleId)
+REFERENCES Article(Id)
+ON DELETE CASCADE;
+
+Create table UserClickEvent(
+	Id uniqueidentifier primary key,
+	UserId uniqueidentifier REFERENCES Users(Id),
+	ArticleId uniqueidentifier REFERENCES Article(Id),
+);
+ALTER TABLE UserClickEvent
+ADD Date datetime DEFAULT GETDATE();
+
+SELECT GETDATE() AS CurrentDate;
+UPDATE UserClickEvent
+SET Date = GETDATE()
+WHERE Date IS NULL;
+
+
+select  top 100 count(*) as Number_Click, ArticleId
+from UserClickEvent
+where UserId = 'a17e20c0-c84a-447b-a468-9253cc2cfe4c'
+group by ArticleId
+Order by Number_Click desc
+
+select *
+from UserClickEvent
+where UserId = 'a17e20c0-c84a-447b-a468-9253cc2cfe4c' and ArticleId = '0FCA435D-5BE3-4B5E-AD00-007594EF858D'
+
+SELECT A.ChannelName, COUNT(UCE.ArticleId) AS Number_Click
+FROM Article AS A
+LEFT JOIN UserClickEvent AS UCE ON A.Id = UCE.ArticleId AND UCE.UserId = 'a17e20c0-c84a-447b-a468-9253cc2cfe4c'
+GROUP BY A.ChannelName
+ORDER BY Number_Click DESC;
+
+SELECT top 10 A.ChannelName, COUNT(UCE.ArticleId) AS Number_Click
+FROM Article AS A
+LEFT JOIN UserClickEvent AS UCE 
+ON A.Id = UCE.ArticleId AND UCE.UserId = '7a0443d6-0704-4524-8218-178e705228ba' 
+AND UCE.Date > DATEADD(DAY, -3, GETDATE())
+GROUP BY A.ChannelName
+ORDER BY Number_Click DESC;
+
+WITH TopChannels AS (
+    SELECT TOP 10 A.ChannelName, COUNT(UCE.ArticleId) AS Number_Click
+    FROM Article AS A
+    LEFT JOIN UserClickEvent AS UCE 
+    ON A.Id = UCE.ArticleId AND UCE.UserId = '7a0443d6-0704-4524-8218-178e705228ba' AND UCE.Date > DATEADD(DAY, -7, GETDATE())
+    GROUP BY A.ChannelName
+    ORDER BY Number_Click DESC
+)
+SELECT A.[Id],A.[Title],A.[ImgUrl],A.[Description],A.[PubDate]
+      ,A.[Url],A.[LikeNumber],A.[DisLikeNumber],A.[ViewNumber]
+      ,A.[CommentNumber],A.[ChannelName],A.[TopicId]
+FROM Article AS A
+INNER JOIN TopChannels AS TC 
+ON A.ChannelName = TC.ChannelName 
+AND CONVERT(DATE, A.PubDate) = CONVERT(DATE, GETDATE())
+
+delete from UserClickEvent 
+
+select UserId,ArticleId, Count(*) as NumberClick
+from UserClickEvent
+group by ArticleId,UserId
+
+-- CHeck Duplica articlle
+SELECT Title,PubDate,ChannelName,
+    COUNT(*) AS Count
+FROM Article
+GROUP BY Title, PubDate, ChannelName
+ORDER BY Count DESC;
+
+-- Xóa trùng 
+DELETE FROM Article
+WHERE EXISTS (
+    SELECT 1
+    FROM Article AS a
+    WHERE Article.Title = a.Title
+    AND Article.PubDate = a.PubDate
+    AND Article.ChannelName = a.ChannelName
+    HAVING COUNT(*) > 1
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -71,7 +71,7 @@ namespace NewsAggregationTest
             var result = _rssDataSource.MapMultipleObjects(mappingCustom);
             Assert.NotNull(result);
         }
-        [Fact]
+        [Fact] 
         public void Crawl_News_Json_Return_True()
         {
             var configData = DataSample.GetDataMockupNewsDataIo();
@@ -188,7 +188,7 @@ namespace NewsAggregationTest
         [Fact]
         public void Full_Text_Search()
         {
-            var result = _bingService.FullTextSearch("vụ thảm sát đẫm máu");
+            var result = _bingService.FullTextSearch("vụ thảm sát");
             Assert.NotNull(result);
         }
 
