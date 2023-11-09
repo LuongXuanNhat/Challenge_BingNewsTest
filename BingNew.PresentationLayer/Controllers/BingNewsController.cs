@@ -24,10 +24,10 @@ namespace BingNew.PresentationLayer.Controllers
         }
 
         [HttpGet("GetWeatherForecast")]
-        public WeatherVm WeatherForecast(DateTime? dateTime = null)
+        public async Task<WeatherVm> WeatherForecast(DateTime? dateTime = null)
         {
             DateTime date = dateTime ?? DateTime.Now;
-            return _bingNewsService.GetWeatherForecast(date);
+            return await _bingNewsService.GetWeatherForecast(date);
         }
 
         [HttpGet("Search")]

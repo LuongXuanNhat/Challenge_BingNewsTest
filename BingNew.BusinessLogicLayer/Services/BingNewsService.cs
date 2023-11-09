@@ -1,9 +1,12 @@
 ﻿using BingNew.BusinessLogicLayer.Interfaces.IService;
+using BingNew.DataAccessLayer.Constants;
 using BingNew.DataAccessLayer.Entities;
 using BingNew.ORM.DbContext;
 using BingNew.ORM.NonQuery;
 using BingNew.ORM.Query;
+using Dasync.Collections;
 using System.Data.SqlClient;
+using static Dapper.SqlMapper;
 
 namespace BingNew.BusinessLogicLayer.Services
 {
@@ -15,13 +18,24 @@ namespace BingNew.BusinessLogicLayer.Services
             _dataContext = context;
             connection = context.CreateConnection();
         }
-
-        public bool AddAdvertisement(AdArticle ad)
+        private string CreateQueryString<T>(){
+            return "SELECT * FROM " + typeof(T).Name;
+        }
+        public async Task<bool> AddAdvertisement(AdArticle ad)
         {
-            connection.Insert(ad);
+            using var connectionn = new SqlConnection(new ConstantCommon().connectString);
+            await connectionn.OpenAsync();
+            connectionn.Insert(ad);
             return true;
         }
-
+        public async Task<bool> AddRangerAdver(List<AdArticle> ads)
+        {
+            foreach (var item in ads)
+            {
+               await AddAdvertisement(item);
+            }
+            return true;
+        }
         public List<Article> GetTopNews(int quantity)
         {
             var articles = _dataContext.GetAll<Article>()
@@ -50,10 +64,10 @@ namespace BingNew.BusinessLogicLayer.Services
                         .Take(quantity).ToList();
 
         }
-        public WeatherVm GetWeatherForecast(DateTime now)
+        public async Task<WeatherVm> GetWeatherForecast(DateTime now)
         {
-            var weather = GetWeatherInDay(now);
-            var weatherInfor = GetWeatherInforInDay(now, weather.Id);
+            var weather = await GetWeatherInDay(now);
+            var weatherInfor = await GetWeatherInforInDay(now, weather.Id);
             var weatherVm = new WeatherVm()
             {
                 Id = weather.Id,
@@ -69,24 +83,23 @@ namespace BingNew.BusinessLogicLayer.Services
          
         }
 
-        public Weather GetWeatherInDay(DateTime date)
+        public async Task<Weather> GetWeatherInDay(DateTime date)
         {
-            return _dataContext.GetAll<Weather>()
-                    .First(x => x.PubDate.Date == date.Date);
+            return await connection.QueryAsync<Weather>(CreateQueryString<Weather>())
+                    .FirstAsync(x => x.PubDate.Date == date.Date);
         }
 
-        public List<WeatherInfo> GetWeatherInforInDay(DateTime date, Guid weatherId)
+        public async Task<List<WeatherInfo>> GetWeatherInforInDay(DateTime date, Guid weatherId)
         {
-            return _dataContext.GetAll<WeatherInfo>()
+            return await connection.QueryAsync<WeatherInfo>(CreateQueryString<WeatherInfo>())
                 .Where(x => x.WeatherId == weatherId)
-                .ToList();
+                .ToListAsync();
         }
 
         public List<Article> Search(string keyWord)
         {
             string[] searchKeywords = keyWord.ToLower().Split(' ');
-            var sql = "SELECT * FROM " + typeof(Article).Name;
-            var query = from article in connection.Query<Article>(sql)
+            var query = from article in connection.Query<Article>(CreateQueryString<Article>())
                         let titleWords = article.Title.Split(' ')
                         let descriptionWords = article.Description.Split(' ')
                         let searchPhrases = GenerateSearchPhrases(searchKeywords)
@@ -113,10 +126,10 @@ namespace BingNew.BusinessLogicLayer.Services
             var searchResults = query.ToList();
             return searchResults;
         }
-        public List<Article> FullTextSearch(string keyWord)
+        public async Task<List<Article>> FullTextSearch(string keyWord)
         {
-            var sql = "SELECT * FROM Article WHERE FREETEXT((Title, Description),"+"'" + keyWord + "')";
-            List<Article> result = connection.Query<Article>(sql).ToList();
+            var sql = "SELECT * FROM Article WHERE FREETEXT((Title, Description)," + "'" + keyWord + "')";
+            List<Article> result = await connection.QueryAsync<Article>(sql).ToListAsync();
             return result;
         }
         private static IEnumerable<string> GenerateSearchPhrases(string[] searchKeywords)
@@ -135,13 +148,13 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public bool RegisterUser(Users users)
         {
-            _dataContext.Add(users);
+            SqlExtensionNonQuery.Insert(connection, users);
             return true;
         }
 
         public bool AddUserInteraction(UserInteraction userInteraction)
         {
-            _dataContext.Add(userInteraction);
+            connection.Insert<UserInteraction>(userInteraction);
             return true;
         }
 
@@ -153,11 +166,11 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public bool AddUserClick(UserClickEvent userClick)
         {
-            _dataContext.Add(userClick);
+            SqlExtensionNonQuery.Insert(connection, userClick);
             return true;
         }
 
-        public List<Article> Recommendation(Guid userId)
+        public async Task<List<Article>> Recommendation(Guid userId)
         {
             var sql = @"WITH TopChannels AS (
                     SELECT TOP 10 A.ChannelName, COUNT(UCE.ArticleId) AS Number_Click
@@ -175,8 +188,23 @@ namespace BingNew.BusinessLogicLayer.Services
                 ON A.ChannelName = TC.ChannelName
                 AND CONVERT(DATE, A.PubDate) = CONVERT(DATE, GETDATE())";
 
-            var articles = connection.Query<Article>(sql).ToList();
+            var articles = await connection.QueryAsync<Article>(sql).ToListAsync();
             return articles;
+        }
+
+        public bool AddWeather(Weather weatherr)
+        {
+            connection.Insert<Weather>(weatherr); 
+            return true;
+        }
+
+        public bool AddWeatherRanger(List<WeatherInfo> weatherInfor)
+        {
+            foreach (var item in weatherInfor)
+            {
+            connection.Insert<WeatherInfo>(item);
+            }
+            return true;
         }
     }
 }

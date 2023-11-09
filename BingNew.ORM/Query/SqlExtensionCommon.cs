@@ -9,7 +9,7 @@ namespace BingNew.ORM.Query
         private static readonly Dictionary<ConnectionState, Action<SqlConnection>> stateActions = new()
         {
             [ConnectionState.Closed] = conn => conn.Open(),
-            [ConnectionState.Open] = conn => { }
+            [ConnectionState.Open] = conn => {  }
         };
         public static void SqlConnectionManager(this SqlConnection sqlConnection, ConnectionState state)
         {

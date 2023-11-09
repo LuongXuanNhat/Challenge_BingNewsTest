@@ -105,7 +105,6 @@ namespace NewsAggregationTest
         public void DI_Register_Multiple_And_Has_Nested_Constructor_With_Another_Dependency()
         {
             _container.Register<IAccountService, Account>();
-
             _container.Register<IEmailService, OutlookService>();
             _container.Register<IEmailService, GmailService>();
             _container.Register<IEmailService, YahooService>();

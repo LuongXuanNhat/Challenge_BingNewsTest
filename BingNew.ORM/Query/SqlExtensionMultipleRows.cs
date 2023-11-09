@@ -45,7 +45,7 @@ namespace BingNew.ORM.Query
             }
         }
 
-        public static async IAsyncEnumerable<T?> QueryAsync<T>(this SqlConnection connection, string sql)
+        public static async IAsyncEnumerable<T> QueryAsync<T>(this SqlConnection connection, string sql)
         {
             connection.SqlConnectionManager(connection.State);
             await foreach (var item in ReadValueAsync(connection, sql, typeof(T)))
@@ -54,13 +54,13 @@ namespace BingNew.ORM.Query
             }
         }
 
-        private static async IAsyncEnumerable<dynamic?> ReadValueAsync(SqlConnection connection, string sql, Type? resultType)
+        private static async IAsyncEnumerable<dynamic> ReadValueAsync(SqlConnection connection, string sql, Type? resultType)
         {
             using var command = new SqlCommand(sql, connection);
             using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync() && resultType != null)
             {
-                var obj = Activator.CreateInstance(resultType);
+                var obj = Activator.CreateInstance(resultType) ?? throw new InvalidOperationException("item is null");
                 MapDataToObject(reader, resultType, obj);
                 yield return obj;
             }

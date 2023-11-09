@@ -7,7 +7,6 @@ using BingNew.DI;
 using BingNew.Mapping;
 using BingNew.Mapping.Interface;
 using BingNew.ORM.DbContext;
-using Microsoft.VisualBasic;
 
 namespace NewsAggregationTest
 {
@@ -28,7 +27,6 @@ namespace NewsAggregationTest
             _container.Register<DbBingNewsContext, DbBingNewsContext>();
             _container.Register<IBingNewsService, BingNewsService>();
             _container.Register<IXmlDataSource, XmlDataSource>();
-            
 
             _container.Register<IMappingService, MappingService>();
             _mappingService = _container.Resolve<IMappingService>();
@@ -173,7 +171,7 @@ namespace NewsAggregationTest
         #region Recommendation 
 
         [Fact]
-        public void Simple_recommendation()
+        public void Simple_Recommendation()
         {
             var getTredingNews = _bingServece.GetTopNews(50);
             Assert.NotNull(getTredingNews);
@@ -283,13 +281,15 @@ namespace NewsAggregationTest
             }
         }
         [Fact]
-        public void Get_Number_Click_Article_Of_User()
+        public async Task Get_Number_Click_Article_Of_User()
         {
             var userId = Guid.Parse("a17e20c0-c84a-447b-a468-9253cc2cfe4c");
-            var result = _bingServece.Recommendation(userId);
+            var result = await _bingServece.Recommendation(userId);
             Assert.NotEmpty(result);
         }
-        
+
         #endregion
+
+        
     }
 }

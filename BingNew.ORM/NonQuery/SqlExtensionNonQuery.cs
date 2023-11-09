@@ -1,9 +1,7 @@
 ﻿using BingNew.DataAccessLayer.Entities;
 using BingNew.ORM.Query;
-using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace BingNew.ORM.NonQuery

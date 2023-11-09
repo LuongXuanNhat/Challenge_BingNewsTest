@@ -7,6 +7,8 @@ using BingNew.DI;
 using BingNew.Mapping;
 using BingNew.Mapping.Interface;
 using BingNew.ORM.DbContext;
+using System.Diagnostics;
+using Xunit.Abstractions;
 
 namespace NewsAggregationTest
 {
@@ -19,9 +21,11 @@ namespace NewsAggregationTest
         private readonly IJsonDataSource _apiDataSource;
         private readonly IXmlDataSource _rssDataSource;
         private readonly IMappingService _mappingService;
+        private readonly ITestOutputHelper _output;
 
-        public BingNewsApiTest()
+        public BingNewsApiTest(ITestOutputHelper output)
         {
+            _output = output;
             _container.Register<DbBingNewsContext, DbBingNewsContext>();
             _container.Register<IJsonDataSource, JsonDataSource>();
             _container.Register<IXmlDataSource, XmlDataSource>();
@@ -106,42 +110,37 @@ namespace NewsAggregationTest
         {
             var dataConfig = DataSample.GetWeatherConfiguration();
             var weatherMappingConfig = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(dataConfig);
-            try
-            {
-                var result = _apiDataSource.MapMultipleObjects(weatherMappingConfig);
-                var weather = result.OfType<Weather>().First() ?? throw new InvalidOperationException("no data is mapped");
-                var weatherInfor = result.OfType<List<WeatherInfo>>().First() ?? throw new InvalidOperationException("no data is mapped in weatherInfo");
 
-                Weather weatherr = new()
-                {
-                    Temperature = weather.Temperature,
-                    Description = weather.Description,
-                    Humidity = weather.Humidity,
-                    Icon = weather.Icon,
-                    Id = weather.Id,
-                    Place = weather.Place,
-                    PubDate = weather.PubDate
-                };
-                foreach (var item in weatherInfor)
-                {
-                    item.WeatherId = weather.Id;
-                }
-                _dataContext.Add(weatherr);
-                _dataContext.AddRanger(weatherInfor);
+            var result = _apiDataSource.MapMultipleObjects(weatherMappingConfig);
+            var weather = result.OfType<Weather>().First() ?? throw new InvalidOperationException("no data is mapped");
+            var weatherInfor = result.OfType<List<WeatherInfo>>().First() ?? throw new InvalidOperationException("no data is mapped in weatherInfo");
 
-                Assert.True(true);
-            }
-            catch (Exception ex)
+            Weather weatherr = new()
             {
-                Assert.False(true, ex.Message);
+                Temperature = weather.Temperature,
+                Description = weather.Description,
+                Humidity = weather.Humidity,
+                Icon = weather.Icon,
+                Id = weather.Id,
+                Place = weather.Place,
+                PubDate = weather.PubDate
+            };
+            foreach (var item in weatherInfor)
+            {
+                item.WeatherId = weather.Id;
             }
+            _bingService.AddWeather(weatherr);
+            _bingService.AddWeatherRanger(weatherInfor);
+
+
+            Assert.True(true);
         }
 
         [Fact]
-        public void Get_Weather_Forecast_Successful()
+        public async Task Get_Weather_Forecast_Successful()
         {
-            var weather = _bingService.GetWeatherInDay(DateTime.Now);
-            var weatherInfor = _bingService.GetWeatherInforInDay(DateTime.Now, weather.Id);
+            var weather = await _bingService.GetWeatherInDay(DateTime.Now);
+            var weatherInfor = await _bingService.GetWeatherInforInDay(DateTime.Now, weather.Id);
 
             WeatherVm result = new(weather, weatherInfor);
             Assert.NotNull(result);
@@ -186,14 +185,14 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public void Full_Text_Search()
+        public async Task Full_Text_Search()
         {
-            var result = _bingService.FullTextSearch("vụ thảm sát");
+            var result = await _bingService.FullTextSearch("vụ thảm sát");
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void Add_Advertisement()
+        public async Task Add_Advertisement()
         {
             var ad = new AdArticle()
             {
@@ -204,7 +203,7 @@ namespace NewsAggregationTest
                 PubDate = DateTime.Now,
                 Title = "title"
             };
-            var result = _bingService.AddAdvertisement(ad);
+            var result = await _bingService.AddAdvertisement(ad);
             Assert.True(result);
         }
 
@@ -215,6 +214,94 @@ namespace NewsAggregationTest
             Assert.NotNull(result);
         }
 
+        #region ... Parallel 
+        [Fact]
+        public async Task Using_Foreach_AddRanger_Advertisement()
+        {
+            List<AdArticle> ads = new()
+            {
+                new AdArticle()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "description",
+                    Link = "link",
+                    MediaLink = "link",
+                    PubDate = DateTime.Now,
+                    Title = "title"
+                },
+                new AdArticle()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "description",
+                    Link = "link",
+                    MediaLink = "link",
+                    PubDate = DateTime.Now,
+                    Title = "title"
+                },
+                new AdArticle()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "description",
+                    Link = "link",
+                    MediaLink = "link",
+                    PubDate = DateTime.Now,
+                    Title = "title"
+                },
+                new AdArticle()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "description",
+                    Link = "link",
+                    MediaLink = "link",
+                    PubDate = DateTime.Now,
+                    Title = "title"
+                },
+                new AdArticle()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "description",
+                    Link = "link",
+                    MediaLink = "link",
+                    PubDate = DateTime.Now,
+                    Title = "title"
+                }
+                ,new AdArticle()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "description",
+                    Link = "link",
+                    MediaLink = "link",
+                    PubDate = DateTime.Now,
+                    Title = "title"
+                },
+                new AdArticle()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "description",
+                    Link = "link",
+                    MediaLink = "link",
+                    PubDate = DateTime.Now,
+                    Title = "title"
+                },
+                new AdArticle()
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "description",
+                    Link = "link",
+                    MediaLink = "link",
+                    PubDate = DateTime.Now,
+                    Title = "title"
+                },
 
+            };
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
+                var service = await _bingService.AddRangerAdver(ads);
+            stopwatch.Stop();
+            _output.WriteLine("Thời gian chạy là: " + stopwatch.ElapsedTicks.ToString());
+            Assert.True(service);
+        }
+
+        #endregion
     }
 }
