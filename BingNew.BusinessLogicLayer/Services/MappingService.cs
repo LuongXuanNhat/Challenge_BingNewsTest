@@ -31,13 +31,28 @@ namespace BingNew.BusinessLogicLayer.Services
             for (int i = 0; i < result.Count; i++)
             {
                 var type = SqlExtensionCommon.FindTypeByName(listObj[i]);
+                MethodInfo addRangerMethod = typeof(DbBingNewsContext).GetMethod("AddRanger") ?? throw new InvalidOperationException("Add function is inactive");
+                MethodInfo genericAddRanger = addRangerMethod.MakeGenericMethod(type);
+                genericAddRanger.Invoke(_dataContext, new object[] { result[i] });
+            }
+
+            return true;
+        }
+        public bool CrawlNewsJsonByParallel(List<CustomConfig> customs)
+        {
+            var objs = _jsonDataSource.MapMultipleObjects(customs).ToList();
+            var strings = customs.Select(custom => custom.TableName).ToList();
+
+            Parallel.ForEach(Enumerable.Range(0, objs.Count), i =>
+            {
+                var typeObj = SqlExtensionCommon.FindTypeByName(strings[i]);
 
                 MethodInfo addRangerMethod = typeof(DbBingNewsContext).GetMethod("AddRanger") ?? throw new InvalidOperationException("Add function is inactive");
 
-                MethodInfo genericAddRanger = addRangerMethod.MakeGenericMethod(type);
+                MethodInfo genericAddRanger = addRangerMethod.MakeGenericMethod(typeObj);
 
-                genericAddRanger.Invoke(_dataContext, new object[] { result[i] });
-            }
+                genericAddRanger.Invoke(_dataContext, new object[] { objs[i] });
+            });
 
             return true;
         }

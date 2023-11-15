@@ -7,8 +7,10 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
     {
         Task<bool> AddAdvertisement(AdArticle ad);
         Task<bool> AddRangerAdver(List<AdArticle> ads);
+        bool AddRole(Role role);
         bool AddUserClick(UserClickEvent userClick);
         bool AddUserInteraction(UserInteraction userInteraction);
+        bool AddUserRole(UserRole role);
         bool AddWeather(Weather weatherr);
         bool AddWeatherRanger(List<WeatherInfo> weatherInfor);
         bool DeleteUserInteraction(UserInteraction userInteraction);

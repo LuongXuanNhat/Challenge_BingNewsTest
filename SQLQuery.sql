@@ -481,6 +481,17 @@ WHERE EXISTS (
     HAVING COUNT(*) > 1
 );
 
+-- create role table
+Create table Role (
+	Id uniqueidentifier primary key,
+	Name varchar(100)
+)
+
+Create table UserRole (
+	Id uniqueidentifier primary key,
+	UserId uniqueidentifier REFERENCES Users(Id),
+	RoleId uniqueidentifier REFERENCES Role(Id),
+)
 
 
 

@@ -57,8 +57,8 @@ namespace BingNew.ORM.Query
         private static async IAsyncEnumerable<dynamic> ReadValueAsync(SqlConnection connection, string sql, Type? resultType, string? param = null)
         {
             using var command = new SqlCommand(sql, connection);
-            using var reader = await command.ExecuteReaderAsync();
             _ = (param != null) ? command.Parameters.AddWithValue("@keyWord", param) : default;
+            using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync() && resultType != null)
             {
                 var obj = Activator.CreateInstance(resultType) ?? throw new InvalidOperationException("item is null");

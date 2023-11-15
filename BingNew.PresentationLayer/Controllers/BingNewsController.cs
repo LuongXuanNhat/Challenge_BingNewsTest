@@ -35,14 +35,14 @@ namespace BingNew.PresentationLayer.Controllers
         {
             return _bingNewsService.Search(keyWord);
         }
-        
+
         [HttpPost("Advertisement")]
         public IActionResult AddAdvertisement(AdArticle ad)
         {
             _bingNewsService.AddAdvertisement(ad);
             return Ok();
         }
-        [HttpGet]
+        [HttpGet("GetAllAdvertisement")]
         public List<AdArticle> GetAdArticle()
         {
             var result = _bingNewsService.GetAdArticles();
@@ -61,13 +61,6 @@ namespace BingNew.PresentationLayer.Controllers
         {
             _bingNewsService.AddUserInteraction(interaction);
             return Ok();
-        }
-
-        [HttpGet("Search")]
-        public IActionResult SearchArticle(string keyWord)
-        {
-            var result = _bingNewsService.Search(keyWord);
-            return Ok(result);
         }
 
         [HttpGet("FullTextSearch")]

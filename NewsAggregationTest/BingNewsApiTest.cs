@@ -83,7 +83,17 @@ namespace NewsAggregationTest
 
             var result = _mappingService.CrawlNewsJson(customConfigs);
 
-            Assert.True(result);
+            Assert.True(result); 
+        }
+        [Fact] 
+        public void Crawl_News_Json_Return_True_Using_Parallel()
+        {
+            var configData = DataSample.GetDataMockupNewsDataIo();
+            var customConfigs = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(configData);
+
+            var result = _mappingService.CrawlNewsJsonByParallel(customConfigs);
+
+            Assert.True(result); 
         }
         [Fact]
         public void Crawl_News_Xml_Return_True()

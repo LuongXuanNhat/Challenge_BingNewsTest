@@ -201,7 +201,7 @@ namespace BingNew.BusinessLogicLayer.Services
         {
             foreach (var item in weatherInfor)
             {
-            connection.Insert<WeatherInfo>(item);
+                connection.Insert<WeatherInfo>(item);
             }
             return true;
         }
@@ -209,6 +209,18 @@ namespace BingNew.BusinessLogicLayer.Services
         public List<AdArticle> GetAdArticles()
         {
             return connection.Query<AdArticle>(CreateQueryString<AdArticle>()).ToList();
+        }
+
+        public bool AddRole(Role role)
+        {
+            connection.Insert<Role>(role);
+            return true;
+        }
+
+        public bool AddUserRole(UserRole userrole)
+        {
+            connection.Insert<UserRole>(userrole);
+            return true;
         }
     }
 }

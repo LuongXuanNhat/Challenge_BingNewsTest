@@ -48,6 +48,9 @@ namespace BingNew.PresentationLayer
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
             //// Lấy DIContainer từ ServiceProvider và sử dụng nó để giải quyết phụ thuộc
             ////var serviceProvider = builder.Services.BuildServiceProvider();
             ////var resolvedContainer = serviceProvider.GetRequiredService<DIContainer>();

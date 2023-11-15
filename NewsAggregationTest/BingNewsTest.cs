@@ -261,6 +261,18 @@ namespace NewsAggregationTest
             var result = _bingServece.DeleteUserInteraction(userInteraction);
             Assert.True(result);
         }
+
+        ////[Fact]
+        ////public async void Add_Role_Success()
+        ////{
+        ////    var role = new UserRole()
+        ////    {
+        ////        UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+        ////        RoleId = Guid.Parse("b8898520-3b11-426b-9e99-a7162e94b3cc")
+        ////    };
+        ////    var result = _bingServece.AddUserRole(role);
+        ////    Assert.True(result);
+        ////}
         [Fact]
         public void Add_User_CLick_Data()
         {
