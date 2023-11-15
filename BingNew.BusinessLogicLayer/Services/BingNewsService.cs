@@ -6,7 +6,6 @@ using BingNew.ORM.NonQuery;
 using BingNew.ORM.Query;
 using Dasync.Collections;
 using System.Data.SqlClient;
-using static Dapper.SqlMapper;
 
 namespace BingNew.BusinessLogicLayer.Services
 {
@@ -18,7 +17,7 @@ namespace BingNew.BusinessLogicLayer.Services
             _dataContext = context;
             connection = context.CreateConnection();
         }
-        private string CreateQueryString<T>(){
+        private static string CreateQueryString<T>(){
             return "SELECT * FROM " + typeof(T).Name;
         }
         public async Task<bool> AddAdvertisement(AdArticle ad)
@@ -128,8 +127,8 @@ namespace BingNew.BusinessLogicLayer.Services
         }
         public async Task<List<Article>> FullTextSearch(string keyWord)
         {
-            var sql = "SELECT * FROM Article WHERE FREETEXT((Title, Description)," + "'" + keyWord + "')";
-            List<Article> result = await connection.QueryAsync<Article>(sql).ToListAsync();
+            var sql = "SELECT * FROM Article WHERE FREETEXT((Title, Description),@keyWord )";
+            List<Article> result = await connection.QueryAsync<Article>(sql, keyWord).ToListAsync();
             return result;
         }
         private static IEnumerable<string> GenerateSearchPhrases(string[] searchKeywords)

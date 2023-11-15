@@ -183,9 +183,8 @@ namespace NewsAggregationTest
             Users users = new()
             {
                 Id = Guid.NewGuid(),
-                Email = Guid.NewGuid().ToString().Substring(0, 8) + "@gmail.com",
+                Email = string.Concat(Guid.NewGuid().ToString("N").AsSpan()[..8], "@gmail.com"),
                 UserName = string.Concat("User ", DateTime.Now.Millisecond.ToString())
-
             };
             var result = _bingServece.RegisterUser(users);
             Assert.True(result);
