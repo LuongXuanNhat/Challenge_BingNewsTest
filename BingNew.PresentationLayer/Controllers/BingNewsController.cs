@@ -42,6 +42,12 @@ namespace BingNew.PresentationLayer.Controllers
             _bingNewsService.AddAdvertisement(ad);
             return Ok();
         }
+        [HttpGet]
+        public List<AdArticle> GetAdArticle()
+        {
+            var result = _bingNewsService.GetAdArticles();
+            return result;
+        }
 
         [HttpPost("Like")]
         public IActionResult LikeArticle(UserInteraction userInteraction)

@@ -13,6 +13,7 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
         bool AddWeatherRanger(List<WeatherInfo> weatherInfor);
         bool DeleteUserInteraction(UserInteraction userInteraction);
         Task<List<Article>> FullTextSearch(string keyWord);
+        List<AdArticle> GetAdArticles();
         List<Article> GetTopNews(int quantity);
         List<Article> GetTrendingArticlesPanel(int quantity); 
         List<Article> GetTrendingArticlesPanel(int quantity, int numberBackDay);

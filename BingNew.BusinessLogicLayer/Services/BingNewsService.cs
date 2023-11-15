@@ -206,5 +206,10 @@ namespace BingNew.BusinessLogicLayer.Services
             }
             return true;
         }
+
+        public List<AdArticle> GetAdArticles()
+        {
+            return connection.Query<AdArticle>(CreateQueryString<AdArticle>()).ToList();
+        }
     }
 }
