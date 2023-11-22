@@ -1,19 +1,23 @@
-﻿using BingNew.ORM.Query;
+﻿using BingNew.DataAccessLayer.Entities;
+using BingNew.ORM.Query;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace BingNew.ORM.NonQuery
 {
     public static class SqlExtensionNonQuery
     {
+        private static readonly Dictionary<string, IStoredProcedure> storedProcedureHandlers = new()
+        {
+            { typeof(Provider).Name, new ArticleStoredProcedure() },
+            { typeof(Article).Name, new ProviderStoredProcedure() }
+        };
         public static bool Insert<T>(this SqlConnection connection,T entity)
         {
                 var sql = GenerateInsertQuery<T>();
                 return QueryExcute<T>(connection, sql, entity);
         }
-
         private static bool QueryExcute<T>(SqlConnection connection, string sql, T entity)
         {
             connection.SqlConnectionManager(connection.State);
@@ -26,6 +30,8 @@ namespace BingNew.ORM.NonQuery
             }
 
             command.ExecuteNonQuery();
+            storedProcedureHandlers.TryGetValue(typeof(T).Name, out var handler);
+            handler?.StoredProcedure(connection);
             return true;
         }
 
@@ -61,6 +67,16 @@ namespace BingNew.ORM.NonQuery
             string query = $"UPDATE {tableName} SET {setClause} WHERE Id = @Id";
 
             return query;
+        }
+        public static bool Delete<T>(this SqlConnection connectionsql, int Id) where T : class
+        {
+            connectionsql.SqlConnectionManager(connectionsql.State);
+            string sql = GenerateDeleteQuery<T>();
+            using var commandSql = new SqlCommand(sql, connectionsql);
+            commandSql.Parameters.Add(new SqlParameter("@Id", Id));
+            commandSql.ExecuteNonQuery();
+
+            return true;
         }
 
         public static bool Delete<T>(this SqlConnection connection, Guid entityId) where T : class

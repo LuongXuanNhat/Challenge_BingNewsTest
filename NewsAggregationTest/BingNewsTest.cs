@@ -1,21 +1,36 @@
-﻿using BingNew.DataAccessLayer.Entities;
+﻿using BingNew.BusinessLogicLayer.Interfaces;
+using BingNew.BusinessLogicLayer.Interfaces.IService;
+using BingNew.BusinessLogicLayer.Services;
+using BingNew.DataAccessLayer.Entities;
 using BingNew.DataAccessLayer.TestData;
+using BingNew.DI;
 using BingNew.Mapping;
 using BingNew.Mapping.Interface;
+using BingNew.ORM.DbContext;
 
 namespace NewsAggregationTest
 {
     public class BingNewsTest
     {
         private readonly Config _config;
+        private readonly DIContainer _container = new();
         private readonly IJsonDataSource _apiDataSource;
         private readonly IXmlDataSource _rssDataSource;
-
+        private readonly IMappingService _mappingService;
+        private readonly IBingNewsService _bingServece;
         public BingNewsTest()
         {
             _config = new Config();
             _apiDataSource = new JsonDataSource();
             _rssDataSource = new XmlDataSource();
+
+            _container.Register<DbBingNewsContext, DbBingNewsContext>();
+            _container.Register<IBingNewsService, BingNewsService>();
+            _container.Register<IXmlDataSource, XmlDataSource>();
+
+            _container.Register<IMappingService, MappingService>();
+            _mappingService = _container.Resolve<IMappingService>();
+            _bingServece = _container.Resolve<IBingNewsService>();
         }
 
         private static Config WeatherConfig()
@@ -123,6 +138,17 @@ namespace NewsAggregationTest
         }
 
         [Fact]
+        public void Crawl_Data_From_Google_News() 
+        {
+            var configData = DataSample.GetDataMockupGgNew();
+            var customConfigs = DataSourceFactory.CreateMapFromJson<List<CustomConfig>>(configData);
+
+            var result = _mappingService.CrawlNewsXml(customConfigs);
+
+            Assert.True(result);
+        }
+
+        [Fact]
         public void Get_Weather_Infor_Not_Null()
         {
             var config = WeatherConfig();
@@ -139,6 +165,160 @@ namespace NewsAggregationTest
             var result = _apiDataSource.MapMultipleObjects(weatherMappingConfig);
 
             Assert.NotNull(result);
+        }
+        #endregion
+
+        #region Recommendation && Interact
+
+        [Fact]
+        public void Simple_Recommendation()
+        {
+            var getTredingNews = _bingServece.GetTopNews(50);
+            Assert.NotNull(getTredingNews);
+        }
+
+
+        [Fact]
+        public void Add_Interactive_Data1()
+        {
+            var articles = _bingServece.GetTrendingArticlesPanel(100, 10);
+            var article = new Random().Next(0, articles.Count);
+            var userInteraction = new UserInteraction()
+            {
+                ArticleId = articles[article].Id,
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Likes = 1
+            };
+            var result = _bingServece.AddUserInteraction(userInteraction);
+            Assert.True(result);
+
+        }
+
+        [Fact]
+        public void Add_Interactive_Data2()
+        {
+            var articles = _bingServece.GetTrendingArticlesPanel(100, 10);
+            var article = new Random().Next(0, articles.Count);
+            var userInteraction = new UserInteraction()
+            {
+                ArticleId = articles[article].Id,
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Dislike = 1
+            };
+            var result = _bingServece.AddUserInteraction(userInteraction);
+            Assert.True(result);
+        }
+
+        [Fact] 
+        public void Form_Like_To_DisLike()
+        {
+            var userInteraction = new UserInteraction()
+            {
+                ArticleId = Guid.Parse("4A1D5DC5-C562-4F4E-840F-8D18BF150006"),
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Dislike = 1
+            };
+            var result = _bingServece.AddUserInteraction(userInteraction);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Form_DisLike_To_Like()
+        {
+            var userInteraction = new UserInteraction()
+            {
+                ArticleId = Guid.Parse("4A1D5DC5-C562-4F4E-840F-8D18BF150006"),
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Likes = 1
+            };
+            var result = _bingServece.AddUserInteraction(userInteraction);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Remove_Like()
+        {
+            var userInteraction = new UserInteraction()
+            {   
+                ArticleId = Guid.Parse("4A1D5DC5-C562-4F4E-840F-8D18BF150006"),
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                Likes = 1
+            };
+            userInteraction.SetId(100);
+            var result = _bingServece.DeleteUserInteraction(userInteraction);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Add_User_CLick_Data()
+        {
+            var articles = _bingServece.GetTrendingArticlesPanel(1, 2);
+            var userId = Guid.Parse("557b6016-e833-4ebb-8fb8-c1e7fa2f0543");
+            foreach (var item in articles)
+            {
+                var userClick = new UserClickEvent()
+                {
+                    ArticleId = item.Id,
+                    UserId = userId,
+                    Id = Guid.NewGuid()
+                };
+
+                var result = _bingServece.AddUserClick(userClick);
+                Assert.True(result);
+            }
+        }
+        [Fact]
+        public async Task Get_Number_Click_Article_Of_User()
+        {
+            var userId = Guid.Parse("a17e20c0-c84a-447b-a468-9253cc2cfe4c");
+            var result = await _bingServece.Recommendation(userId);
+            Assert.NotEmpty(result);
+        }
+
+        #endregion
+
+        #region Authencation || Authorzation
+        [Fact]
+        public void Add_User_Success()
+        {
+            Users user = new()
+            {
+                Id = Guid.NewGuid(),
+                Email = string.Concat(Guid.NewGuid().ToString("N").AsSpan()[..8], "@gmail.com"),
+                UserName = string.Concat("User ", DateTime.Now.Millisecond.ToString())
+            };
+            var result = _bingServece.RegisterUser(user);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Update_User_Role()
+        {
+            // Get User account - 7a0443d6-0704-4524-8218-178e705228ba (XuanNhat)
+            // Role Admin - b8898520-3b11-426b-9e99-a7162e94b3cc (admin)
+            UserRole userRole = new()
+            {
+                Id = Guid.NewGuid(),
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                RoleId = Guid.Parse("b8898520-3b11-426b-9e99-a7162e94b3cc")
+            };
+
+            var result = _bingServece.UpdateUserRole(userRole);
+            Assert.True(result);
+        }
+        [Fact]
+        public void Get_All_Role_Success()
+        {
+            Guid userId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba");
+            var result = _bingServece.GetAllRole(userId);
+            Assert.NotEmpty(result);
+        }
+        [Fact]
+        public void Get_All_User_Success()
+        {
+            Guid id = Guid.Parse("b8898520-3b11-426b-9e99-a7162e94b3cc");
+            var result = _bingServece.GetAllUser(id);
+            Assert.NotEmpty(result);
         }
         #endregion
     }

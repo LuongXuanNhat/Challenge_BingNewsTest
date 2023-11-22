@@ -76,10 +76,13 @@ namespace BingNew.Mapping.Interface
         {
             var objectType = MappingCommon.FindTypeByName(customConfig.TableName);
             dynamic obj = Activator.CreateInstance(objectType) ?? "";
-
+            var xml = XElement.Parse(data);
             foreach (var config in customConfig.MappingTables)
             {
-                config.SouValue = GetSourceValue(XElement.Parse(data), config) ?? string.Empty;
+                XNamespace ht = config.Namespace;
+                config.SouValue = (config.Namespace != "")
+                ? xml.Descendants(ht + config.SouPropertyPath).FirstOrDefault()?.Value ?? ""
+                : GetSourceValue(xml, config) ?? string.Empty;
 
                 var propertyInfo = objectType.GetProperty(config.DesProperty);
                 var getType = DataSourceFactory.ParseDatatype(config.DesDatatype);

@@ -9,7 +9,7 @@ namespace BingNew.ORM.Query
         private static readonly Dictionary<ConnectionState, Action<SqlConnection>> stateActions = new()
         {
             [ConnectionState.Closed] = conn => conn.Open(),
-            [ConnectionState.Open] = conn => { }
+            [ConnectionState.Open] = conn => {  }
         };
         public static void SqlConnectionManager(this SqlConnection sqlConnection, ConnectionState state)
         {
@@ -43,8 +43,8 @@ namespace BingNew.ORM.Query
             foreach (var property in properties)
             {
                 var columnName = property.Name;
-                var propertyValue = reader[columnName];
-                property.SetValue(obj, propertyValue);
+                var propertyValue = reader[columnName] == DBNull.Value ? "" : reader[columnName];
+                property.SetValue(obj, propertyValue );
             }
 
             return obj;
@@ -58,5 +58,35 @@ namespace BingNew.ORM.Query
             }
             return check == 1;
         }
+    }
+    public interface IStoredProcedure
+    {
+        void StoredProcedure(SqlConnection connection);
+    }
+
+    public class ArticleStoredProcedure : IStoredProcedure
+    {
+        public void StoredProcedure(SqlConnection connection)
+        {
+            using var spCommand = new SqlCommand(StoredProcedures.articleStoredProcedures, connection);
+            spCommand.CommandType = CommandType.StoredProcedure;
+            spCommand.ExecuteNonQuery();
+        }
+    }
+
+    public class ProviderStoredProcedure : IStoredProcedure
+    {
+        public void StoredProcedure(SqlConnection connection)
+        {
+            using var spCommand = new SqlCommand(StoredProcedures.providerStoredProcedures, connection);
+            spCommand.CommandType = CommandType.StoredProcedure;
+            spCommand.ExecuteNonQuery();
+        }
+    }
+    public static class StoredProcedures
+    {
+        public const string articleStoredProcedures = "RemoveDuplicateArticles";
+        public const string providerStoredProcedures = "RemoveDuplicateProvider";
+        public const string providerStoredProcedures2 = "InsertProviderIfNotExists";
     }
 }

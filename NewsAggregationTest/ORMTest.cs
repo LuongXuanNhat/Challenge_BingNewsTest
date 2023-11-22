@@ -10,7 +10,7 @@ namespace NewsAggregationTest
 {
     public class ORMTest
     {
-        private readonly string _connecString = new ConstantCommon().connectString;
+        private readonly string _connecString = ConstantCommon.connectString;
         private readonly Fixture _fixture = new();
 
         #region Query Single Row
@@ -18,7 +18,7 @@ namespace NewsAggregationTest
         public void GetArticle_Success_Using_QuerySingleT()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bf'";
+            var sql = "SELECT * FROM Article where Id = 'fb12f418-f131-49ae-9ec3-1619f2f69394'";
             var result = connection.QuerySingle<Article>(sql);
             Assert.NotNull(result);
         }
@@ -26,7 +26,7 @@ namespace NewsAggregationTest
         public void Get_Article_Success_Using_QuerySingle()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where Id = 'dfdab4e6-538b-4ef5-8b69-00f99a9ad6bf'";
+            var sql = "SELECT * FROM Article where Id = 'fb12f418-f131-49ae-9ec3-1619f2f69394'";
             var result = connection.QuerySingle(sql);
             Assert.NotNull(result);
             Assert.IsType<Article>(result);
@@ -43,7 +43,7 @@ namespace NewsAggregationTest
         public void Get_Article_Return_Error_When_More_Than_One_Element()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var sql = "SELECT * FROM Article where ChannelName = '2'";
             Assert.Throws<InvalidOperationException>(() => connection.QuerySingleOrDefault(sql));
         }
         [Fact]
@@ -58,21 +58,21 @@ namespace NewsAggregationTest
         public void Get_Article_Error_Return_Null_When_More_Than_One_Element()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var sql = "SELECT * FROM Article where ChannelName = '2'";
             Assert.Throws<InvalidOperationException>(() => connection.QuerySingleOrDefault<Article>(sql));
         }
         [Fact]
         public void Get_Article_Error_Return_Exception_When_More_Than_One_Element_2()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '12345'";
+            var sql = "SELECT * FROM Article where ChannelName = '12345'";
             Assert.Throws<InvalidOperationException>(() => connection.QuerySingleOrDefault(sql));
         }
         [Fact]
         public void Get_Article_Return_Null_When_Not_Found()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '22'";
+            var sql = "SELECT * FROM Article where ChannelName = '22'";
             var result = connection.QuerySingleOrDefault(sql) ;
             Assert.Null(result);
         }
@@ -80,7 +80,7 @@ namespace NewsAggregationTest
         public void Get_Article_First_Success()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var sql = "SELECT * FROM Article where ChannelName = '2'";
             var result = connection.QueryFirst(sql);
 
             Assert.NotNull(result);
@@ -90,7 +90,7 @@ namespace NewsAggregationTest
         public void Get_Article_First_SuccessT()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var sql = "SELECT * FROM Article where ChannelName = '2'";
             var result = connection.QueryFirst<Article>(sql);
 
             Assert.NotNull(result);
@@ -101,7 +101,7 @@ namespace NewsAggregationTest
         public void Get_Article_First_Error_When_Not_Found()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '1'";
+            var sql = "SELECT * FROM Article where ChannelName = '1'";
             Assert.Throws<InvalidOperationException>(() => connection.QueryFirst(sql));
         }
 
@@ -109,7 +109,7 @@ namespace NewsAggregationTest
         public void Get_Article_First_Error_When_Not_FoundT()
         {
             using var connection = new SqlConnection(_connecString);
-            var query = "SELECT * FROM Article where ProviderId = '1'";
+            var query = "SELECT * FROM Article where ChannelName = '1'";
             Assert.Throws<InvalidOperationException>(() => connection.QueryFirst<Article>(query));
         }
 
@@ -117,7 +117,7 @@ namespace NewsAggregationTest
         public void Get_Article_First_Success_Using_QueryFirstOrDefault()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var sql = "SELECT * FROM Article where ChannelName = '2'";
             var result = connection.QueryFirstOrDefault(sql);
 
             Assert.NotNull(result);
@@ -128,7 +128,7 @@ namespace NewsAggregationTest
         public void Get_Article_First_Return_Null_Using_QueryFirstOrDefault()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '1'";
+            var sql = "SELECT * FROM Article where ChannelName = '1'";
             var result = connection.QueryFirstOrDefault(sql);
 
             Assert.Null(result);
@@ -138,7 +138,7 @@ namespace NewsAggregationTest
         public void Get_Article_First_Success_Using_QueryFirstOrDefaultT()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '2'";
+            var sql = "SELECT * FROM Article where ChannelName = '2'";
             var result = connection.QueryFirstOrDefault<Article>(sql);
 
             Assert.NotNull(result);
@@ -149,7 +149,7 @@ namespace NewsAggregationTest
         public void Get_Article_First_Return_Null_Using_QueryFirstOrDefaultT()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article where ProviderId = '1'";
+            var sql = "SELECT * FROM Article where ChannelName = '1'";
             var result = connection.QueryFirstOrDefault<Article>(sql);
 
             Assert.Null(result);
@@ -207,7 +207,7 @@ namespace NewsAggregationTest
         public void Get_Articles_Success()
         {
             using var connection = new SqlConnection(_connecString);
-            var sql = "SELECT * FROM Article WHERE ProviderId = '2';";
+            var sql = "SELECT * FROM Article WHERE ChannelName = '2';";
             var result = connection.Query(sql).ToList();
             var firstArticle = result.FirstOrDefault() as Article;
 
@@ -269,7 +269,7 @@ namespace NewsAggregationTest
         {
             using var connection = new SqlConnection(_connecString);
             string sql = @"
-                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Article WHERE ChannelName = '2';
                 SELECT * FROM Provider WHERE Id = '2';
             ";
             var result = connection.QueryMultiple(sql).ToList();
@@ -284,7 +284,7 @@ namespace NewsAggregationTest
         {
             using var connection = new SqlConnection(_connecString);
             string sql = @"
-                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Article WHERE ChannelName = '2';
                 SELECT * FROM Provider WHERE Id = '2';      
                 ";
             var result = await connection.QueryMultipleAsync(sql);
@@ -299,7 +299,7 @@ namespace NewsAggregationTest
         {
             using var connection = new SqlConnection(_connecString);
             string sql = @"
-                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Article WHERE ChannelName = '2';
                 SELECT * FROM Provider WHERE Id = '2';      
                 ";
             var result = connection.QueryMultiple(sql);
@@ -316,7 +316,7 @@ namespace NewsAggregationTest
         {
             using var connection = new SqlConnection(_connecString);
             string sql = @"
-                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Article WHERE ChannelName = '2';
                 SELECT * FROM Provider WHERE Id = '2';      
                 ";
             var result = connection.QueryMultiple(sql);
@@ -334,7 +334,7 @@ namespace NewsAggregationTest
         {
             using var connection = new SqlConnection(_connecString);
             string sql = @"
-                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Article WHERE ChannelName = '2';
                 SELECT * FROM Provider WHERE Id = '2';      
                 ";
             var result = await connection.QueryMultipleAsync(sql);
@@ -351,7 +351,7 @@ namespace NewsAggregationTest
         {
             using var connection = new SqlConnection(_connecString);
             string sql = @"
-                SELECT * FROM Article WHERE ProviderId = '2';
+                SELECT * FROM Article WHERE ChannelName = '2';
                 SELECT * FROM Provider WHERE Id = '2'; ";
             var result = await connection.QueryMultipleAsync(sql);
 
@@ -371,26 +371,17 @@ namespace NewsAggregationTest
         public void Object_Insert_Success()
         {
             var article = _fixture.Create<Article>();
+            article.CommentNumber = article.ViewNumber = article.LikeNumber = article.DisLikeNumber = 0;
+            article.PubDate = DateTime.Now;
             using var connection = new SqlConnection(_connecString);
             bool result = connection.Insert(article);
             Assert.True(result);
         }
-
-        [Fact]
-        public void Object_Insert_Success_With_Parameter_Empty()
-        {
-            var article = _fixture.Create<Article>();
-            article.Description = null;
-            using var connection = new SqlConnection(_connecString);
-            bool result = connection.Insert(article);
-            Assert.True(result);
-        }
-
         [Fact]
         public void Object_GetById_Success()
         {
             using var connection = new SqlConnection(_connecString);
-            Guid articleId = new("CAA91D5E-453B-45B2-857F-00E279711534");
+            Guid articleId = new("9e490287-bbf5-4904-a4cb-11e4ef38224f");
             var article = connection.GetById<Article>(articleId);
 
             Assert.NotNull(article);
@@ -401,7 +392,7 @@ namespace NewsAggregationTest
         public void Object_Update_Success()
         {
             using var connection = new SqlConnection(_connecString);
-            Guid articleId = new("CAA91D5E-453B-45B2-857F-00E279711534");
+            Guid articleId = new("ba50ba5a-97f7-4ec7-a5d1-1bab89dbe0e9");
             var article = connection.GetById<Article>(articleId);
 
             Assert.NotNull(article);
@@ -421,11 +412,9 @@ namespace NewsAggregationTest
             {
                 CommentNumber = 1,
                 Description = "Test",
-                 DisLikeNumber = 2,
                 ImgUrl = null,
                 Id = Guid.NewGuid(),
-                LikeNumber = 3,
-                ProviderId = "",
+                ChannelName = Guid.NewGuid().ToString(),
                 PubDate = DateTime.Now,
                 Title = "Test",
                 Url = null,

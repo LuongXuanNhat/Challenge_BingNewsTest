@@ -7,4 +7,5 @@ public interface IMappingService
     bool CrawlNewsXml(List<CustomConfig> customs);
     bool CrawlNewsJson(List<CustomConfig> customs);
     bool CrawlWeatherForecast(List<CustomConfig> customs);
+    bool CrawlNewsJsonByParallel(List<CustomConfig> customConfigs);
 }

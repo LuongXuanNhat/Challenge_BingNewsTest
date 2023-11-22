@@ -1,6 +1,4 @@
-﻿using System;
-using System.Xml.Linq;
-using BingNew.Mapping.Interface;
+﻿using BingNew.Mapping.Interface;
 
 namespace BingNew.Mapping
 {

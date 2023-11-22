@@ -1,8 +1,9 @@
 ﻿namespace BingNew.DataAccessLayer.Constants
 {
-    public class ConstantCommon
+    public static class ConstantCommon
     {
-        public readonly string connectString = "Server=.;Database=BingNews;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+        public static readonly string connectString = "Server=DEVCODE1\\BD1;Database=BingNews;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+        public static readonly string roleAdmin = "admin";
     }
     
 }

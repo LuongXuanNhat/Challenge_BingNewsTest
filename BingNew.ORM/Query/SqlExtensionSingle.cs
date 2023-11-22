@@ -46,7 +46,7 @@ namespace BingNew.ORM.Query
                 var propertyValue = reader.HasColumn(columnName) 
                     ? reader[columnName]
                     : null;
-                propertyInfo.SetValue(obj, propertyValue);
+                propertyInfo.SetValue(obj, (propertyValue == DBNull.Value ? " " : propertyValue));
             }
             return obj ?? throw new InvalidOperationException("Instance of object is null");
         }
@@ -133,7 +133,7 @@ namespace BingNew.ORM.Query
                         var propertyValue = reader.HasColumn(columnName)
                             ? dataRecord[columnName]
                             : null;
-                        propertyInfo.SetValue(obj, propertyValue);
+                        propertyInfo.SetValue(obj, (propertyValue == DBNull.Value ? " " : propertyValue));
                     }
                     return obj;
                 })

@@ -47,6 +47,17 @@ namespace BingNew.Mapping.Interface
             return DateTime.Parse(dateTimeValue, culture);
         }
     }
+
+    public class DateTimeGmtHandler : IDataTypeHandler
+    {
+        public object ConvertData(string value, List<CustomConfig>? mapping = null, JObject? jsonObject = null, string? souPropertyPath = null)
+        {
+            DateTime utcDateTime = DateTime
+                .ParseExact(value, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal);
+            return utcDateTime;
+        }
+    }
+
     public class DateTimeHourHandler : IDataTypeHandler
     {
         public object ConvertData(string value, List<CustomConfig>? mapping = null, JObject? jsonObject = null, string? souPropertyPath = null)
