@@ -9,10 +9,8 @@ namespace BingNew.ORM.DbContext
 {
     public sealed class DbBingNewsContext
     {
-        private readonly ConstantCommon _constant;
         public DbBingNewsContext()
         {
-            _constant = new ConstantCommon();
         }
 
         public void Add<T>(T entity)
@@ -30,7 +28,7 @@ namespace BingNew.ORM.DbContext
 
         public SqlConnection CreateConnection()
         {
-            return new SqlConnection(_constant.connectString);
+            return new SqlConnection(ConstantCommon.connectString);
         }
 
 

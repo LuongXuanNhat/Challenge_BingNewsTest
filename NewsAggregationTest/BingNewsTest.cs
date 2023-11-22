@@ -168,7 +168,7 @@ namespace NewsAggregationTest
         }
         #endregion
 
-        #region Recommendation 
+        #region Recommendation && Interact
 
         [Fact]
         public void Simple_Recommendation()
@@ -177,20 +177,7 @@ namespace NewsAggregationTest
             Assert.NotNull(getTredingNews);
         }
 
-        [Fact]
-        public void Add_User_Success()
-        {
-            Users users = new()
-            {
-                Id = Guid.NewGuid(),
-                Email = string.Concat(Guid.NewGuid().ToString("N").AsSpan()[..8], "@gmail.com"),
-                UserName = string.Concat("User ", DateTime.Now.Millisecond.ToString())
-            };
-            var result = _bingServece.RegisterUser(users);
-            Assert.True(result);
-        }
 
-        // User Id 7a0443d6-0704-4524-8218-178e705228ba
         [Fact]
         public void Add_Interactive_Data1()
         {
@@ -262,17 +249,6 @@ namespace NewsAggregationTest
             Assert.True(result);
         }
 
-        ////[Fact]
-        ////public async void Add_Role_Success()
-        ////{
-        ////    var role = new UserRole()
-        ////    {
-        ////        UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
-        ////        RoleId = Guid.Parse("b8898520-3b11-426b-9e99-a7162e94b3cc")
-        ////    };
-        ////    var result = _bingServece.AddUserRole(role);
-        ////    Assert.True(result);
-        ////}
         [Fact]
         public void Add_User_CLick_Data()
         {
@@ -301,6 +277,49 @@ namespace NewsAggregationTest
 
         #endregion
 
-        
+        #region Authencation || Authorzation
+        [Fact]
+        public void Add_User_Success()
+        {
+            Users user = new()
+            {
+                Id = Guid.NewGuid(),
+                Email = string.Concat(Guid.NewGuid().ToString("N").AsSpan()[..8], "@gmail.com"),
+                UserName = string.Concat("User ", DateTime.Now.Millisecond.ToString())
+            };
+            var result = _bingServece.RegisterUser(user);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Update_User_Role()
+        {
+            // Get User account - 7a0443d6-0704-4524-8218-178e705228ba (XuanNhat)
+            // Role Admin - b8898520-3b11-426b-9e99-a7162e94b3cc (admin)
+            UserRole userRole = new()
+            {
+                Id = Guid.NewGuid(),
+                UserId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba"),
+                RoleId = Guid.Parse("b8898520-3b11-426b-9e99-a7162e94b3cc")
+            };
+
+            var result = _bingServece.UpdateUserRole(userRole);
+            Assert.True(result);
+        }
+        [Fact]
+        public void Get_All_Role_Success()
+        {
+            Guid userId = Guid.Parse("7a0443d6-0704-4524-8218-178e705228ba");
+            var result = _bingServece.GetAllRole(userId);
+            Assert.NotEmpty(result);
+        }
+        [Fact]
+        public void Get_All_User_Success()
+        {
+            Guid id = Guid.Parse("b8898520-3b11-426b-9e99-a7162e94b3cc");
+            var result = _bingServece.GetAllUser(id);
+            Assert.NotEmpty(result);
+        }
+        #endregion
     }
 }

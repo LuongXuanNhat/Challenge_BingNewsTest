@@ -10,7 +10,7 @@ namespace NewsAggregationTest
 {
     public class ORMTest
     {
-        private readonly string _connecString = new ConstantCommon().connectString;
+        private readonly string _connecString = ConstantCommon.connectString;
         private readonly Fixture _fixture = new();
 
         #region Query Single Row

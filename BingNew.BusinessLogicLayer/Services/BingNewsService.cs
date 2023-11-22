@@ -17,12 +17,12 @@ namespace BingNew.BusinessLogicLayer.Services
             _dataContext = context;
             connection = context.CreateConnection();
         }
-        private static string CreateQueryString<T>(){
+        private static string GenerateQueryString<T>(){
             return "SELECT * FROM " + typeof(T).Name;
         }
         public async Task<bool> AddAdvertisement(AdArticle ad)
         {
-            using var connectionn = new SqlConnection(new ConstantCommon().connectString);
+            using var connectionn = new SqlConnection(ConstantCommon.connectString);
             await connectionn.OpenAsync();
             connectionn.Insert(ad);
             return true;
@@ -84,13 +84,13 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public async Task<Weather> GetWeatherInDay(DateTime date)
         {
-            return await connection.QueryAsync<Weather>(CreateQueryString<Weather>())
+            return await connection.QueryAsync<Weather>(GenerateQueryString<Weather>())
                     .FirstAsync(x => x.PubDate.Date == date.Date);
         }
 
         public async Task<List<WeatherInfo>> GetWeatherInforInDay(DateTime date, Guid weatherId)
         {
-            return await connection.QueryAsync<WeatherInfo>(CreateQueryString<WeatherInfo>())
+            return await connection.QueryAsync<WeatherInfo>(GenerateQueryString<WeatherInfo>())
                 .Where(x => x.WeatherId == weatherId)
                 .ToListAsync();
         }
@@ -98,7 +98,7 @@ namespace BingNew.BusinessLogicLayer.Services
         public List<Article> Search(string keyWord)
         {
             string[] searchKeywords = keyWord.ToLower().Split(' ');
-            var query = from article in connection.Query<Article>(CreateQueryString<Article>())
+            var query = from article in connection.Query<Article>(GenerateQueryString<Article>())
                         let titleWords = article.Title.Split(' ')
                         let descriptionWords = article.Description.Split(' ')
                         let searchPhrases = GenerateSearchPhrases(searchKeywords)
@@ -148,6 +148,12 @@ namespace BingNew.BusinessLogicLayer.Services
         public bool RegisterUser(Users users)
         {
             SqlExtensionNonQuery.Insert(connection, users);
+            var role = _dataContext.GetAll<Role>().Find(x=>x.Name.Equals("user")) ?? throw new InvalidOperationException("Role do not exist");
+            AddUserRole(new UserRole()
+            {
+                RoleId = role.Id,
+                UserId = users.Id,
+            });
             return true;
         }
 
@@ -208,7 +214,7 @@ namespace BingNew.BusinessLogicLayer.Services
 
         public List<AdArticle> GetAdArticles()
         {
-            return connection.Query<AdArticle>(CreateQueryString<AdArticle>()).ToList();
+            return connection.Query<AdArticle>(GenerateQueryString<AdArticle>()).ToList();
         }
 
         public bool AddRole(Role role)
@@ -217,10 +223,36 @@ namespace BingNew.BusinessLogicLayer.Services
             return true;
         }
 
-        public bool AddUserRole(UserRole userrole)
+        public bool AddUserRole(UserRole userRole)
         {
-            connection.Insert<UserRole>(userrole);
+            connection.Insert<UserRole>(userRole);
             return true;
+        }
+
+        public bool UpdateUserRole(UserRole userRole)
+        {
+            connection.Update<UserRole>(userRole);
+            return true;
+        }
+
+        public List<Role> GetAllRole(Guid userId)
+        {
+            var check = CheckRole(userId);
+            return check ? connection.Query<Role>(GenerateQueryString<Role>()).ToList() : new List<Role>();
+        }
+
+        public List<Users> GetAllUser(Guid userId)
+        {
+            CheckRole(userId);
+            return connection.Query<Users>(GenerateQueryString<Users>()).ToList();
+        }
+
+        private bool CheckRole(Guid userId)
+        {
+            var sql = GenerateQueryString<UserRole>();
+            var role = connection.Query<UserRole>(sql).FirstOrDefault(x => x.UserId == userId);
+            var result = connection.Query<Role>(GenerateQueryString<Role>()).FirstOrDefault(x=>x.Name.Equals(ConstantCommon.roleAdmin) && x.Id == role?.RoleId);
+            return (result != null);
         }
     }
 }

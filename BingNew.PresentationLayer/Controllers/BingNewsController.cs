@@ -11,7 +11,8 @@ namespace BingNew.PresentationLayer.Controllers
     {
         private readonly IBingNewsService _bingNewsService;
 
-        public BingNewsController(DIContainer container) {
+        public BingNewsController(DIContainer container)
+        {
             DIContainer _container = container;
             _bingNewsService = _container.Resolve<IBingNewsService>();
         }
@@ -76,5 +77,13 @@ namespace BingNew.PresentationLayer.Controllers
             var result = _bingNewsService.Recommendation(id);
             return Ok(result);
         }
+
+        [HttpPost("RegisterUser")]
+        public IActionResult RegisterUser(Users user)
+        {
+            var result = _bingNewsService.RegisterUser(user);
+            return Ok(result);
+        }
+        
     }
 }

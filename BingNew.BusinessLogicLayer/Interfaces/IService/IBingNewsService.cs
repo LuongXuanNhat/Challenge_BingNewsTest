@@ -10,12 +10,14 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
         bool AddRole(Role role);
         bool AddUserClick(UserClickEvent userClick);
         bool AddUserInteraction(UserInteraction userInteraction);
-        bool AddUserRole(UserRole role);
+        bool AddUserRole(UserRole userRole);
         bool AddWeather(Weather weatherr);
         bool AddWeatherRanger(List<WeatherInfo> weatherInfor);
         bool DeleteUserInteraction(UserInteraction userInteraction);
         Task<List<Article>> FullTextSearch(string keyWord);
         List<AdArticle> GetAdArticles();
+        List<Role> GetAllRole(Guid userId);
+        List<Users> GetAllUser(Guid userId);
         List<Article> GetTopNews(int quantity);
         List<Article> GetTrendingArticlesPanel(int quantity); 
         List<Article> GetTrendingArticlesPanel(int quantity, int numberBackDay);
@@ -25,6 +27,6 @@ namespace BingNew.BusinessLogicLayer.Interfaces.IService
         Task<List<Article>> Recommendation(Guid userId);
         bool RegisterUser(Users users);
         List<Article> Search(string keyWord);
-
+        bool UpdateUserRole(UserRole userRole);
     }
 }

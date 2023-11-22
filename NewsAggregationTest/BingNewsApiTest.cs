@@ -195,7 +195,15 @@ namespace NewsAggregationTest
         }
 
         [Fact]
-        public async Task Full_Text_Search()
+        public void Test_Full_Text_Search()
+        {
+            var task = Task.Run(async () => await Full_Text_Search());
+
+            task.Wait();
+
+            Assert.True(task.IsCompleted);
+        }
+        private async Task Full_Text_Search()
         {
             var result = await _bingService.FullTextSearch("vụ thảm sát");
             Assert.NotNull(result);
@@ -311,7 +319,8 @@ namespace NewsAggregationTest
             _output.WriteLine("Thời gian chạy là: " + stopwatch.ElapsedTicks.ToString());
             Assert.True(service);
         }
-
+        
+        
         #endregion
     }
 }

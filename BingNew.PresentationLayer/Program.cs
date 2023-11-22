@@ -5,6 +5,9 @@ using BingNew.DI;
 using BingNew.Mapping;
 using BingNew.Mapping.Interface;
 using BingNew.ORM.DbContext;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BingNew.PresentationLayer
 {
@@ -37,7 +40,25 @@ namespace BingNew.PresentationLayer
             ////    options.UseSqlServer("your_connection_string_here");
             ////});
             ////  builder.Services.AddScoped<IBingNewsService, BingNewsService>();
-
+            
+            ////builder.Services.AddAuthentication(options =>
+            ////{
+            ////    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            ////    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            ////})
+            ////.AddJwtBearer(options =>
+            ////{
+            ////    options.TokenValidationParameters = new TokenValidationParameters
+            ////    {
+            ////        ValidateIssuer = true,
+            ////        ValidateAudience = true,
+            ////        ValidateLifetime = true,
+            ////        ValidateIssuerSigningKey = true,
+            ////        ValidIssuer = "nhat",
+            ////        ValidAudience = "client",
+            ////        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("bingnewspromax2023"))
+            ////    };
+            ////});
 
 
             var app = builder.Build();
